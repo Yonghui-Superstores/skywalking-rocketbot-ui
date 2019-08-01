@@ -42,6 +42,7 @@ export default class RkTopSlow extends Vue {
   @Prop() private intervalTime!: any;
   private appChange(i: any) {
     const temp = { key: `${i.key}`, label: i.label };
+    this.$router.push('/trace')
   }
   get maxValue() {
     const temp: number[] = this.data.map((i: any) => i.value);
