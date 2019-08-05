@@ -30,7 +30,7 @@
       <a class="trace-tree-btn mr-10" @click="tree.getTopSlow()">Top 5 of slow</a>
       <a class="trace-tree-btn mr-10" @click="tree.getTopChild()">Top 5 of children</a>
     </div>
-      <rk-sidebox :show.sync="showDetail" :title="$t('spanInfo')">
+      <rk-sidebox :width="'50%'" :show.sync="showDetail" :title="$t('spanInfo')">
       <div class="rk-trace-detail">
         <h5 class="mb-15">{{$t('tags')}}.</h5>
         <div class="mb-10 clear"><span class="g-sm-4 grey">{{$t('endpoint')}}:</span><span class="g-sm-8 wba">{{this.currentSpan.label}}</span></div>
@@ -43,7 +43,7 @@
         <div v-for="(i, index) in this.currentSpan.logs" :key="index">
           <div class="mb-10 sm"><span class="mr-10">{{$t('time')}}:</span><span class="grey">{{i.time | dateformat}}</span></div>
           <div class="mb-15 clear" v-for="(_i, _index) in i.data" :key="_index">
-            <div class="mb-10">{{_i.key}}:</div><pre class="g-sm-8 mt-0 mb-0 sm" style="overflow:auto">{{_i.value}}</pre>
+            <div class="mb-10">{{_i.key}}:</div><pre class="pl-15 mt-0 mb-0 sm oa">{{_i.value}}</pre>
           </div>
         </div>
       </div>
