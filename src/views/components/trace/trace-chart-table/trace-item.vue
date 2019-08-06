@@ -33,7 +33,7 @@
           <span v-tooltip:bottom="data.component||'-'">{{data.component || '-'}}</span>
         </div>
         <div class="application">
-          <span v-tooltip:bottom="data.serviceCode||'-'">{{data.serviceCode}}</span>
+          <span v-tooltip:left="data.serviceCode||'-'">{{data.serviceCode}}</span>
         </div>
       </div>      
     <div v-show="data.children && data.children.length > 0 && displayChildren" class="children-trace">

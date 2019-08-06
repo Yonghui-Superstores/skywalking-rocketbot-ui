@@ -70,8 +70,8 @@ export default class TraceSelect extends Vue {
   .icon {flex-shrink: 0}
 }
 .rk-trace-bar-i-text{
-  max-width: 150px;
-  min-width: 80px;
+  max-width: 500px;
+  min-width: 110px;
 }
 .rk-trace-bar-i {
   height: 100%;
@@ -83,7 +83,7 @@ export default class TraceSelect extends Vue {
   top: 44px;
   box-shadow: 0 1px 6px rgba(99, 99, 99, 0.2);
   background-color: #252a2f;
-  width: 100%;
+  // width: 100%;
   border-radius: 3px;
   overflow: hidden;
   .close{
