@@ -28,6 +28,9 @@
         <select class="rk-trace-detail-ids" @change="GET_TRACE_SPANS({traceId: i})">
           <option v-for="i in current.traceIds" :value="i" :key="i">{{i}}</option>
         </select>
+        <svg class="icon vm grey link-hover cp ml-5" @click="handleClick(current.traceIds)">
+          <use xlink:href="#review-list"></use>
+        </svg>
       </div>
 
       <a class="rk-btn mr-5 sm r" :class="{'ghost':displayMode !== 'table'}" @click="displayMode = 'table'">
@@ -79,6 +82,23 @@ export default class Header extends Vue {
   @Prop() private current!: Trace;
   private mode: boolean = true;
   private displayMode: string = 'list';
+  private handleClick(ids: any) {
+    const input = document.createElement('input');
+    let copyValue = null;
+    if (ids.length === 1) {
+      copyValue = ids[0];
+    } else {
+      copyValue = ids.join(',');
+    }
+    input.value = copyValue;
+    document.body.appendChild(input);
+    input.select();
+    if (document.execCommand('Copy')) {
+        document.execCommand('Copy');
+    }
+    input.remove();
+    Vue.prototype.$noty.success('Copied!', {timeout: 500});
+  }
 }
 </script>
 
