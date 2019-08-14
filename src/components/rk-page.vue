@@ -56,6 +56,9 @@ export default {
       }
       return this.currentPage * this.currentSize;
     },
+    totalPages() {
+      return Math.ceil(this.total / this.currentSize)
+    }
   },
   data() {
     return {
@@ -70,7 +73,7 @@ export default {
   },
   methods: {
     next() {
-      if (this.current !== Math.ceil(this.total / this.currentSize)) {
+      if (this.current !== this.totalPages) {
         this.current = this.current + 1;
         this.$emit('changePage', this.current);
       }
@@ -82,8 +85,8 @@ export default {
       }
     },
     goToPage() {
-      var regInt = /^0*[1-9]\d*$/
-      if (regInt.test(this.current)) {
+      const regInt = /^0*[1-9]\d*$/
+      if (regInt.test(this.current) && this.current <= this.totalPages) {
         this.$emit('changePage', this.current);
       }
     }
