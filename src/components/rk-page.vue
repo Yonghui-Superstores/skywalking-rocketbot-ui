@@ -20,7 +20,7 @@
     <svg class="icon cp mr-5" @click="pre">
       <use xlink:href="#chevron-left"></use>
     </svg>
-    <input class="rk-page-input tc mr-5" type="text" v-model="currentPage">
+    <input class="rk-page-input tc mr-5" type="text" v-model="currentPage" @keyup.enter="goToPage">
     <span class="mr-5">/</span>
     <span class="mr-5">{{Math.ceil(this.total / this.currentSize)}}</span>
     <svg class="icon cp" @click="next">
@@ -81,6 +81,12 @@ export default {
         this.$emit('changePage', this.current);
       }
     },
+    goToPage() {
+      var regInt = /^0*[1-9]\d*$/
+      if (regInt.test(this.current)) {
+        this.$emit('changePage', this.current);
+      }
+    }
   },
 };
 </script>
