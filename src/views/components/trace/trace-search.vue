@@ -163,9 +163,15 @@ export default class TraceTool extends Vue {
     this.GET_TRACELIST();
   }
   private created() {
-    const endpoint = this.$route.query.endpoint
+    const {endpoint, service, serviceKey, instance, instanceKey} = this.$route.query
     if (endpoint !== undefined) {
       this.endpointName = endpoint.toString().trim()
+    }
+    if (service != undefined && serviceKey != undefined) {
+      this.service = {label: service.toString(), key: serviceKey.toString()}
+    }
+    if (instance != undefined && instanceKey != undefined) {
+      this.instance = {label: instance.toString(), key: instanceKey.toString()}
     }
   }
   private mounted() {

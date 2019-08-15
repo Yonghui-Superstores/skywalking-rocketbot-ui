@@ -35,12 +35,14 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
+import { State } from 'vuex-class';
 
 @Component({})
 export default class RkTopSlow extends Vue {
   @Prop() private data!: any;
   @Prop() private intervalTime!: any;
   @Prop() private type:any;
+  @State('rocketOption') private stateDashboardOption!: any;
   private appChange(i: any) {
     const temp = { key: `${i.key}`, label: i.label };
     if (this.type ==='Global Top Slow Endpoint') {
@@ -50,6 +52,20 @@ export default class RkTopSlow extends Vue {
           endpoint: i.label
         }
       });
+    } else if (this.type === 'Service Slow Endpoint') {
+      const { label: currentService, key: serviceKey } = this.stateDashboardOption.currentService
+      const { label: currentInstance, key: instanceKey } = this.stateDashboardOption.currentInstance
+      const endpoint = i.label
+      this.$router.push({
+        path: '/trace',
+        query: {
+          endpoint: i.label,
+          service: currentService,
+          serviceKey: serviceKey, 
+          instance: currentInstance,
+          instanceKey: instanceKey,
+        }
+      });      
     }
   }
   get maxValue() {
