@@ -68,8 +68,8 @@ export default class Home extends Vue {
     if (this.rocketTrace.traceList && this.rocketTrace.traceList.length > 0) {
       this.selectTrace(this.rocketTrace.traceList[0]);
     }
-    if (this.rocketTrace.traceList && this.rocketTrace.traceList.length == 0) {
-      this.SET_DEFAULT_EMPTY_TRACE()
+    if (this.rocketTrace.traceList && this.rocketTrace.traceList.length === 0) {
+      this.SET_DEFAULT_EMPTY_TRACE();
     }
   }
   private selectTrace(i: any) {

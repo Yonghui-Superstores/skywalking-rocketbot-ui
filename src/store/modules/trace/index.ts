@@ -81,7 +81,7 @@ const mutations: MutationTree<State> = {
   [types.SET_CURRENT_TRACE](state: State, data: Span): void {
     state.currentTrace = data;
   },
-  [types.SET_DEFAULT_EMPTY_TRACE](state, State): void {
+  [types.SET_DEFAULT_EMPTY_TRACE](state: State): void {
     state.currentTrace = {
       operationNames: [],
       duration: 0,
@@ -89,8 +89,8 @@ const mutations: MutationTree<State> = {
       key: '',
       start: '',
       traceIds: [],
-    }
-  }
+    };
+  },
 };
 
 // actions
