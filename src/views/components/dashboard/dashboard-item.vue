@@ -26,7 +26,7 @@
     </div>
     <div class="dashboard-item-body">
       <div style="height:100%;">
-        <component :is="rocketGlobal.edit ? 'ChartEdit' : i.c" ref="chart" :i="i" :index="index" :intervalTime="intervalTime" :data="rocketDashboard[i.d]"></component>
+        <component :type="i.t" :is="rocketGlobal.edit ? 'ChartEdit' : i.c" ref="chart" :i="i" :index="index" :intervalTime="intervalTime" :data="rocketDashboard[i.d]"></component>
       </div>
     </div>
   </div>

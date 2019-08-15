@@ -162,6 +162,12 @@ export default class TraceTool extends Vue {
     this.SET_TRACE_FORM(temp);
     this.GET_TRACELIST();
   }
+  private created() {
+    const endpoint = this.$route.query.endpoint
+    if (endpoint !== undefined) {
+      this.endpointName = endpoint.toString().trim()
+    }
+  }
   private mounted() {
     this.time = [this.rocketbotGlobal.durationRow.start, this.rocketbotGlobal.durationRow.end];
     this.getTraceList();

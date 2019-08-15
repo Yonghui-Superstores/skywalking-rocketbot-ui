@@ -40,9 +40,17 @@ import { Component, Prop } from 'vue-property-decorator';
 export default class RkTopSlow extends Vue {
   @Prop() private data!: any;
   @Prop() private intervalTime!: any;
+  @Prop() private type:any;
   private appChange(i: any) {
     const temp = { key: `${i.key}`, label: i.label };
-    // this.$router.push('/trace');
+    if (this.type ==='Global Top Slow Endpoint') {
+      this.$router.push({
+        path: '/trace',
+        query: {
+          endpoint: i.label
+        }
+      });
+    }
   }
   get maxValue() {
     const temp: number[] = this.data.map((i: any) => i.value);
