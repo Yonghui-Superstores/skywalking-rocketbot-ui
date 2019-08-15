@@ -54,7 +54,7 @@ export default class RkTopSlow extends Vue {
       });
     } else if (this.type === 'Service Slow Endpoint') {
       const { label: currentService, key: serviceKey } = this.stateDashboardOption.currentService;
-      const { label: currentInstance, key: instanceKey } = this.stateDashboardOption.currentInstance;
+      // const { label: currentInstance, key: instanceKey } = this.stateDashboardOption.currentInstance;
       const endpoint = i.label;
       this.$router.push({
         path: '/trace',
@@ -62,8 +62,8 @@ export default class RkTopSlow extends Vue {
           endpoint: i.label,
           service: currentService,
           serviceKey,
-          instance: currentInstance,
-          instanceKey,
+          // instance: currentInstance,
+          // instanceKey,
         },
       });
     }

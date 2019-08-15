@@ -170,9 +170,9 @@ export default class TraceTool extends Vue {
     if (service !== undefined && serviceKey !== undefined) {
       this.service = {label: service.toString(), key: serviceKey.toString()};
     }
-    if (instance !== undefined && instanceKey !== undefined) {
-      this.instance = {label: instance.toString(), key: instanceKey.toString()};
-    }
+    // if (instance !== undefined && instanceKey !== undefined) {
+    //   this.instance = {label: instance.toString(), key: instanceKey.toString()};
+    // }
   }
   private mounted() {
     this.time = [this.rocketbotGlobal.durationRow.start, this.rocketbotGlobal.durationRow.end];
