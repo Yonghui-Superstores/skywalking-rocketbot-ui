@@ -17,6 +17,11 @@
 
 <template>
   <div class="time-charts scroll_hide">
+    <div class="rk-trace-t-loading" v-show="loading">
+      <svg class="icon loading">
+        <use xlink:href="#spinner"></use>
+      </svg>
+    </div>    
     <transition-group name="fade" tag="div" class="mb-5">
       <span class="time-charts-item mr-10" v-for="(i,index) in list" :key="i" :style="`color:${computedScale(index)}`">
          <svg class="icon vm mr-5 sm">
@@ -61,20 +66,28 @@ export default {
       showDetail: false,
       list: [],
       currentSpan: [],
+      loading: true,
     };
   },
   watch: {
     data() {
       if(!this.data.length) {return;}
+      this.loading = true
       this.changeTree();
       this.tree.init({label:`TRACE_ROOT`, children: this.segmentId}, this.data);
-      this.tree.draw()
+      this.tree.draw(() => {
+        setTimeout(() => {
+          this.loading = false          
+        }, 150);
+      })
+      
     }
   },
   beforeDestroy() {
     d3.selectAll('.d3-tip').remove();
   },
   mounted() {
+    this.loading = true
     this.changeTree();
     this.tree = new Trace(this.$refs.traceList, this)
     this.tree.init({label:`TRACE_ROOT`, children: this.segmentId}, this.data);
@@ -163,6 +176,8 @@ export default {
 .time-charts{
   overflow: auto;
   padding: 10px 30px;
+  position: relative;
+  min-height: 150px;
 }
 .trace-node .group {
   cursor: pointer;

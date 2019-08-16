@@ -69,7 +69,9 @@ import { Trace } from '@/types/trace';
 import { DurationTime, Option } from '@/types/global';
 import TraceSelect from './trace-select.vue';
 
-@Component({components: {TraceSelect}})
+@Component({
+  components: {TraceSelect},
+})
 export default class TraceTool extends Vue {
   @State('rocketbot') private rocketbotGlobal: any;
   @State('rocketTrace') private rocketTrace: any;
@@ -126,6 +128,9 @@ export default class TraceTool extends Vue {
     }
     return { start: this.dateFormate(time[0], step), end: this.dateFormate(time[1], step), step };
   }
+  get eventHub() {
+      return this.$store.getters.globalEventHub;
+  }
   private chooseService(i: any) {
     if (this.service.key === i.key) {
       return;
@@ -160,7 +165,12 @@ export default class TraceTool extends Vue {
     if (this.endpointName) { temp.endpointName = this.endpointName; }
     if (this.traceId) { temp.traceId = this.traceId; }
     this.SET_TRACE_FORM(temp);
-    this.GET_TRACELIST();
+    this.eventHub.$emit('SET_LOADING_TRUE', ()=>{
+      this.GET_TRACELIST().then(() => {
+        this.eventHub.$emit('SET_LOADING_FALSE')
+      })
+    })
+    // this.GET_TRACELIST();
   }
   private created() {
     const {endpoint, service, serviceKey, instance, instanceKey} = this.$route.query;
