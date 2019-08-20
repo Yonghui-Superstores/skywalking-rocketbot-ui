@@ -65,7 +65,7 @@ export default class Home extends Vue {
   private selectedId: string = '';
   get eventHub() {
       return this.$store.getters.globalEventHub;
-  }  
+  }
   @Watch('rocketTrace.traceList')
   private onTraceListChange() {
     if (this.rocketTrace.traceList && this.rocketTrace.traceList.length > 0) {
@@ -95,13 +95,15 @@ export default class Home extends Vue {
     });
   }
   private created() {
-    this.eventHub.$on('SET_LOADING_TRUE', (cb = ()=>{}) => {
-      this.loading = true
-      cb()
-    })
+    this.eventHub.$on('SET_LOADING_TRUE', (cb: any) => {
+      this.loading = true;
+      if (cb) {
+        cb();
+      }
+    });
     this.eventHub.$on('SET_LOADING_FALSE', () => {
-      this.loading = false
-    })
+      this.loading = false;
+    });
   }
 }
 </script>

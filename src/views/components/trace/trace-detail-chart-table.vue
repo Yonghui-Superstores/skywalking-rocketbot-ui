@@ -17,7 +17,15 @@
         <div class="mb-10 clear"><span class="g-sm-4 grey">{{$t('component')}}:</span><span class="g-sm-8 wba">{{this.currentSpan.component}}</span></div>
         <div class="mb-10 clear"><span class="g-sm-4 grey">Peer:</span><span class="g-sm-8 wba">{{this.currentSpan.peer||'No Peer'}}</span></div>
         <div class="mb-10 clear"><span class="g-sm-4 grey">{{$t('error')}}:</span><span class="g-sm-8 wba">{{this.currentSpan.isError}}</span></div>
-        <div class="mb-10 clear" v-for="i in this.currentSpan.tags" :key="i.key"><span class="g-sm-4 grey">{{i.key}}:</span><span class="g-sm-8 wba">{{i.value}}</span></div>
+        <div class="mb-10 clear" v-for="i in this.currentSpan.tags" :key="i.key">
+          <span class="g-sm-4 grey">{{i.key}}:</span>
+          <span class="g-sm-8 wba">
+            {{i.value}}
+            <svg v-if="i.key==='db.statement'" class="icon vm grey link-hover cp ml-5" @click="handleClick(i.value)">
+              <use xlink:href="#review-list"></use>
+            </svg>
+          </span>
+        </div>
         <h5 class="mb-10" v-if="this.currentSpan.logs" v-show="this.currentSpan.logs.length">{{$t('logs')}}.</h5>
         <div v-for="(i, index) in this.currentSpan.logs" :key="index">
           <div class="mb-10 sm">
@@ -44,6 +52,7 @@
 </style>
 
 <script>
+import { Vue } from 'vue-property-decorator';
 import Item from './trace-chart-table/trace-item';
 import TraceContainer from './trace-chart-table/trace-container';
 /* eslint-disable */
@@ -81,6 +90,18 @@ export default {
     }
   },
   methods: {
+    handleClick(value) {
+      const input = document.createElement('input');
+      let copyValue = value;
+      input.value = copyValue;
+      document.body.appendChild(input);
+      input.select();
+      if (document.execCommand('Copy')) {
+        document.execCommand('Copy');
+      }
+      input.remove();
+      Vue.prototype.$noty.success('Copied!', {timeout: 500});
+    },
     // 给增加层级关系
     formatData(arr, level = 1, totalExec = null) {
       for (const item of arr) {

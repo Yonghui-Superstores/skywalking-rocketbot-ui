@@ -165,11 +165,11 @@ export default class TraceTool extends Vue {
     if (this.endpointName) { temp.endpointName = this.endpointName; }
     if (this.traceId) { temp.traceId = this.traceId; }
     this.SET_TRACE_FORM(temp);
-    this.eventHub.$emit('SET_LOADING_TRUE', ()=>{
+    this.eventHub.$emit('SET_LOADING_TRUE', () => {
       this.GET_TRACELIST().then(() => {
-        this.eventHub.$emit('SET_LOADING_FALSE')
-      })
-    })
+        this.eventHub.$emit('SET_LOADING_FALSE');
+      });
+    });
     // this.GET_TRACELIST();
   }
   private created() {
