@@ -39,7 +39,14 @@ class Graph {
     return axios.post('/graphql', {
       query: query[this.queryData],
       variables: variablesData,
-    }, { cancelToken: cancelToken() });
+    }, { cancelToken: cancelToken() })
+    .then((response) => {
+      const { headers: {invalid, url} } = response;
+      if (invalid === 'true') {
+        window.location.href = url;
+      }
+      return response;
+    });
   }
 }
 
