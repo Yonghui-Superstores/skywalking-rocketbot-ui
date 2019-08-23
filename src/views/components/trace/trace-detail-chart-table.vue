@@ -117,6 +117,13 @@ export default {
     }
   },
   methods: {
+    computedScale(i) {
+       // 彩虹图
+      const sequentialScale = d3.scaleSequential()
+      .domain([0, this.list.length + 1])
+      .interpolator(d3.interpolateCool);
+      return sequentialScale(i);
+    },
     handleClick(value) {
       const input = document.createElement('input');
       let copyValue = value;
