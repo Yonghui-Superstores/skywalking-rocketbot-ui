@@ -6,6 +6,14 @@
         <use xlink:href="#spinner"></use>
       </svg>
     </div>
+    <transition-group name="fade" tag="div" class="mb-15 mt-15 pl-30">
+      <span class="time-charts-item mr-10" v-for="(i,index) in list" :key="i" :style="`color:${computedScale(index)}`">
+         <svg class="icon vm mr-5 sm">
+            <use xlink:href="#issue-open-m"></use>
+          </svg>
+        <span>{{i}}</span>
+      </span>
+    </transition-group>    
     <TraceContainer>
       <Item v-for="(item, index) in tableData"  :data="item"  :key="'key'+ index" /> 
     </TraceContainer>
@@ -52,6 +60,7 @@
 </style>
 
 <script>
+import * as d3 from 'd3';
 import { Vue } from 'vue-property-decorator';
 import Item from './trace-chart-table/trace-item';
 import TraceContainer from './trace-chart-table/trace-container';
@@ -84,9 +93,27 @@ export default {
       loading: true,
     };
   },
+  provide: function() {
+    return {
+      serviceColor: this.serviceColor
+    }
+  },
   computed: {
     eventHub() {
       return this.$store.getters.globalEventHub
+    },
+    serviceList() {
+      return Array.from(new Set(this.data.map((i) => i.serviceCode)));
+    },
+    serviceColor() {
+      const sequentialScale = d3.scaleSequential()
+        .domain([0, this.serviceList.length + 1])
+        .interpolator(d3.interpolateCool);
+      var colorMap = {}
+      this.serviceList.forEach((item, index) => {
+        colorMap[item] = sequentialScale(index)
+      })
+      return colorMap
     }
   },
   methods: {

@@ -36,6 +36,7 @@
     font-size: 12px;
     height: 100%;
     overflow: auto;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
   }
   .trace-header {
     display: flex;
