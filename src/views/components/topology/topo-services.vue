@@ -28,6 +28,9 @@ import { Vue, Component } from 'vue-property-decorator';
 import { State, Getter, Action } from 'vuex-class';
 import Axios, { AxiosResponse } from 'axios';
 import TopoSelect from './topo-select.vue';
+import { getPrefixes, getFilterProjectList } from '@/utils/serviceFilter';
+
+
 
 @Component({components: {TopoSelect}})
 export default class TopologyServices extends Vue {
@@ -36,23 +39,32 @@ export default class TopologyServices extends Vue {
   private services = [{key: 0, label: 'All services'}];
   private service = {key: 0, label: 'All services'};
   private fetchData() {
-    Axios.post('/graphql', {
-      query: `
-      query queryServices($duration: Duration!) {
-        services: getAllServices(duration: $duration) {
-          key: id
-          label: name
-        }
-      }`,
-      variables: {
-        duration: this.durationTime,
-      }}).then((res: AxiosResponse) => {
-        this.services = res.data.data.services
-        ?
-        [{key: 0, label: 'All services'}, ...res.data.data.services]
-        :
-        [{key: 0, label: 'All services'}];
-      });
+    Axios.get('/user/projects').then(res=>{
+      console.log('res', res);
+      let response = res as any
+      let validProjects = response.projects || []
+      const prefixes = getPrefixes(validProjects)
+      // const filterServices = getFilterProjectList(prefixes, )
+      Axios.post('/graphql', {
+        query: `
+        query queryServices($duration: Duration!) {
+          services: getAllServices(duration: $duration) {
+            key: id
+            label: name
+          }
+        }`,
+        variables: {
+          duration: this.durationTime,
+        }}).then((res: AxiosResponse) => {
+          // this.services = res.data.data.services
+          let resultServices = getFilterProjectList(prefixes, res.data.data.services)
+          this.services = resultServices
+          ?
+          [{key: 0, label: 'All services'}, ...resultServices]
+          :
+          [{key: 0, label: 'All services'}];
+        });          
+    })
   }
   private handleChange(i: any) {
     this.service = i;

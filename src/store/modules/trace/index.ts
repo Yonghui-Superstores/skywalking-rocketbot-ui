@@ -16,11 +16,13 @@
  */
 
 import { Commit, ActionTree, MutationTree, Dispatch } from 'vuex';
-import { AxiosResponse } from 'axios';
+// import { AxiosResponse } from 'axios';
+import Axios, { AxiosResponse } from 'axios';
 import graph from '@/graph';
 import * as types from '@/store/mutation-types';
 import { Option } from '@/types/global';
 import { Trace, Span } from '@/types/topo';
+import { getPrefixes, getFilterProjectList } from '@/utils/serviceFilter';
 
 export interface State {
   services: Option[];
@@ -96,12 +98,20 @@ const mutations: MutationTree<State> = {
 // actions
 const actions: ActionTree<State, any> = {
   GET_SERVICES(context: { commit: Commit }, params: any): Promise<void> {
-    return graph
-    .query('queryServices')
-    .params(params)
-    .then((res: AxiosResponse) => {
-      context.commit(types.SET_SERVICES, res.data.data.services);
-    });
+    return Axios.get('/user/projects').then(res=>{
+      let response = res as any
+      let validProjects = response.projects || []
+      const prefixes = getPrefixes(validProjects)
+      // const prefixes = ['p2a#'] // test code
+      return graph
+      .query('queryServices')
+      .params(params)
+      .then((res: AxiosResponse) => {
+        let resultServices = getFilterProjectList(prefixes, res.data.data.services)
+        context.commit(types.SET_SERVICES, resultServices);
+        // context.commit(types.SET_SERVICES, res.data.data.services);
+      });
+    })
   },
   GET_INSTANCES(context: { commit: Commit }, params: any): Promise<void> {
     return graph
