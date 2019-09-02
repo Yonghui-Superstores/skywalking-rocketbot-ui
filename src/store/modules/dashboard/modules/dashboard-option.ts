@@ -120,14 +120,17 @@ const actions: ActionTree<State, any> = {
   GET_SERVICES(context: { commit: Commit, rootState: any  }, params: any) {
     return Axios.get('/user/projects').then(res=>{
       let response = res as any
-      let validProjects = response.projects || []
+      let validProjects = response.data.projects || []
+      console.log('111111111')
+      console.log('dashboard 返回的projects列表:', response, response.data, response.projects)
       const prefixes = getPrefixes(validProjects)
+      console.log('dashboard 返回的前缀:', prefixes)
       return graph.query('queryServices').params(params)
       .then((res: AxiosResponse) => {
         let resultServices = getFilterProjectList(prefixes, res.data.data.services)
         context.commit(types.SET_SERVICES, resultServices);        
         // context.commit(types.SET_SERVICES, res.data.data.services);
-      });      
+      });
     })
 
 

@@ -100,7 +100,7 @@ const actions: ActionTree<State, any> = {
   GET_SERVICES(context: { commit: Commit }, params: any): Promise<void> {
     return Axios.get('/user/projects').then(res=>{
       let response = res as any
-      let validProjects = response.projects || []
+      let validProjects = response.data.projects || []
       const prefixes = getPrefixes(validProjects)
       // const prefixes = ['p2a#'] // test code
       return graph

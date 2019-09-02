@@ -19,9 +19,13 @@ module.exports = {
   devServer: {
     proxy: {
       '/graphql': {
-        target: 'http://skywalking.daocloud.io:12800',
+        target: 'http://devtrace.itwork.yonghui.cn/',
         changeOrigin: true,
       },
+      '/user/projects': {
+        target: 'http://devtrace.itwork.yonghui.cn/',
+        changeOrigin: true,
+      }
     },
   },
   chainWebpack: config => {

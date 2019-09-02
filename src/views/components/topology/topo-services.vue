@@ -42,7 +42,7 @@ export default class TopologyServices extends Vue {
     Axios.get('/user/projects').then(res=>{
       console.log('res', res);
       let response = res as any
-      let validProjects = response.projects || []
+      let validProjects = response.data.projects || []
       const prefixes = getPrefixes(validProjects)
       // const filterServices = getFilterProjectList(prefixes, )
       Axios.post('/graphql', {
