@@ -41,6 +41,8 @@
         <a class="rk-btn r vm long tc" @click="handleCreate">{{$t('confirm')}}</a>
       </div>
     </a>
+  <RkFooter :propClass="'dashboard-time'" :position="'bottom'" ref="footer"/>
+    
   </nav>
 </template>
 
@@ -48,8 +50,13 @@
 import Vue from 'vue';
 import { Component, Prop, Model } from 'vue-property-decorator';
 import { State, Mutation, Action } from 'vuex-class';
+import RkFooter from '@/components/rk-footer.vue';
 
-@Component
+@Component({
+  components: {
+    RkFooter,
+  },
+})
 export default class ToolNav extends Vue {
   @Prop() private rocketGlobal: any;
   @Prop() private rocketComps: any;
@@ -77,10 +84,19 @@ export default class ToolNav extends Vue {
 </script>
 
 <style lang="scss" scoped>
+.dashboard-time.rk-footer {
+  position: absolute;
+  right: -20px;
+  top: 8px;
+  border: 0;
+  box-shadow: none;
+}
+
 .rk-dashboard-nav{
   box-shadow: 0 1px 0px rgba(0, 0, 0, 0.08);
   background-color: rgba(196, 200, 225, .2);
   padding: 0 15px;
+  position: relative;
 }
 .rk-dashboard-nav-sel{
   outline: none;
