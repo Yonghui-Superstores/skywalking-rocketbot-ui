@@ -23,6 +23,8 @@
       <input type="text" v-model="keyword" class="rk-alarm-tool-input" @input="handleRefresh(1)">
     </div>
     <RkPage class="mt-15" :currentSize="20" :currentPage="pageNum" @changePage="handlePage" :total="total"/>
+  <!-- <RkFooter :propClass="'alerm-time'" :position="'bottom'" ref="footer"/> -->
+
   </nav>
 </template>
 
@@ -32,7 +34,12 @@ import { Component, Prop, Model } from 'vue-property-decorator';
 import AlarmSelect from './alarm-select.vue';
 import { Action, Mutation } from 'vuex-class';
 
-@Component({components: {AlarmSelect}})
+import RkFooter from '@/components/rk-footer.vue';
+
+@Component({components: {
+  AlarmSelect,
+  RkFooter
+}})
 export default class AlarmTool extends Vue {
   @Mutation('SET_EVENTS') private SET_EVENTS: any;
   @Action('rocketAlarm/GET_ALARM') private GET_ALARM: any;
@@ -77,6 +84,12 @@ export default class AlarmTool extends Vue {
 </script>
 
 <style lang="scss">
+.rk-footer.alerm-time {
+  color: white;
+  // float: right;
+  position: absolute;
+  right: 0;
+}
 .rk-alarm-tool{
   border-bottom:1px solid #c1c5ca41;
   height: 52px;

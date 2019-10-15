@@ -47,6 +47,8 @@
         <span class="vm hide-xs ml-5">{{this.$t('alarm')}}</span>
       </router-link>
     </div>
+  <RkFooter v-if ="isTopo" :propClass="'topology-time'" :position="'bottom'" ref="footer"/>
+
     <div class="flex-h">
       <a class="rk-btn mr-5 sm" :class="auto?'blue':'ghost'" @click="handleAuto">
         <span class="vm">{{this.$t('auto')}}</span>
@@ -75,6 +77,7 @@
         </div>
       </a>      
   </div>
+
   </header>
 </template>
 
@@ -82,14 +85,27 @@
 import { Vue, Component } from 'vue-property-decorator';
 import { Action, State, Getter } from 'vuex-class';
 import timeFormat from '@/utils/timeFormat';
+import RkFooter from '@/components/rk-footer.vue';
 
-@Component
+@Component({
+  components: {
+    RkFooter,
+  },
+})
 export default class Header extends Vue {
   @Getter('duration') private duration: any;
   @Action('SET_DURATION') private SET_DURATION: any;
   private show: boolean = false;
   private auto: boolean = false;
   private timer: any = null;
+  get eventHub() {
+      return this.$store.getters.globalEventHub;
+  }
+  get isTopo() {
+    // return ['/topology', '/trace'].includes(this.$route.fullPath)
+    // return ['/topology'].includes(this.$route.fullPath)
+    return true
+  }
   private handleReload() {
     const gap = this.duration.end.getTime() - this.duration.start.getTime();
     const utcCopy: any = -(new Date().getTimezoneOffset() / 60);
@@ -97,6 +113,10 @@ export default class Header extends Vue {
       new Date(new Date().getTime() - gap),
       new Date(),
     ]);
+    this.eventHub.$emit('reloadNewFooter', [
+      new Date(new Date().getTime() - gap),
+      new Date(),
+    ])
   }
   private handleAuto() {
     this.auto = !this.auto;
@@ -121,6 +141,15 @@ export default class Header extends Vue {
 </script>
 
 <style lang="scss" scoped>
+.rk-footer.topology-time {
+  position: absolute;
+  right: 150px;
+  top: 11px;
+  // color: white;
+  color: #efeff1 !important;
+  box-shadow: none !important;
+  border-top: none;
+}
 .rk-header {
   flex-shrink: 0;
   justify-content: space-between;

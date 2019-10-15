@@ -19,12 +19,12 @@
 <div id="app">
   <RkHeader @reloadFooter="reloadFooter"/>
   <router-view></router-view>
-  <RkFooter ref="footer"/>
+  <RkFooter v-show="isDisplayFooter" ref="footer"/>
 </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import RkHeader from '@/components/rk-header.vue';
 import RkFooter from '@/components/rk-footer.vue';
 
@@ -39,5 +39,15 @@ export default class RouterIndex extends Vue {
      const footer: any = this.$refs.footer;
      footer.time = timeArray;
   }
+  private isDisplayFooter: boolean = false
+  // @Watch('$route.fullPath')
+  // public routeChange (val: any){
+  //   console.log('routerpath', val)
+  //   if (val == '/' ||  val == '/alerm' || val == '/topology') {
+  //     this.isDisplayFooter = false
+  //   } else {
+  //     this.isDisplayFooter = false
+  //   }
+  // }
 }
 </script>
