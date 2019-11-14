@@ -20,6 +20,8 @@ import axios, { AxiosPromise, AxiosResponse } from 'axios';
 import { cancelToken } from '@/utils/cancelToken';
 import { State } from './dashboard-data';
 import fragmentAll from '@/store/modules/dashboard/fragments';
+import getProjectIdFromCookie from '@/utils/cookie.js'
+
 // getters
 const getters = {
   Graphql(state: State): string {
@@ -27,6 +29,7 @@ const getters = {
     let variablesArr: any = [];
     state.tree[state.group].children[state.current].children.forEach((i: any) => {
       const globalArr: any = fragmentAll;
+      console.log(fragmentAll, '------------')
       if (globalArr[i.d]) {
         fragmentsArr = [...fragmentsArr, globalArr[i.d].fragment];
       }
@@ -35,7 +38,9 @@ const getters = {
       }
     });
     const fragments = Array.from(new Set(fragmentsArr)).join('');
+    console.error(fragments, 'abcdefg')
     const variables = Array.from(new Set(variablesArr)).join(',');
+    console.log(variables, 'opo')
     return  `query queryData(${variables}) {${fragments}}`;
   },
 };
@@ -43,6 +48,8 @@ const getters = {
 // actions
 const actions: ActionTree<State, any> = {
   GET_QUERY(context: { commit: Commit, dispatch: Dispatch, getters: any }, variablesData: any): AxiosPromise<void> {
+    let projectId = getProjectIdFromCookie()
+    variablesData.externalProjectId = projectId
     return axios.post('/graphql', {
       query: context.getters.Graphql,
       variables: variablesData,

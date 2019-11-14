@@ -15,37 +15,41 @@
  * limitations under the License.
  */
 
+ // TODO getAllServices(duration: Duration!,externalProjectId: String): [Service!]!
 export const Services = {
-  variable: '$duration: Duration!',
+  variable: '$duration: Duration!, $externalProjectId: String!',
   query: `
-    services: getAllServices(duration: $duration) {
+    services: getAllServices(duration: $duration, externalProjectId: $externalProjectId) {
       key: id
       label: name
     }
   `};
 
+// TODO  getAllDatabases(duration: Duration!,externalProjectId: String): [Database!]!
 export const Database = {
-  variable: '$duration: Duration!',
+  variable: '$duration: Duration!, $externalProjectId: String!',
   query: `
-    services: getAllDatabases(duration: $duration) {
+    services: getAllDatabases(duration: $duration, externalProjectId: $externalProjectId) {
       key: id
       label: name
     }
   `};
 
+// TODO  searchEndpoint(keyword: String!, serviceId: ID!, limit: Int!,externalProjectId: String): [Endpoint!]!
 export const Endpoints = {
-  variable: '$serviceId: ID!, $keyword: String!',
+  variable: '$serviceId: ID!, $keyword: String!, $externalProjectId: String!',
   query: `
-    getEndpoints: searchEndpoint(serviceId: $serviceId, keyword: $keyword, limit: 100) {
+    getEndpoints: searchEndpoint(serviceId: $serviceId, keyword: $keyword, limit: 100, externalProjectId: $externalProjectId) {
       key: id
       label: name
     }
 `};
 
+// TODO  getServiceInstances(duration: Duration!, serviceId: ID!,externalProjectId: String): [ServiceInstance!]!
 export const Instances = {
-  variable: '$serviceId: ID!, $duration: Duration!',
+  variable: '$serviceId: ID!, $duration: Duration!, $externalProjectId: String!',
   query: `
-    getServiceInstances(duration: $duration, serviceId: $serviceId) {
+    getServiceInstances(duration: $duration, serviceId: $serviceId, externalProjectId: $externalProjectId) {
       key: id
       label: name
       attributes {

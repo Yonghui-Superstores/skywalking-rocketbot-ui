@@ -21,7 +21,7 @@ import * as types from '../mutation-types';
 import Axios, { AxiosResponse } from 'axios';
 import { getPrefixes, getFilterProjectList } from '@/utils/serviceFilter';
 import graph from '@/graph';
-
+import getProjectIdFromCookie from '@/utils/cookie.js'
 
 export interface State {
   services: any;
@@ -121,10 +121,11 @@ const actions: ActionTree<State, any> = {
     return Axios.get('/user/projects').then(res=>{
       let response = res as any
       let validProjects = response.data.projects || []
-      console.log('111111111')
-      console.log('dashboard 返回的projects列表:', response, response.data, response.projects)
+      // console.log('dashboard 返回的projects列表:', response, response.data, response.projects)
       const prefixes = getPrefixes(validProjects)
-      console.log('dashboard 返回的前缀:', prefixes)
+      // console.log('dashboard 返回的前缀:', prefixes)
+      let projectId = getProjectIdFromCookie()
+      params.externalProjectId = projectId
       return graph.query('queryServices').params(params)
       .then((res: AxiosResponse) => {
         let resultServices = getFilterProjectList(prefixes, res.data.data.services)
@@ -139,23 +140,29 @@ const actions: ActionTree<State, any> = {
     if (!context.state.currentService.key) {
       return new Promise((resolve) => resolve());
     }
+    let projectId = getProjectIdFromCookie()
+    let params:any = {serviceId: context.state.currentService.key, keyword: ''}
+    params.externalProjectId = projectId   
     return graph
       .query('queryEndpoints')
-      .params({serviceId: context.state.currentService.key, keyword: ''})
+      .params(params)
       .then((res: AxiosResponse) => {
         context.commit(types.SET_ENDPOINTS, res.data.data.getEndpoints);
       });
   },
   GET_ENDPOINTS(context: { commit: Commit }, params: any) {
+    let projectId = getProjectIdFromCookie()
+    params.externalProjectId = projectId    
     return graph.query('queryEndpoints').params(params)
     .then((res: AxiosResponse) => {
       context.commit(types.SET_ENDPOINTS, res.data.data.endpoints);
     });
   },
   SEARCH_ENDPOINTS(context: { commit: Commit, state: any }, params: any) {
+    let projectId = getProjectIdFromCookie()
     return graph
       .query('queryEndpoints')
-      .params({serviceId: context.state.currentService.key, keyword: params})
+      .params({serviceId: context.state.currentService.key, keyword: params, externalProjectId: projectId})
       .then((res: AxiosResponse) => {
         context.commit(types.SET_SEARCH_ENDPOINTS, res.data.data.getEndpoints);
       });
@@ -164,6 +171,8 @@ const actions: ActionTree<State, any> = {
     if (!context.state.currentService.key) {
       return new Promise((resolve) => resolve());
     }
+    let projectId = getProjectIdFromCookie()
+    params.externalProjectId = projectId  
     return graph
       .query('queryInstances')
       .params({serviceId: context.state.currentService.key, ...params})
@@ -172,6 +181,8 @@ const actions: ActionTree<State, any> = {
       });
   },
   GET_INSTANCES(context: { commit: Commit }, params: any) {
+    let projectId = getProjectIdFromCookie()
+    params.externalProjectId = projectId  
     return graph
     .query('queryInstances')
     .params(params)
@@ -180,6 +191,8 @@ const actions: ActionTree<State, any> = {
     });
   },
   GET_DATABASES(context: { commit: Commit, rootState: any  }, params: any) {
+    let projectId = getProjectIdFromCookie()
+    params.externalProjectId = projectId
     return graph
       .query('queryDatabases')
       .params(params)

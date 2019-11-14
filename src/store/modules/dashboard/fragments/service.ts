@@ -76,15 +76,17 @@ export const servicePercent =  {
   }, duration: $duration) { values { value } }`,
 };
 
+//TODO  getEndpointTopN(serviceId: ID!, name: String!, topN: Int!, duration: Duration!, order: Order!,externalProjectId: String): [TopNEntity!]!
 export const serviceSlowEndpoint =  {
-  variable: ['$serviceId: ID!', '$duration: Duration!'],
+  variable: ['$serviceId: ID!', '$duration: Duration!', '$externalProjectId: String!'],
   fragment: `
   serviceSlowEndpoint: getEndpointTopN(
     serviceId: $serviceId
     duration: $duration
     name: "endpoint_avg",
     topN: 10,
-    order: DES
+    order: DES,
+    externalProjectId: $externalProjectId
   ) {
     key: id
     label: name
@@ -92,15 +94,17 @@ export const serviceSlowEndpoint =  {
   }`,
 };
 
+// TODO  getServiceInstanceTopN(serviceId: ID!, name: String!, topN: Int!, duration: Duration!, order: Order!,externalProjectId: String): [TopNEntity!]!
 export const serviceInstanceThroughput =  {
-  variable: ['$serviceId: ID!', '$duration: Duration!'],
+  variable: ['$serviceId: ID!', '$duration: Duration!', '$externalProjectId: String!'],
   fragment: `
   serviceInstanceThroughput: getServiceInstanceTopN(
     serviceId: $serviceId
     duration: $duration
     name: "service_instance_cpm",
     topN: 10,
-    order: DES
+    order: DES,
+    externalProjectId: $externalProjectId
   ) {
     key: id
     label: name

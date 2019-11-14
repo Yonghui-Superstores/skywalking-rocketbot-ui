@@ -30,10 +30,11 @@ export const Traces = {
     total
   }`};
 
+// TODO  getServiceInstances(duration: Duration!, serviceId: ID!,externalProjectId: String): [ServiceInstance!]!
 export const ServiceInstanceOption = {
-  variable: '$duration: Duration!, $serviceId: ID!',
+  variable: '$duration: Duration!, $serviceId: ID!, $externalProjectId: String!',
   query: `
-    instanceId: getServiceInstances(duration: $duration, serviceId: $serviceId) {
+    instanceId: getServiceInstances(duration: $duration, serviceId: $serviceId, externalProjectId: $externalProjectId) {
       key: id
       label: name
     }`};

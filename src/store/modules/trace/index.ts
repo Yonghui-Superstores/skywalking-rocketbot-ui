@@ -23,6 +23,8 @@ import * as types from '@/store/mutation-types';
 import { Option } from '@/types/global';
 import { Trace, Span } from '@/types/topo';
 import { getPrefixes, getFilterProjectList } from '@/utils/serviceFilter';
+import getProjectIdFromCookie from '@/utils/cookie.js'
+
 
 export interface State {
   services: Option[];
@@ -103,6 +105,10 @@ const actions: ActionTree<State, any> = {
       let validProjects = response.data.projects || []
       const prefixes = getPrefixes(validProjects)
       // const prefixes = ['p2a#'] // test code
+
+      let projectId = getProjectIdFromCookie()
+      params.externalProjectId = projectId 
+
       return graph
       .query('queryServices')
       .params(params)
@@ -114,6 +120,9 @@ const actions: ActionTree<State, any> = {
     })
   },
   GET_INSTANCES(context: { commit: Commit }, params: any): Promise<void> {
+
+    let projectId = getProjectIdFromCookie()
+    params.externalProjectId = projectId 
     return graph
     .query('queryServiceInstance')
     .params(params)

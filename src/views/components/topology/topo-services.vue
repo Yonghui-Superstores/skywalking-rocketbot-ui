@@ -29,6 +29,7 @@ import { State, Getter, Action } from 'vuex-class';
 import Axios, { AxiosResponse } from 'axios';
 import TopoSelect from './topo-select.vue';
 import { getPrefixes, getFilterProjectList } from '@/utils/serviceFilter';
+import getProjectIdFromCookie from '@/utils/cookie.js'
 
 
 
@@ -44,17 +45,20 @@ export default class TopologyServices extends Vue {
       let response = res as any
       let validProjects = response.data.projects || []
       const prefixes = getPrefixes(validProjects)
-      // const filterServices = getFilterProjectList(prefixes, )
+      // TODO getAllServices(duration: Duration!,externalProjectId: String): [Service!]!
+      let projectId = getProjectIdFromCookie()
+
       Axios.post('/graphql', {
         query: `
-        query queryServices($duration: Duration!) {
-          services: getAllServices(duration: $duration) {
+        query queryServices($duration: Duration!, $externalProjectId: String!) {
+          services: getAllServices(duration: $duration, externalProjectId: $externalProjectId) {
             key: id
             label: name
           }
         }`,
         variables: {
           duration: this.durationTime,
+          externalProjectId: projectId
         }}).then((res: AxiosResponse) => {
           // this.services = res.data.data.services
           let resultServices = getFilterProjectList(prefixes, res.data.data.services)
