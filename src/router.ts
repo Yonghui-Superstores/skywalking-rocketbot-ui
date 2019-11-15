@@ -63,6 +63,10 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
+  if (to.path === '/' && to.query.externalProjectId) {
+    let proId: string = <string>to.query.externalProjectId
+    window.localStorage.setItem('externalProjectId', proId)
+  }
   const token = window.localStorage.getItem('skywalking-authority');
   if (window.axiosCancel.length !== 0) {
     for (const func of  window.axiosCancel) {
