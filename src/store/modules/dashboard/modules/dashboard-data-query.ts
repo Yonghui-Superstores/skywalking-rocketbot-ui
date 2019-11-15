@@ -29,7 +29,6 @@ const getters = {
     let variablesArr: any = [];
     state.tree[state.group].children[state.current].children.forEach((i: any) => {
       const globalArr: any = fragmentAll;
-      console.log(fragmentAll, '------------')
       if (globalArr[i.d]) {
         fragmentsArr = [...fragmentsArr, globalArr[i.d].fragment];
       }
@@ -38,9 +37,7 @@ const getters = {
       }
     });
     const fragments = Array.from(new Set(fragmentsArr)).join('');
-    console.error(fragments, 'abcdefg')
     const variables = Array.from(new Set(variablesArr)).join(',');
-    console.log(variables, 'opo')
     return  `query queryData(${variables}) {${fragments}}`;
   },
 };
