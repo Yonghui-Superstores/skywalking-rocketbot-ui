@@ -25,11 +25,21 @@ export const globalBrief =  {
   }`,
 };
 
+// export const globalHeatmap =  {
+//   variable: ['$duration: Duration!'],
+//   fragment: `
+//   globalHeatmap: getThermodynamic(duration: $duration, metric: {
+//     name: "all_heatmap"
+//   }) {
+//     nodes responseTimeStep: axisYStep
+//   }`,
+// };
+
 export const globalHeatmap =  {
   variable: ['$duration: Duration!'],
   fragment: `
   globalHeatmap: getThermodynamic(duration: $duration, metric: {
-    name: "all_heatmap"
+    name: "project_heatmap"
   }) {
     nodes responseTimeStep: axisYStep
   }`,
