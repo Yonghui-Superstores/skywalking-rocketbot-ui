@@ -36,9 +36,9 @@ export const globalBrief =  {
 // };
 
 export const globalHeatmap =  {
-  variable: ['$duration: Duration!'],
+  variable: ['$duration: Duration!', '$externalProjectId: String!'],
   fragment: `
-  globalHeatmap: getThermodynamic(duration: $duration, metric: {
+  globalHeatmap: getThermodynamic(duration: $duration, externalProjectId: $externalProjectId, metric: {
     name: "project_heatmap"
   }) {
     nodes responseTimeStep: axisYStep
