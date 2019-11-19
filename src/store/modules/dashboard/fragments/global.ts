@@ -38,8 +38,9 @@ export const globalBrief =  {
 export const globalHeatmap =  {
   variable: ['$duration: Duration!', '$externalProjectId: String!'],
   fragment: `
-  globalHeatmap: getThermodynamic(duration: $duration, externalProjectId: $externalProjectId, metric: {
-    name: "project_heatmap"
+  globalHeatmap: getThermodynamic(duration: $duration, metric: {
+    name: "project_heatmap",
+    externalProjectId: $externalProjectId
   }) {
     nodes responseTimeStep: axisYStep
   }`,
@@ -66,22 +67,27 @@ export const globalHeatmap =  {
 // };
 
 export const globalPercent =  {
-  variable: ['$duration: Duration!'],
+  variable: ['$duration: Duration!', '$externalProjectId: String!'],
   fragment: `
   globalP99: getLinearIntValues(metric: {
-    name: "project_p99"
+    name: "project_p99",
+    externalProjectId: $externalProjectId
   }, duration: $duration) { values { value } }
   globalP95: getLinearIntValues(metric: {
-    name: "project_p95"
+    name: "project_p95",
+    externalProjectId: $externalProjectId
   }, duration: $duration) { values { value } }
   globalP90: getLinearIntValues(metric: {
-    name: "project_p90"
+    name: "project_p90",
+    externalProjectId: $externalProjectId
   }, duration: $duration) { values { value } }
   globalP75: getLinearIntValues(metric: {
-    name: "project_p75"
+    name: "project_p75",
+    externalProjectId: $externalProjectId
   }, duration: $duration) { values { value } }
   globalP50: getLinearIntValues(metric: {
-    name: "project_p50"
+    name: "project_p50",
+    externalProjectId: $externalProjectId
   }, duration: $duration) { values { value } }`,
 };
 
