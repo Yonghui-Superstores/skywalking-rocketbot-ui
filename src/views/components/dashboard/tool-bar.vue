@@ -24,9 +24,9 @@
       <div class="rk-dashboard-bar-reload">
         <svg class="icon lg vm cp rk-btn ghost" @click="handleOption"><use xlink:href="#retry"></use></svg>
       </div>
-      <ToolBarSelect @onChoose="selectService" :title="this.$t('currentService')" :current="stateDashboard.currentService" :data="stateDashboard.services" icon="package"/>
-      <ToolBarEndpointSelect @onChoose="selectEndpoint" :title="this.$t('currentEndpoint')" :current="stateDashboard.currentEndpoint" :data="stateDashboard.endpoints" icon="code"/>
-      <ToolBarSelect @onChoose="selectInstance" :title="this.$t('currentInstance')" :current="stateDashboard.currentInstance" :data="stateDashboard.instances" icon="disk"/>
+      <ToolBarSelect :disabled="isDisableService" @onChoose="selectService" :title="this.$t('currentService')" :current="stateDashboard.currentService" :data="stateDashboard.services" icon="package"/>
+      <ToolBarEndpointSelect :disabled="isDisableEndpoint" @onChoose="selectEndpoint" :title="this.$t('currentEndpoint')" :current="stateDashboard.currentEndpoint" :data="stateDashboard.endpoints" icon="code"/>
+      <ToolBarSelect :disabled="isDisableInstance" @onChoose="selectInstance" :title="this.$t('currentInstance')" :current="stateDashboard.currentInstance" :data="stateDashboard.instances" icon="disk"/>
     </div>
     <div class="rk-dashboard-bar flex-h" v-if="compType === 'proxy'">
       <div class="rk-dashboard-bar-reload">
@@ -53,9 +53,18 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import ToolBarSelect from './tool-bar-select.vue';
 import ToolBarEndpointSelect from './tool-bar-select-endpoint.vue';
 import { State, Action, Mutation } from 'vuex-class';
+
+var map = {
+  'Service': 1,
+  'Global': 0,
+  'Endpoint': 2,
+  'Instance': 3
+}
+
 @Component({components: {ToolBarSelect, ToolBarEndpointSelect}})
 export default class ToolBar extends Vue {
   @Prop() private compType!: any;
+  @Prop() private compCount!: any;
   @Prop() private stateDashboard!: any;
   @Prop() private rocketGlobal!: any;
   @Prop() private rocketComps!: any;
@@ -73,6 +82,19 @@ export default class ToolBar extends Vue {
     if (!current.length) { return 0; }
     return current[current.length - 1].k;
   }
+  get currentCompIndex() {
+    return this.compCount
+  }
+  get isDisableService(){
+    console.log(this.compCount, this.currentCompIndex, map.Global, this.currentCompIndex == map.Global, 'Hello Wherever you are')
+    return [map.Global].includes(this.currentCompIndex)
+  }
+  get isDisableEndpoint(){
+    return [map.Global, map.Service].includes(this.currentCompIndex)
+  }
+  get isDisableInstance(){
+    return [map.Global, map.Service, map.Endpoint].includes(this.currentCompIndex)
+  }    
   private handleOption() {
     return this.MIXHANDLE_GET_OPTION({compType: this.compType, duration: this.durationTime});
   }
@@ -87,6 +109,9 @@ export default class ToolBar extends Vue {
   }
   private selectInstance(i: any) {
     this.SELECT_INSTANCE({instance: i, duration: this.durationTime});
+  }
+  private mounted (){
+    console.log(this.compType, '----->>>')
   }
 }
 </script>

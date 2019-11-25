@@ -18,7 +18,7 @@
 <template>
   <div class="flex-v wrapper" style="flex-grow:1;">
     <ToolGroup :rocketGlobal="rocketGlobal" :rocketComps="rocketComps"/>
-    <ToolBar :rocketGlobal="rocketGlobal" :compType="compType" :durationTime="durationTime"  :stateDashboard='stateDashboardOption'/>
+    <ToolBar :rocketGlobal="rocketGlobal" :compCount="rocketComps.current" :compType="compType" :durationTime="durationTime"  :stateDashboard='stateDashboardOption'/>
     <ToolNav :rocketGlobal="rocketGlobal" :rocketComps="rocketComps"/>
     <div class="dashboard-container clear">
       <DashboardItem
