@@ -16,7 +16,13 @@
  */
 
 <template>
-<div class="rk-alarm-table clear">
+<div class="rk-alarm-table clear"  style="position: relative;">
+    <div class="rk-trace-t-loading" style="position: absolute; left:0; top:0" v-show="true">
+      <svg class="icon loading">
+        <use xlink:href="#spinner"></use>
+      </svg>
+    </div>
+
   <div v-for="(i,index) in data" :key="index" class="mb-10 clear">
     <div class="g-sm-3 grey sm hide-xs rk-alarm-time-line tc">{{parseInt(i.startTime) | dateformat}}</div>
     <div class="rk-alarm-table-i g-sm-9">

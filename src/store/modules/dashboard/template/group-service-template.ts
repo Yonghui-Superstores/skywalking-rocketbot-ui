@@ -29,11 +29,11 @@ export default [
     children: serviceTemp,
   },
   {
-    name: 'Endpoint',
-    children: endpointTemp,
-  },
-  {
     name: 'Instance',
     children: instanceTemp,
   },
+  {
+    name: 'Endpoint',
+    children: endpointTemp,
+  },  
 ];

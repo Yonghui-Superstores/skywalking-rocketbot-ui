@@ -22,7 +22,8 @@
         <use :xlink:href="`#${icon}`"></use>
       </svg>
       <div class="mr-15 rk-dashboard-bar-i-text">
-        <div class="sm grey">{{title}}</div>
+        <!-- <div class="sm grey">{{title}}</div> -->
+        <div class="sm">{{title}}</div>
         <div class="ell" v-tooltip:right.ellipsis="current.label || ''">{{current.label}}</div>
       </div>
       <svg class="icon lg trans" :style="`transform: rotate(${visible?180:0}deg)`">
@@ -80,6 +81,7 @@ export default class ToolBarSelect extends Vue {
 <style lang="scss" scoped>
 .disable-select-service {
   cursor: not-allowed;
+  color: gray;
 }
 .rk-dashboard-bar-select {
   position: relative;
