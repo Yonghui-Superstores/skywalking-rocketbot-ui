@@ -93,5 +93,16 @@ export default class Heatmap extends Vue {
       ],
     };
   }
+  private mounted() {
+    const chart: any = this.$refs.chart;
+    if (this.title == 'Global Heatmap') {
+      chart.myChart.on('click', (params: any) => {
+        let data = params.data
+        if (data[2] > 0) {
+          this.$router.push('/trace');
+        }
+      })
+    }
+  }
 }
 </script>
