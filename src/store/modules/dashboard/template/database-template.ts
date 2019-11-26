@@ -16,20 +16,20 @@
  */
 
 export default [
-  {
-    o: 'Global',
-    d: 'globalBrief',
-    c: 'ChartBrief',
-    t: 'Global Brief',
-    w: 3,
-    h: '250',
-  },
+  // {
+  //   o: 'Global',
+  //   d: 'globalBrief',
+  //   c: 'ChartBrief',
+  //   t: 'Global Brief',
+  //   w: 3,
+  //   h: '250',
+  // },
   {
     o: 'Database',
     d: 'databaseResponseTime',
     c: 'ChartLine',
     t: 'Database ResponseTime',
-    w: 3,
+    w: 4,
     h: '250',
   },
   {
@@ -37,7 +37,7 @@ export default [
     d: 'databaseThroughput',
     c: 'ChartLine',
     t: 'Database Throughput',
-    w: 3,
+    w: 4,
     h: '250',
   },
   {
@@ -45,23 +45,23 @@ export default [
     d: 'databaseSLA',
     c: 'ChartBar',
     t: 'Database SLA',
-    w: 3,
+    w: 4,
     h: '250',
   },
-  {
-    o: 'Global',
-    d: 'globalPercent',
-    c: 'ChartLine',
-    t: 'Global Percent Response',
-    w: 3,
-    h: '250',
-  },
+  // {
+  //   o: 'Global',
+  //   d: 'globalPercent',
+  //   c: 'ChartLine',
+  //   t: 'Global Percent Response',
+  //   w: 3,
+  //   h: '250',
+  // },
   {
     o: 'Database',
     d: 'databasePercent',
     c: 'ChartLine',
     t: 'Database Percent',
-    w: 3,
+    w: 4,
     h: '250',
   },
   {
@@ -69,7 +69,7 @@ export default [
     d: 'databaseTopNRecords',
     c: 'ChartSlow',
     t: 'Database TopN Records',
-    w: '6',
+    w: 4,
     h: '250',
   },
 ];

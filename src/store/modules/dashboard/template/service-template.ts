@@ -16,14 +16,14 @@
  */
 
 export default [
-  {
-    o: 'Global',
-    d: 'globalBrief',
-    c: 'ChartBrief',
-    t: 'Global Brief',
-    w: 3,
-    h: 250,
-  },
+  // {
+  //   o: 'Global',
+  //   d: 'globalBrief',
+  //   c: 'ChartBrief',
+  //   t: 'Global Brief',
+  //   w: 3,
+  //   h: 250,
+  // },
   {
     o: 'Service',
     d: 'serviceResponseTime',
@@ -72,14 +72,14 @@ export default [
     w: 3,
     h: 170,
   },
-  {
-    o: 'Global',
-    d: 'globalPercent',
-    c: 'ChartLine',
-    t: 'Global Percent Response',
-    w: 3,
-    h: 250,
-  },
+  // {
+  //   o: 'Global',
+  //   d: 'globalPercent',
+  //   c: 'ChartLine',
+  //   t: 'Global Percent Response',
+  //   w: 3,
+  //   h: 250,
+  // },
   {
     o: 'Service',
     d: 'servicePercent',

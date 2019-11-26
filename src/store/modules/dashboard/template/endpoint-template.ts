@@ -16,14 +16,14 @@
  */
 
 export default [
-  {
-    o: 'Global',
-    d: 'globalBrief',
-    c: 'ChartBrief',
-    t: 'Global Brief',
-    w: 3,
-    h: 250,
-  },
+  // {
+  //   o: 'Global',
+  //   d: 'globalBrief',
+  //   c: 'ChartBrief',
+  //   t: 'Global Brief',
+  //   w: 3,
+  //   h: 250,
+  // },
   {
     o: 'ServiceEndpoint',
     d: 'endpointResponseTime',
@@ -72,14 +72,14 @@ export default [
     w: 3,
     h: 170,
   },
-  {
-    o: 'Global',
-    d: 'globalPercent',
-    c: 'ChartLine',
-    t: 'Global Percent Response',
-    w: 3,
-    h: 250,
-  },
+  // {
+  //   o: 'Global',
+  //   d: 'globalPercent',
+  //   c: 'ChartLine',
+  //   t: 'Global Percent Response',
+  //   w: 3,
+  //   h: 250,
+  // },
   {
     o: 'ServiceEndpoint',
     d: 'endpointPercent',
@@ -96,14 +96,14 @@ export default [
     w: 6,
     h: 250,
   },
-  {
-    o: 'Global',
-    d: 'globalSlow',
-    c: 'ChartSlow',
-    t: 'Global Top Slow Endpoint',
-    w: 6,
-    h: 250,
-  },
+  // {
+  //   o: 'Global',
+  //   d: 'globalSlow',
+  //   c: 'ChartSlow',
+  //   t: 'Global Top Slow Endpoint',
+  //   w: 6,
+  //   h: 250,
+  // },
   {
     o: 'ServiceEndpoint',
     d: 'endpointTraces',
