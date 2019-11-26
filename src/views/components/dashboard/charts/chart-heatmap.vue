@@ -22,14 +22,18 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
+import { State, Action, Mutation } from 'vuex-class';
 import 'echarts/lib/component/visualMap';
 import moment from 'dayjs';
+import timeFormat from '@/utils/timeFormat';
+
 @Component
 export default class Heatmap extends Vue {
   @Prop() private title!: string;
   @Prop() private type!: string;
   @Prop() private data!: any;
   @Prop() private intervalTime!: any;
+  @Action('SET_DURATION') private SET_DURATION: any;
   public resize() {
     const chart: any = this.$refs.chart;
     chart.myChart.resize();
@@ -99,10 +103,26 @@ export default class Heatmap extends Vue {
       chart.myChart.on('click', (params: any) => {
         let data = params.data
         if (data[2] > 0) {
-          this.$router.push('/trace');
+          console.log(params, 'kevinnnn')
+          let yIndex = data[1]
+          let min = (yIndex * 100) + ''
+          let max = (Number(min) + 100) + ''
+          
+          this.$router.push({
+            path: '/trace',
+            query: {
+              min: min,
+              max: max,
+              // time: this.formatTimeStr(params.name)
+            }
+          });
         }
       })
     }
+  }
+  private formatTimeStr(str: string) {
+    let timeArr = str.split(/\n/)
+    return new Date().getFullYear()+'-'+timeArr[1]+ ' ' + timeArr[0] + ':00'
   }
 }
 </script>

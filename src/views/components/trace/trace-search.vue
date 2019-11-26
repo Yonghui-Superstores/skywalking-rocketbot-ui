@@ -24,6 +24,7 @@
           <use xlink:href="#arrow-down"></use>
         </svg>
       </a>
+      <!-- 搜索按钮 -->
       <a class="rk-trace-search-btn bg-blue r mr-10" @click="getTraceList">
         <svg class="icon mr-5 vm">
           <use xlink:href="#search"></use>
@@ -82,6 +83,7 @@ export default class TraceTool extends Vue {
   @Action('rocketTrace/GET_TRACELIST') private GET_TRACELIST: any;
   @Action('rocketTrace/SET_TRACE_FORM') private SET_TRACE_FORM: any;
 
+  private heatMapTime: any;
   private time: Date[] = [new Date() , new Date()];
   private status: boolean = true;
   private maxTraceDuration: string = '';
@@ -173,7 +175,7 @@ export default class TraceTool extends Vue {
     // this.GET_TRACELIST();
   }
   private created() {
-    const {endpoint, service, serviceKey, instance, instanceKey} = this.$route.query;
+    const {endpoint, service, serviceKey, instance, instanceKey, min, max, time} = this.$route.query;
     if (endpoint !== undefined) {
       this.endpointName = endpoint.toString().trim();
     }
@@ -183,8 +185,20 @@ export default class TraceTool extends Vue {
     // if (instance !== undefined && instanceKey !== undefined) {
     //   this.instance = {label: instance.toString(), key: instanceKey.toString()};
     // }
+    if (min != undefined) {
+      this.minTraceDuration = min + ''
+    }
+    if (max != undefined) {
+      this.maxTraceDuration = max + ''
+    }
+    if (time != undefined) {
+      // 如果url里面有time，将这个值赋值给heatMapTime 然后赋值给this.time
+      this.heatMapTime = time
+      // TODO 格式化这个heatMapTime 然后赋值给this.time
+    }
   }
   private mounted() {
+    // 这里的this.time 如果有数据来自于url，就从url里面获取否则来自于全局的这个
     this.time = [this.rocketbotGlobal.durationRow.start, this.rocketbotGlobal.durationRow.end];
     this.getTraceList();
   }
