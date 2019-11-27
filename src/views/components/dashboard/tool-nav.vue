@@ -18,7 +18,11 @@
 <template>
   <nav class="rk-dashboard-nav">
     <span v-for="(i, index) in rocketComps.tree[rocketComps.group].children" :key="index" class="mr-20">
-      <a class="rk-dashboard-nav-i b" @click="SET_CURRENT_COMPS(index);RUN_EVENTS({})" :class="{'active': rocketComps.current == index}">{{i.name}}</a>
+      <!-- <a class="rk-dashboard-nav-i b" @click="SET_CURRENT_COMPS(index);RUN_EVENTS({})" :class="{'active': rocketComps.current == index}">{{i.name}}</a> -->
+      <a class="rk-dashboard-nav-i b" @click="SET_CURRENT_COMPS(index);RUN_EVENTS({})" :class="{'active': rocketComps.current == index}">
+        {{$t(i.name.toLowerCase())}}
+      </a>
+
       <svg v-if="rocketGlobal.edit && rocketComps.current !== index" class="ml-5 icon cp red vm"  @click="DELETE_COMPS_TREE(index)">
         <use xlink:href="#file-deletion"></use>
       </svg>
