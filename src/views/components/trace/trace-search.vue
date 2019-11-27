@@ -176,16 +176,14 @@ export default class TraceTool extends Vue {
     // this.GET_TRACELIST();
   }
   private created() {
-    const {endpoint, service, serviceKey, instance, instanceKey, min, max, start, end} = this.$route.query;
+    const {endpoint, service, serviceKey, instance, instanceKey, min, max, start, end, tId} = this.$route.query;
     if (endpoint !== undefined) {
       this.endpointName = endpoint.toString().trim();
     }
     if (service !== undefined && serviceKey !== undefined) {
       this.service = {label: service.toString(), key: serviceKey.toString()};
     }
-    // if (instance !== undefined && instanceKey !== undefined) {
-    //   this.instance = {label: instance.toString(), key: instanceKey.toString()};
-    // }
+    // gloabl heatmap 跳转
     if (min != undefined) {
       this.minTraceDuration = min + ''
     }
@@ -197,6 +195,11 @@ export default class TraceTool extends Vue {
     } 
     if (end != undefined) {
       this.end = end
+    }
+
+    // 端点 slow endpoint跳转
+    if (tId != undefined) {
+      this.traceId = <string>tId
     }
   }
   private mounted() {

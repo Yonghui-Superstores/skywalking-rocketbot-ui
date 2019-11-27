@@ -104,12 +104,13 @@ export default [
   //   w: 6,
   //   h: 250,
   // },
-  // {
-  //   o: 'ServiceEndpoint',
-  //   d: 'endpointTraces',
-  //   c: 'ChartTrace',
-  //   t: 'Endpoint Slow',
-  //   w: 4,
-  //   h: 350,
-  // },
+  {
+    o: 'ServiceEndpoint',
+    d: 'endpointTraces',
+    // c: 'ChartTrace',
+    c: 'ChartSlow',
+    t: 'Endpoint Slow',
+    w: 4,
+    h: 350,
+  },
 ];
