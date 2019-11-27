@@ -19,7 +19,7 @@
   <div class="flex-v wrapper" style="flex-grow:1;">
     <ToolGroup :rocketGlobal="rocketGlobal" :rocketComps="rocketComps"/>
     <ToolBar :rocketGlobal="rocketGlobal" :compCount="rocketComps.current" :compType="compType" :durationTime="durationTime"  :stateDashboard='stateDashboardOption'/>
-    <ToolNav :rocketGlobal="rocketGlobal" :rocketComps="rocketComps"/>
+    <ToolNav v-if="this.rocketComps.group == 0" :rocketGlobal="rocketGlobal" :rocketComps="rocketComps"/>
     <div class="dashboard-container clear">
       <DashboardItem
       v-for="(i, index) in rocketComps.tree[this.rocketComps.group]

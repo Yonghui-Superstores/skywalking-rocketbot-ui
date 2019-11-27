@@ -83,7 +83,8 @@ export default class TraceTool extends Vue {
   @Action('rocketTrace/GET_TRACELIST') private GET_TRACELIST: any;
   @Action('rocketTrace/SET_TRACE_FORM') private SET_TRACE_FORM: any;
 
-  private heatMapTime: any;
+  private start: any; // 首页heatmap传递过来的参数
+  private end: any; // 首页heatmap传递过来的参数
   private time: Date[] = [new Date() , new Date()];
   private status: boolean = true;
   private maxTraceDuration: string = '';
@@ -175,7 +176,7 @@ export default class TraceTool extends Vue {
     // this.GET_TRACELIST();
   }
   private created() {
-    const {endpoint, service, serviceKey, instance, instanceKey, min, max, time} = this.$route.query;
+    const {endpoint, service, serviceKey, instance, instanceKey, min, max, start, end} = this.$route.query;
     if (endpoint !== undefined) {
       this.endpointName = endpoint.toString().trim();
     }
@@ -191,15 +192,19 @@ export default class TraceTool extends Vue {
     if (max != undefined) {
       this.maxTraceDuration = max + ''
     }
-    if (time != undefined) {
-      // 如果url里面有time，将这个值赋值给heatMapTime 然后赋值给this.time
-      this.heatMapTime = time
-      // TODO 格式化这个heatMapTime 然后赋值给this.time
+    if (start != undefined) {
+      this.start = start
+    } 
+    if (end != undefined) {
+      this.end = end
     }
   }
   private mounted() {
     // 这里的this.time 如果有数据来自于url，就从url里面获取否则来自于全局的这个
     this.time = [this.rocketbotGlobal.durationRow.start, this.rocketbotGlobal.durationRow.end];
+    if (this.start && this.end) {
+      this.time = [new Date(this.start), new Date(this.end)]
+    }
     this.getTraceList();
   }
 }

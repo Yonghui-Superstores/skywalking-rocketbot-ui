@@ -22,7 +22,7 @@ export default [
     c: 'ChartInstance',
     t: 'Instance Info',
     w: 3,
-    h: '250',
+    h: '350',
   },
   {
     o: 'ServiceInstance',
@@ -54,7 +54,7 @@ export default [
     c: 'ChartLine',
     t: 'Instance ResponseTime',
     w: 3,
-    h: '170',
+    h: '270',
   },
   {
     o: 'ServiceInstance',
@@ -62,7 +62,7 @@ export default [
     c: 'ChartLine',
     t: 'Instance Throughput',
     w: 3,
-    h: '170',
+    h: '270',
   },
   {
     o: 'ServiceInstance',
@@ -70,7 +70,7 @@ export default [
     c: 'ChartLine',
     t: 'Instance SLA',
     w: 3,
-    h: '170',
+    h: '270',
   },
   {
     o: 'ServiceInstance',
@@ -78,7 +78,7 @@ export default [
     c: 'ChartLine',
     t: 'JVM Heap (MB)',
     w: 3,
-    h: 250,
+    h: 350,
   },
   {
     o: 'ServiceInstance',
@@ -86,7 +86,7 @@ export default [
     c: 'ChartLine',
     t: 'JVM Non-Heap (MB)',
     w: 3,
-    h: 250,
+    h: 350,
   },
   {
     o: 'ServiceInstance',
@@ -94,7 +94,7 @@ export default [
     c: 'ChartLine',
     t: 'JVM GC (ms)',
     w: 3,
-    h: 250,
+    h: 350,
   },
   {
     o: 'ServiceInstance',
@@ -102,7 +102,7 @@ export default [
     c: 'ChartCount',
     t: 'JVM GC Count',
     w: 3,
-    h: 250,
+    h: 350,
   },
   {
     o: 'ServiceInstance',
@@ -110,7 +110,7 @@ export default [
     c: 'ChartLine',
     t: 'JVM CPU (%)',
     w: 3,
-    h: 250,
+    h: 350,
   },
   // {
   //   o: 'ServiceInstance',

@@ -25,8 +25,8 @@
         <svg class="icon lg vm cp rk-btn ghost" @click="handleOption"><use xlink:href="#retry"></use></svg>
       </div>
       <ToolBarSelect :disabled="isDisableService" @onChoose="selectService" :title="this.$t('currentService')" :current="stateDashboard.currentService" :data="stateDashboard.services" icon="package"/>
-      <ToolBarEndpointSelect :disabled="isDisableEndpoint" @onChoose="selectEndpoint" :title="this.$t('currentEndpoint')" :current="stateDashboard.currentEndpoint" :data="stateDashboard.endpoints" icon="code"/>
       <ToolBarSelect :disabled="isDisableInstance" @onChoose="selectInstance" :title="this.$t('currentInstance')" :current="stateDashboard.currentInstance" :data="stateDashboard.instances" icon="disk"/>
+      <ToolBarEndpointSelect :disabled="isDisableEndpoint" @onChoose="selectEndpoint" :title="this.$t('currentEndpoint')" :current="stateDashboard.currentEndpoint" :data="stateDashboard.endpoints" icon="code"/>
     </div>
     <div class="rk-dashboard-bar flex-h" v-if="compType === 'proxy'">
       <div class="rk-dashboard-bar-reload">
@@ -86,14 +86,15 @@ export default class ToolBar extends Vue {
     return this.compCount
   }
   get isDisableService(){
-    console.log(this.compCount, this.currentCompIndex, map.Global, this.currentCompIndex == map.Global, 'Hello Wherever you are')
     return [map.Global].includes(this.currentCompIndex)
   }
   get isDisableEndpoint(){
-    return [map.Global, map.Service].includes(this.currentCompIndex)
+    // return [map.Global, map.Service].includes(this.currentCompIndex)
+    return [map.Global, map.Service, map.Endpoint].includes(this.currentCompIndex)
   }
   get isDisableInstance(){
-    return [map.Global, map.Service, map.Endpoint].includes(this.currentCompIndex)
+    // return [map.Global, map.Service, map.Endpoint].includes(this.currentCompIndex)
+    return [map.Global, map.Service].includes(this.currentCompIndex)
   }    
   private handleOption() {
     return this.MIXHANDLE_GET_OPTION({compType: this.compType, duration: this.durationTime});
@@ -111,7 +112,6 @@ export default class ToolBar extends Vue {
     this.SELECT_INSTANCE({instance: i, duration: this.durationTime});
   }
   private mounted (){
-    console.log(this.compType, '----->>>')
   }
 }
 </script>

@@ -33,7 +33,9 @@ export default class Heatmap extends Vue {
   @Prop() private type!: string;
   @Prop() private data!: any;
   @Prop() private intervalTime!: any;
-  @Action('SET_DURATION') private SET_DURATION: any;
+  // @Action('SET_DURATION') private SET_DURATION: any;
+  // @State('rocketOption') private stateDashboardOption!: any;
+  @State('rocketbot') private rocketGlobal: any;
   public resize() {
     const chart: any = this.$refs.chart;
     chart.myChart.resize();
@@ -103,17 +105,18 @@ export default class Heatmap extends Vue {
       chart.myChart.on('click', (params: any) => {
         let data = params.data
         if (data[2] > 0) {
-          console.log(params, 'kevinnnn')
           let yIndex = data[1]
           let min = (yIndex * 100) + ''
           let max = (Number(min) + 100) + ''
-          
+          let step = this.rocketGlobal.durationRow.step;
+          let [start, end] = this.getTimeRange(step, params);
           this.$router.push({
             path: '/trace',
             query: {
               min: min,
               max: max,
-              // time: this.formatTimeStr(params.name)
+              start,
+              end
             }
           });
         }
@@ -123,6 +126,45 @@ export default class Heatmap extends Vue {
   private formatTimeStr(str: string) {
     let timeArr = str.split(/\n/)
     return new Date().getFullYear()+'-'+timeArr[1]+ ' ' + timeArr[0] + ':00'
+  }
+  private getTimeRange(step: any, params: any) {
+    let str = params.name
+
+    // 处理4种数据格式
+    /**
+     * 
+     *  
+     *  14:54
+        11-27 ----- MINUTE
+     * 
+        11-27 09 ----- HOUR
+  
+        11-25 ----- DAY
+
+        2019-11 ----- MONTH
+     */
+      let year = new Date().getFullYear()
+      let startDateObj = null, endDateObj = null
+      if (step == 'MINUTE') {
+        let timeArr = str.split(/\n/)
+        startDateObj = moment(year + '-' + timeArr[1]+ ' ' + timeArr[0] + ':00')
+        endDateObj = startDateObj.add(59, 'second')
+      }  else if (step == 'HOUR') {
+        let timeArr = str.split(/\s/)
+        startDateObj = moment(year + '-' + timeArr[0] + ' ' + timeArr[1]+':00:00')
+        endDateObj = startDateObj.add(1, 'hour').subtract(1, 'second')
+      } else if (step == 'DAY') {
+        startDateObj = moment(year + '-' + str + ' ' + '00:00:00')
+        endDateObj = startDateObj.add(1, 'day').subtract(1, 'second')
+      } else if (step = 'MONTH') {
+        startDateObj = moment(str + '-01' + ' ' + '00:00:00')
+        endDateObj = startDateObj.add(1, 'month').subtract(1, 'second')
+      }
+      return [this.dateToString(startDateObj), this.dateToString(endDateObj)]
+
+  }
+  private dateToString(obj: any) {
+    return obj.format('YYYY-MM-DD HH:mm:ss')
   }
 }
 </script>
