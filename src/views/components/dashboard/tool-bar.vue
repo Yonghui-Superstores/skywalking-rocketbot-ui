@@ -37,9 +37,9 @@
       <ToolBarSelect @onChoose="selectInstance" title="Current Instance" :current="stateDashboard.currentInstance" :data="stateDashboard.instances" icon="disk"/>
     </div>
     <div class="rk-dashboard-bar flex-h" v-else-if="compType === 'database'">
-      <div class="rk-dashboard-bar-reload">
+      <!-- <div class="rk-dashboard-bar-reload">
         <svg class="icon lg vm cp rk-btn ghost" :style="`color:${!rocketGlobal.edit? '' :'#ffc107'}`" @click="handleSetEdit"><use :xlink:href="!rocketGlobal.edit?'#lock':'#lock-open'"></use></svg>
-      </div>
+      </div> -->
       <div class="rk-dashboard-bar-reload">
         <svg class="icon lg vm cp rk-btn ghost" @click="handleOption"><use xlink:href="#retry"></use></svg>
       </div>
