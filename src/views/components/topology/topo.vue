@@ -16,7 +16,13 @@
  */
 
 <template>
-  <div class="micro-topo-chart"></div>
+  <div class="micro-topo-chart">
+    <div class="rk-topo-t-loading" v-show="loading">
+      <svg class="icon loading">
+        <use xlink:href="#spinner" />
+      </svg>
+    </div>
+  </div>
 </template>
 <script lang="js">
 import * as d3 from 'd3';
@@ -43,6 +49,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       LOCAL: require('./assets/Local2.png'),
       CUBE: require('./assets/cube22.png'),
       CUBEERROR: require('./assets/cube21.png'),
@@ -127,6 +134,10 @@ export default {
       .style('display','block')
       .attr('width', '100%')
       .attr('height', this.height);
+    this.loading = true
+    setTimeout(() => {
+      this.loading = false
+    }, 2500);      
   },
   watch: {
     'datas.nodes': 'draw',
@@ -187,10 +198,10 @@ export default {
           .on('start', this.dragstart)
           .on('drag', this.dragged)
           .on('end', function(d, i) {
-           that.tipName.show(d, this);
+          that.tipName.show(d, this);
           }))
         .on('mouseover', function(d, i) {
-           that.tipName.show(d, this);
+          that.tipName.show(d, this);
         })
         .on('mouseout', function(d, i) {
           that.tipName.hide(d, this);
@@ -296,53 +307,53 @@ export default {
       });
     },
     isLinkNode(currNode, node) {
-    if (currNode.id === node.id) {
-        return true;
-    }
-    return this.datas.calls.filter(i => 
-      (i.source.id === currNode.id || i.target.id === currNode.id) &&
-      (i.source.id === node.id || i.target.id === node.id)
-    ).length;
-  },
+      if (currNode.id === node.id) {
+            return true;
+        }
+        return this.datas.calls.filter(i => 
+          (i.source.id === currNode.id || i.target.id === currNode.id) &&
+          (i.source.id === node.id || i.target.id === node.id)
+        ).length;
+      },
     toggleNode(nodeCircle, currNode, isHover) {
-    if (isHover) {
-      nodeCircle.sort((a, b) => a.id === currNode.id ? 1 : -1);
-      nodeCircle
-          .style('opacity', .2)
-          .filter(node => this.isLinkNode(currNode, node))
-          .style('opacity', 1);
-    } else {
-        nodeCircle.style('opacity', 1);
-    }
-},
-toggleLine(linkLine, currNode, isHover) {
-  if (isHover) {
-    linkLine
-      .style('opacity', .05)
-      .style('animation', 'none')
-      .filter(link => this.isLinkLine(currNode, link))
-      .style('opacity', 1)
-      .style('animation', 'dash 1s linear infinite');
-      // .classed('link-active', true);
-    } else {
-      linkLine
-        .style('opacity', 1)
-        .style('animation', 'dash 1s linear infinite');
-        // .classed('link-active', false);
-    }
-  },
-isLinkLine(node, link) {
-    return link.source.id == node.id || link.target.id == node.id;
-},
-toggleLineText(lineText, currNode, isHover) {
-  if (isHover) {
-    lineText
-      .style('fill-opacity', link => this.isLinkLine(currNode, link) ? 1.0 : 0.0);
-      } else {
-      lineText
-      .style('fill-opacity', '1.0');
-    }
-  },
+        if (isHover) {
+          nodeCircle.sort((a, b) => a.id === currNode.id ? 1 : -1);
+          nodeCircle
+              .style('opacity', .2)
+              .filter(node => this.isLinkNode(currNode, node))
+              .style('opacity', 1);
+        } else {
+            nodeCircle.style('opacity', 1);
+        }
+    },
+    toggleLine(linkLine, currNode, isHover) {
+      if (isHover) {
+        linkLine
+          .style('opacity', .05)
+          .style('animation', 'none')
+          .filter(link => this.isLinkLine(currNode, link))
+          .style('opacity', 1)
+          .style('animation', 'dash 1s linear infinite');
+          // .classed('link-active', true);
+        } else {
+          linkLine
+            .style('opacity', 1)
+            .style('animation', 'dash 1s linear infinite');
+            // .classed('link-active', false);
+        }
+    },
+    isLinkLine(node, link) {
+      return link.source.id == node.id || link.target.id == node.id;
+    },
+    toggleLineText(lineText, currNode, isHover) {
+      if (isHover) {
+        lineText
+          .style('fill-opacity', link => this.isLinkLine(currNode, link) ? 1.0 : 0.0);
+          } else {
+          lineText
+          .style('fill-opacity', '1.0');
+        }
+    },
     toggleMarker(marker, currNode, isHover) {
       if (isHover) {
         marker.filter(link => this.isLinkLine(currNode, link))
@@ -406,12 +417,29 @@ toggleLineText(lineText, currNode, isHover) {
 };
 </script>
 <style lang="scss">
-.micro-topo-chart{
+.rk-topo-t-loading {
+  position: fixed;
+  top: 48px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.5);
+  z-index: 99999;
+  .icon.loading {
+    position: absolute;
+    left: 50%;
+    top: 200px;
+    height: 30px;
+    width: 30px;
+  }
+}
+
+.micro-topo-chart {
   height: 100%;
   width: 100%;
   .node-name {
     cursor: move;
-    font-size:14px;
+    font-size: 14px;
     fill: #ddd;
   }
   .link {
@@ -428,16 +456,16 @@ toggleLineText(lineText, currNode, isHover) {
       stroke-dashoffset: 0;
     }
   }
-  .node-text{
-    font-family: "Lato","Source Han Sans CN", "Microsoft YaHei", sans-serif;
+  .node-text {
+    font-family: "Lato", "Source Han Sans CN", "Microsoft YaHei", sans-serif;
     fill: #ddd;
-    font-size:11px;
+    font-size: 11px;
     opacity: 0.8;
   }
   .link-text {
-    font-family: "Lato","Source Han Sans CN", "Microsoft YaHei", sans-serif;
+    font-family: "Lato", "Source Han Sans CN", "Microsoft YaHei", sans-serif;
     fill: #ddd;
-    font-size:11px;
+    font-size: 11px;
     opacity: 0.8;
   }
   .node {
@@ -445,7 +473,7 @@ toggleLineText(lineText, currNode, isHover) {
     fill: #333840;
     stroke-width: 0;
   }
-  .link-node{
+  .link-node {
     stroke-width: 6px;
     stroke: rgba(255, 255, 255, 0);
   }
