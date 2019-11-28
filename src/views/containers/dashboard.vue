@@ -29,6 +29,12 @@
       </DashboardItem>
     </div>
     <DashboardComp v-if="rocketGlobal.edit" :compType="compType" :rocketComps="rocketComps"/>
+
+    <div class="rk-dashboard-t-loading" v-show="loading">
+      <svg class="icon loading">
+        <use xlink:href="#spinner"></use>
+      </svg>
+    </div>
   </div>
 </template>
 
@@ -61,6 +67,7 @@ export default class Dashboard extends Vue {
   @Action('GET_QUERY') private GET_QUERY: any;
   @Getter('durationTime') private durationTime: any;
   private isRouterAlive: boolean = true;
+  private loading: boolean = false;
   private dragIndex: number = NaN;
   public dragStart(index: number) {
     this.dragIndex = index;
@@ -72,7 +79,10 @@ export default class Dashboard extends Vue {
   private get compType() {
     return this.rocketComps.tree[this.rocketComps.group].type;
   }
-  private handleRefresh() {
+  private handleRefresh(notDisplayLoading: boolean) {
+    if (notDisplayLoading != false) {
+      this.loading = true
+    }
     this.GET_QUERY({
       serviceId: this.stateDashboardOption.currentService.key || '',
       endpointId: this.stateDashboardOption.currentEndpoint.key || '',
@@ -80,11 +90,13 @@ export default class Dashboard extends Vue {
       instanceId: this.stateDashboardOption.currentInstance.key || '',
       databaseId: this.stateDashboardOption.currentDatabase.key || '',
       duration: this.durationTime,
+    }).then(()=>{
+      this.loading = false;
     });
   }
   private handleOption() {
     return this.MIXHANDLE_GET_OPTION({compType: this.compType, duration: this.durationTime})
-      .then(() => {this.handleRefresh(); });
+      .then(() => { this.handleRefresh(false); });
   }
   // private beforeCreate() {
   //   this.$store.registerModule('rocketDashboard', dashboard);
@@ -94,6 +106,7 @@ export default class Dashboard extends Vue {
       const data: string = `${window.localStorage.getItem('dashboard')}`;
       this.SET_COMPS_TREE(JSON.parse(data));
     }
+    console.log('before Mount before Mount')
     this.handleOption();
     this.SET_EVENTS([this.handleRefresh]);
   }
@@ -108,6 +121,20 @@ export default class Dashboard extends Vue {
   padding:20px 15px;
   height: 100%;
   flex-grow: 1;
+}
+.rk-dashboard-t-loading {
+  position: fixed;
+  top: 100px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  .icon.loading {
+    position: absolute;
+    left : 50%;
+    top: 200px;
+    height: 30px;
+    width: 30px;
+  }
 }
 </style>
 
