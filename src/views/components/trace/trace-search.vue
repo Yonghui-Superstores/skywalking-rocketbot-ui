@@ -69,6 +69,7 @@ import { Action, Getter, State } from 'vuex-class';
 import { Trace } from '@/types/trace';
 import { DurationTime, Option } from '@/types/global';
 import TraceSelect from './trace-select.vue';
+import getProjectIdFromCookie from '@/utils/cookie.js'
 
 @Component({
   components: {TraceSelect},
@@ -167,6 +168,10 @@ export default class TraceTool extends Vue {
     if (this.minTraceDuration) { temp.minTraceDuration = this.minTraceDuration; }
     if (this.endpointName) { temp.endpointName = this.endpointName; }
     if (this.traceId) { temp.traceId = this.traceId; }
+    let externalProjectId = getProjectIdFromCookie()
+    if (externalProjectId) {
+      temp.externalProjectId = externalProjectId
+    }
     this.SET_TRACE_FORM(temp);
     this.eventHub.$emit('SET_LOADING_TRUE', () => {
       this.GET_TRACELIST().then(() => {
