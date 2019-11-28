@@ -110,14 +110,18 @@ export default class Heatmap extends Vue {
           let max = (Number(min) + 100) + ''
           let step = this.rocketGlobal.durationRow.step;
           let [start, end] = this.getTimeRange(step, params);
+          
+          let query: any = {
+            min,
+            start,
+            end
+          }
+          if (max !== '2100') {
+            query.max = max
+          }
           this.$router.push({
             path: '/trace',
-            query: {
-              min: min,
-              max: max,
-              start,
-              end
-            }
+            query
           });
         }
       })
