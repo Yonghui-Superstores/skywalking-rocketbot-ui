@@ -105,6 +105,10 @@ export default class Home extends Vue {
       this.loading = false;
     });
   }
+  private beforeDestroy() {
+    this.eventHub.$off('SET_LOADING_TRUE')
+    this.eventHub.$off('SET_LOADING_FALSE')
+  }
 }
 </script>
 <style lang="scss">
