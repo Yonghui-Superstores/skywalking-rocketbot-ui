@@ -95,6 +95,7 @@ const m = {
   monthCutTip: 'Last 1 month',
   serverZone: 'Server Zone',
   percentResponse: 'Percent Response',
+  noData: 'oops, no data found!'
 };
 
 export default m;

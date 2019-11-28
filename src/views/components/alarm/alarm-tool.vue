@@ -20,11 +20,17 @@
     <AlarmSelect :title="this.$t('filterScope')" :value="alarmScope" @input="handleFilter" :data="alarmOptions"/>
     <div class="mr-10" style="padding: 3px 15px 0">
       <div class="sm grey">{{this.$t('searchKeyword')}}</div>
-      <input type="text" v-model="keyword" class="rk-alarm-tool-input" @input="handleRefresh(1)">
+      <!-- <input type="text" v-model="keyword" class="rk-alarm-tool-input" @input="handleRefresh(1)"> -->
+      <input type="text" v-model="keyword" class="rk-alarm-tool-input" @input="debounceSearch">
     </div>
     <RkPage class="mt-15" :currentSize="20" :currentPage="pageNum" @changePage="handlePage" :total="total"/>
   <!-- <RkFooter :propClass="'alerm-time'" :position="'bottom'" ref="footer"/> -->
-
+  
+    <div class="rk-alerm-t-loading" v-show="loading">
+      <svg class="icon loading">
+        <use xlink:href="#spinner"></use>
+      </svg>
+    </div>
   </nav>
 </template>
 
@@ -45,6 +51,7 @@ export default class AlarmTool extends Vue {
   @Action('rocketAlarm/GET_ALARM') private GET_ALARM: any;
   @Prop() private durationTime: any;
   @Prop() private total!: number;
+  private loading: boolean = false;
   private pageNum: number = 1;
   private alarmScope: any = {label: 'All', key: ''};
   private alarmOptions: any = [
@@ -63,6 +70,7 @@ export default class AlarmTool extends Vue {
     this.handleRefresh(1);
   }
   private handleRefresh(pageNum: number) {
+    this.loading = true
     this.pageNum = pageNum;
     const params: any = {
       duration: this.durationTime,
@@ -74,16 +82,45 @@ export default class AlarmTool extends Vue {
     };
     if (this.alarmScope.key) { params.scope = this.alarmScope.key; }
     if (this.keyword) { params.keyword = this.keyword; }
-    this.GET_ALARM(params);
+    this.GET_ALARM(params).then(()=>{
+      this.loading = false
+    });
   }
   private beforeMount() {
     this.SET_EVENTS([() => { this.handleRefresh(1); } ]);
     this.handleRefresh(1);
   }
+  // 给input输入框添加节流操作
+  get debounceSearch() {
+    let timer: any = null
+    return (e: any, duration: any = 1000) => {
+      if (timer)
+        clearTimeout(timer)
+      timer = setTimeout(()=>{
+        this.handleRefresh(1);        
+      }, duration)
+    }
+
+  }
 }
 </script>
 
 <style lang="scss">
+.rk-alerm-t-loading {
+  position: fixed;
+  top: 100px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  .icon.loading {
+    position: absolute;
+    left : 50%;
+    top: 200px;
+    height: 30px;
+    width: 30px;
+  }
+}
+
 .rk-footer.alerm-time {
   color: white;
   // float: right;

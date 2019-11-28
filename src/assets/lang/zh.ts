@@ -95,6 +95,7 @@ const m = {
   monthCutTip: '最近1月',
   serverZone: '服务器时区',
   percentResponse: '百分比响应',
+  noData: 'oops，暂无数据'
 };
 
 export default m;

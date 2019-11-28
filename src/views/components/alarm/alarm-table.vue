@@ -16,12 +16,7 @@
  */
 
 <template>
-<div class="rk-alarm-table clear"  style="position: relative;">
-    <div class="rk-trace-t-loading" style="position: absolute; left:0; top:0" v-show="true">
-      <svg class="icon loading">
-        <use xlink:href="#spinner"></use>
-      </svg>
-    </div>
+<div class="rk-alarm-table clear">
 
   <div v-for="(i,index) in data" :key="index" class="mb-10 clear">
     <div class="g-sm-3 grey sm hide-xs rk-alarm-time-line tc">{{parseInt(i.startTime) | dateformat}}</div>
@@ -34,6 +29,9 @@
       }">{{$t(i.scope.toLowerCase())}}</div>
       <div class="grey sm show-xs">{{parseInt(i.startTime) | dateformat}}</div>
     </div>
+  </div>
+  <div v-if ="data.length === 0" class="rk-no-data-wrapper">
+    {{$t('noData')}}
   </div>
 </div>
 </template>
@@ -50,6 +48,10 @@ export default class AlarmTable extends Vue {
 </script>
 
 <style lang="scss" scoped>
+.rk-no-data-wrapper {
+  text-align: center;
+  padding-top: 50px;
+}
 .rk-alarm-table{
   padding: 30px 20px 20px 40px;
 
