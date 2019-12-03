@@ -25,9 +25,7 @@
         </select>
       </div>
       <div class="rk-trace-t-loading" v-show="loading">
-        <svg class="icon loading">
-          <use xlink:href="#spinner"></use>
-        </svg>
+        <loading-icon /> 
       </div>
       <div class="rk-trace-t-wrapper scroll_hide">
         <table class="rk-trace-t">
@@ -52,7 +50,11 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import { Action, Getter, Mutation, State } from 'vuex-class';
-@Component
+import LoadingIcon from '@/components/loading-icon.vue';
+
+@Component({components: {
+  LoadingIcon,
+}})
 export default class Home extends Vue {
   @State('rocketTrace') private rocketTrace: any;
   @State('rocketbot') private rocketbot: any;
@@ -141,7 +143,7 @@ export default class Home extends Vue {
   text-align: center;
   position: absolute;
   width: 100%;
-  height: 70px;
+  height: 400px;
   margin-top: 40px;
   line-height: 88px;
   overflow: hidden;

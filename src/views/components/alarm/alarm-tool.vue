@@ -25,12 +25,13 @@
     </div>
     <RkPage class="mt-15" :currentSize="20" :currentPage="pageNum" @changePage="handlePage" :total="total"/>
   <!-- <RkFooter :propClass="'alerm-time'" :position="'bottom'" ref="footer"/> -->
-  
+<!--   
     <div class="rk-alerm-t-loading" v-show="loading">
       <svg class="icon loading">
         <use xlink:href="#spinner"></use>
       </svg>
-    </div>
+    </div> -->
+    <Loading  :visible= "loading"/>
   </nav>
 </template>
 
@@ -39,12 +40,14 @@ import Vue from 'vue';
 import { Component, Prop, Model } from 'vue-property-decorator';
 import AlarmSelect from './alarm-select.vue';
 import { Action, Mutation } from 'vuex-class';
+import Loading from '@/components/loading.vue'
 
 import RkFooter from '@/components/rk-footer.vue';
 
 @Component({components: {
   AlarmSelect,
-  RkFooter
+  RkFooter,
+  Loading
 }})
 export default class AlarmTool extends Vue {
   @Mutation('SET_EVENTS') private SET_EVENTS: any;

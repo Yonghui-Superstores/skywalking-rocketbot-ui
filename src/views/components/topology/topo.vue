@@ -17,14 +17,17 @@
 
 <template>
   <div class="micro-topo-chart">
-    <div class="rk-topo-t-loading" v-show="loading">
+    <!-- <div class="rk-topo-t-loading" v-show="loading">
       <svg class="icon loading">
         <use xlink:href="#spinner" />
       </svg>
-    </div>
+    </div> -->
+    <Loading  :visible="loading" />
   </div>
 </template>
 <script lang="js">
+import Loading from '@/components/loading.vue'
+
 import * as d3 from 'd3';
 import d3tip from 'd3-tip';
 /* tslint:disable */
@@ -36,6 +39,9 @@ const diagonalvertical = d3.linkVertical()
   .y(function (d) { return d.y });
 
 export default {
+  components: {
+    Loading
+  },
   props: {
     datas: {
       type: Object,

@@ -30,11 +30,7 @@
     </div>
     <DashboardComp v-if="rocketGlobal.edit" :compType="compType" :rocketComps="rocketComps"/>
 
-    <div class="rk-dashboard-t-loading" v-show="loading">
-      <svg class="icon loading">
-        <use xlink:href="#spinner"></use>
-      </svg>
-    </div>
+    <Loading :visible = "loading" />
   </div>
 </template>
 
@@ -46,6 +42,7 @@ import ToolGroup from '@/views/components/dashboard/tool-group.vue';
 import ToolNav from '@/views/components/dashboard/tool-nav.vue';
 import DashboardItem from '@/views/components/dashboard/dashboard-item.vue';
 import DashboardComp from '@/views/components/dashboard/dashboard-comp.vue';
+import Loading from '@/components/loading.vue';
 
 @Component({
   components: {
@@ -54,6 +51,7 @@ import DashboardComp from '@/views/components/dashboard/dashboard-comp.vue';
     ToolNav,
     DashboardItem,
     DashboardComp,
+    Loading
   },
 })
 export default class Dashboard extends Vue {
@@ -122,19 +120,19 @@ export default class Dashboard extends Vue {
   height: 100%;
   flex-grow: 1;
 }
-.rk-dashboard-t-loading {
-  position: fixed;
-  top: 100px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  .icon.loading {
-    position: absolute;
-    left : 50%;
-    top: 200px;
-    height: 30px;
-    width: 30px;
-  }
-}
+// .rk-dashboard-t-loading {
+//   position: fixed;
+//   top: 100px;
+//   left: 0;
+//   right: 0;
+//   bottom: 0;
+//   .spinner-icon {
+//     position: absolute;
+//     left : calc(50% - 10px);
+//     top: 200px;
+//     // height: 10px;
+//     // width: 10px;
+//   }
+// }
 </style>
 

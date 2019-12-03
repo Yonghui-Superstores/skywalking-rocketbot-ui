@@ -2,9 +2,10 @@
 
   <div class="trace-detail-chart-table">
     <div class="rk-trace-t-loading" v-show="loading">
-      <svg class="icon loading">
+      <!-- <svg class="icon loading">
         <use xlink:href="#spinner"></use>
-      </svg>
+      </svg> -->
+      <LoadingIcon/>
     </div>
     <transition-group name="fade" tag="div" class="mb-15 mt-15 pl-30">
       <span class="time-charts-item mr-10" v-for="(i,index) in list" :key="i" :style="`color:${computedScale(index)}`">
@@ -60,6 +61,7 @@
 </style>
 
 <script>
+import LoadingIcon from '@/components/loading-icon.vue';
 import * as d3 from 'd3';
 import { Vue } from 'vue-property-decorator';
 import Item from './trace-chart-table/trace-item';
@@ -70,6 +72,7 @@ export default {
   components: {
     Item,
     TraceContainer,
+    LoadingIcon
   },
   props: ['data', 'traceId'],
   watch: {
