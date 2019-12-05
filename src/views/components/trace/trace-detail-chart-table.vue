@@ -81,7 +81,6 @@ export default {
         return;
       }
       this.loading = true
-      console.log(this.changeTree(), 'kevin----->>>>>>')
       this.tableData = this.formatData(this.changeTree());
       this.loading = false
     },
@@ -171,11 +170,9 @@ export default {
         return [];
       }
       this.list = Array.from(new Set(this.data.map((i) => i.serviceCode)));
-      console.log(this.list, 'kevin----')
       this.segmentId = [];
       const segmentGroup = {};
       const segmentIdGroup = [];
-      console.log(this.data, 'what is data')
       this.data.forEach((i) => {
         i.label = i.endpointName || 'no operation name';
         i.children = [];
