@@ -74,16 +74,22 @@ export default {
     TraceContainer,
     LoadingIcon
   },
-  props: ['data', 'traceId'],
+  props: ['data', 'traceId', 'isAlteringDisplayMode'],
   watch: {
     data(val, oldVal) {
       if (!this.data.length) {
         return;
       }
-      this.loading = true
       this.tableData = this.formatData(this.changeTree());
-      this.loading = false
+      setTimeout(()=>{
+        this.eventHub.$emit('SET_TRACE_DETAIL_STATUS', false)
+      }, 500)
     },
+    isAlteringDisplayMode(val) {
+      if (val) {
+        this.eventHub.$emit('SET_TRACE_DETAIL_STATUS', false)
+      }
+    }
   },
   data() {
     return {
@@ -242,6 +248,7 @@ export default {
     this.tableData = this.formatData(this.changeTree());
     this.loading = false
     this.eventHub.$on('HANDLE-SELECT-SPAN', this.handleSelectSpan);
+    console.log(this.isAlteringDisplayMode, 'mounte table')
   },
 };
 </script>

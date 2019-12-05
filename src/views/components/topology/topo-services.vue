@@ -41,7 +41,7 @@ export default class TopologyServices extends Vue {
   private service = {key: 0, label: 'All services'};
   private fetchData() {
     Axios.get('/user/projects').then(res=>{
-      console.log('res', res);
+      // console.log('res', res);
       let response = res as any
       let validProjects = response.data.projects || []
       const prefixes = getPrefixes(validProjects)

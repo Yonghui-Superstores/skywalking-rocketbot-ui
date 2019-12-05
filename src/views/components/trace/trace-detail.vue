@@ -16,7 +16,8 @@
  */
 
 <template>
-  <div class="rk-trace-detail flex-v">
+  <div class="rk-trace-detail flex-v position-relative">
+    {{loadingDisplay}}
     <div class="rk-trace-detail-wrapper clear"  v-if="current.endpointNames">
       <h5 class="mb-5 mt-0">
         <svg v-if="current.isError" class="icon red vm mr-5 sm">
@@ -54,34 +55,71 @@
       <div class="rk-tag mr-5">{{this.$t('duration')}}</div><span class="mr-15 sm">{{current.duration}} ms</span>
       <div class="rk-tag mr-5">{{this.$t('spans')}}</div><span class="sm">{{spans.length}}</span>
     </div>
-    <TraceDetailChartList v-if="displayMode == 'list'&&current.endpointNames" :data="spans" :traceId="current.traceIds[0]"/>
-    <TraceDetailChartTree v-if="displayMode == 'tree'&&current.endpointNames" :data="spans" :traceId="current.traceIds[0]"/>    
-    <TraceDetailChartTable v-if="displayMode == 'table'&&current.endpointNames" :data="spans" :traceId="current.traceIds[0]"/>    
+    <TraceDetailChartList :isAlteringDisplayMode="isAlteringDisplayMode" v-if="displayMode == 'list'&&current.endpointNames" :data="spans" :traceId="current.traceIds[0]"/>
+    <TraceDetailChartTree :isAlteringDisplayMode="isAlteringDisplayMode" v-if="displayMode == 'tree'&&current.endpointNames" :data="spans" :traceId="current.traceIds[0]"/>    
+    <TraceDetailChartTable :isAlteringDisplayMode="isAlteringDisplayMode" v-if="displayMode == 'table'&&current.endpointNames" :data="spans" :traceId="current.traceIds[0]"/>    
 
     <div v-if="!current.endpointNames" class="flex-h container">
       <svg class="icon rk-icon-trace">
         <use xlink:href="#unlink"></use>
       </svg>
     </div>
+
+    <div class="rk-trace-detail-loading" v-show="loadingDisplay">
+      <!-- <svg class="icon loading">
+        <use xlink:href="#spinner"></use>
+      </svg> -->
+      <LoadingIcon />
+    </div>   
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import TraceDetailChartList from './trace-detail-chart-list.vue';
 import TraceDetailChartTree from './trace-detail-chart-tree.vue';
 import TraceDetailChartTable from './trace-detail-chart-table.vue';
+import LoadingIcon from '@/components/loading-icon.vue';
+
 import { Trace, Span } from '@/types/trace';
 import { Action, State } from 'vuex-class';
 
-@Component({ components: { TraceDetailChartList, TraceDetailChartTree, TraceDetailChartTable } })
+@Component({ components: { TraceDetailChartList, TraceDetailChartTree, TraceDetailChartTable, LoadingIcon } })
 export default class Header extends Vue {
   @State('rocketbot') private rocketbot: any;
   @Action('rocketTrace/GET_TRACE_SPANS') private GET_TRACE_SPANS: any;
   @Prop() private spans!: Span[];
   @Prop() private current!: Trace;
+  private isAlteringDisplayMode:boolean = false; // 这个标记给子组件，data没有变化的情况，在mounted里面判断这个标记，如果有，则隐藏loading
   private mode: boolean = true;
   private displayMode: string = 'list';
+  private loadingDisplay: boolean = true; // 监听数据变化需要控制的loading, 外层切换或者第一次加载traceData，显示loading
+  @Watch('spans')
+  private spansChange() {
+    this.loadingDisplay = true
+  }
+  // 切换显示方式
+  @Watch('displayMode')
+  private displayModeChange() {
+    this.loadingDisplay = true
+    setTimeout(() => {
+      this.isAlteringDisplayMode = true      
+    }, 200);
+  }
+  get eventHub() {
+    return this.$store.getters.globalEventHub;
+  }
+  private created() {
+    this.eventHub.$on('SET_TRACE_DETAIL_STATUS', (flag: any) => {
+      this.loadingDisplay = flag;
+      if (flag == false) {
+        this.isAlteringDisplayMode = false
+      }
+    })
+  }
+  private beforeDestroy() {
+    this.eventHub.$off('SET_TRACE_DETAIL_STATUS')
+  }
   private handleClick(ids: any) {
     const input = document.createElement('input');
     let copyValue = null;
@@ -103,11 +141,22 @@ export default class Header extends Vue {
 </script>
 
 <style lang="scss" scoped>
+.position-relative {
+  position: relative;
+}
+.rk-trace-detail-loading {
+  position:absolute;
+  top: 100px;
+  left: 0;
+  right:0;
+  text-align: center;
+}
 .rk-trace-detail {
   flex-shrink: 0;
   height: 100%;
   width: 75%;
   overflow-y:auto;
+  min-height: 500px;
 }
 .rk-trace-detail-wrapper {
   padding: 8px 30px;

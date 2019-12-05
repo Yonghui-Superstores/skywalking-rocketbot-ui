@@ -228,7 +228,6 @@ export default {
         default:
           break;
       }
-      console.log()
       this.dates = [start, end];
       this.$emit('input', this.get());
     },

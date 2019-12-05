@@ -104,7 +104,6 @@ export default class Dashboard extends Vue {
       const data: string = `${window.localStorage.getItem('dashboard')}`;
       this.SET_COMPS_TREE(JSON.parse(data));
     }
-    console.log('before Mount before Mount')
     this.handleOption();
     this.SET_EVENTS([this.handleRefresh]);
   }

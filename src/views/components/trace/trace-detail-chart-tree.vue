@@ -68,7 +68,7 @@ import Tree from './d3-trace-tree';
 /* eslint-disable */
 /* tslint:disable */
 export default {
-  props: ['data', 'traceId'],
+  props: ['data', 'traceId', 'isAlteringDisplayMode'],
   data(){
     return {
       segmentId:[],
@@ -77,13 +77,26 @@ export default {
       currentSpan: [],
     };
   },
+  computed: {
+    eventHub() {
+      return this.$store.getters.globalEventHub
+    }
+  },
   watch: {
     data() {
       if(!this.data.length) {return;}
       d3.select('.trace-tree-inner').selectAll('svg').selectAll('svg').remove();
       this.changeTree();
       this.tree.init({label:`${this.traceId}`, children: this.segmentId}, this.data);
-    }
+      setTimeout(()=>{
+        this.eventHub.$emit('SET_TRACE_DETAIL_STATUS', false)
+      }, 500)
+    },
+    isAlteringDisplayMode(val) {
+      if (val) {
+        this.eventHub.$emit('SET_TRACE_DETAIL_STATUS', false)
+      }
+    }    
   },
   mounted() {
     this.changeTree();

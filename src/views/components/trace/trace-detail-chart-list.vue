@@ -17,7 +17,7 @@
 
 <template>
   <div class="time-charts scroll_hide">
-    <div class="rk-trace-t-loading" v-show="loading">
+    <div class="rk-trace-t-loading" v-show="false">
       <!-- <svg class="icon loading">
         <use xlink:href="#spinner"></use>
       </svg> -->
@@ -73,7 +73,7 @@ export default {
   components: {
     LoadingIcon
   },
-  props: ['data', 'traceId'],
+  props: ['data', 'traceId', 'isAlteringDisplayMode'],
   data(){
     return {
       segmentId:[],
@@ -86,33 +86,38 @@ export default {
   watch: {
     data() {
       if(!this.data.length) {return;}
-      this.loading = true
       this.changeTree();
       this.tree.init({label:`TRACE_ROOT`, children: this.segmentId}, this.data);
       this.tree.draw(() => {
         setTimeout(() => {
-          this.loading = false          
+          this.eventHub.$emit('SET_TRACE_DETAIL_STATUS', false)
         }, 500);
-      })
-      
+      }) 
+    },
+    isAlteringDisplayMode(val) {
+      if (val) {
+        this.eventHub.$emit('SET_TRACE_DETAIL_STATUS', false)
+      }
     }
   },
   beforeDestroy() {
     d3.selectAll('.d3-tip').remove();
   },
+  computed: {
+    eventHub() {
+      return this.$store.getters.globalEventHub
+    }
+  },
   mounted() {
-    this.loading = true
+    // this.loading = true
     this.changeTree();
     this.tree = new Trace(this.$refs.traceList, this)
     this.tree.init({label:`TRACE_ROOT`, children: this.segmentId}, this.data);
-    this.tree.draw(()=>{
-      setTimeout(() => {
-        this.loading = false          
-      }, 500);
-    })
+    this.tree.draw()
     // this.computedScale();
   },
   methods: {
+
     handleClick(value) {
       const input = document.createElement('input');
       let copyValue = value;
