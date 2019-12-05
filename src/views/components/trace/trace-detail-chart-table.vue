@@ -87,7 +87,9 @@ export default {
     },
     isAlteringDisplayMode(val) {
       if (val) {
-        this.eventHub.$emit('SET_TRACE_DETAIL_STATUS', false)
+        setTimeout(()=>{
+          this.eventHub.$emit('SET_TRACE_DETAIL_STATUS', false)
+        }, 500)
       }
     }
   },
@@ -248,7 +250,6 @@ export default {
     this.tableData = this.formatData(this.changeTree());
     this.loading = false
     this.eventHub.$on('HANDLE-SELECT-SPAN', this.handleSelectSpan);
-    console.log(this.isAlteringDisplayMode, 'mounte table')
   },
 };
 </script>

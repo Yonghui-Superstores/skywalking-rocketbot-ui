@@ -17,7 +17,6 @@
 
 <template>
   <div class="rk-trace-detail flex-v position-relative">
-    {{loadingDisplay}}
     <div class="rk-trace-detail-wrapper clear"  v-if="current.endpointNames">
       <h5 class="mb-5 mt-0">
         <svg v-if="current.isError" class="icon red vm mr-5 sm">
@@ -34,17 +33,17 @@
         </svg>
       </div>
 
-      <a class="rk-btn mr-5 sm r" :class="{'ghost':displayMode !== 'table'}" @click="displayMode = 'table'">
+      <a class="rk-btn mr-5 sm r" :class="{'ghost':displayMode !== 'table'}" @click="modifyMode('table')">
          <svg class="icon vm sm rk-trace-table_svg-icon">
           <use xlink:href="#table"></use>
         </svg>
         {{$t('table')}}</a>          
-      <a class="rk-btn mr-5 sm r" :class="{'ghost':displayMode !== 'tree'}" @click="displayMode = 'tree'">
+      <a class="rk-btn mr-5 sm r" :class="{'ghost':displayMode !== 'tree'}" @click="modifyMode('tree')">
         <svg class="icon vm sm">
           <use xlink:href="#issue-child"></use>
         </svg>
         {{$t('tree')}}</a>
-      <a class="rk-btn mr-5 sm r" :class="{'ghost':displayMode !== 'list'}" @click="displayMode = 'list'">
+      <a class="rk-btn mr-5 sm r" :class="{'ghost':displayMode !== 'list'}" @click="modifyMode('list')">
          <svg class="icon vm sm">
           <use xlink:href="#list-bulleted"></use>
         </svg>
@@ -104,10 +103,13 @@ export default class Header extends Vue {
     this.loadingDisplay = true
     setTimeout(() => {
       this.isAlteringDisplayMode = true      
-    }, 200);
+    }, 500);
   }
   get eventHub() {
     return this.$store.getters.globalEventHub;
+  }
+  private modifyMode(type: any) {
+    this.displayMode = type
   }
   private created() {
     this.eventHub.$on('SET_TRACE_DETAIL_STATUS', (flag: any) => {
