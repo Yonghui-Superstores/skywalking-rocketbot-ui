@@ -163,6 +163,12 @@ export default {
         if(segmentGroup[i].refs.length ===0 )
         this.segmentId.push(segmentGroup[i]);
       }
+      // 会出现环形引用，每一个trace都被其他引用，这时候segmentId长度为0，不存在根节点，这时候全部显示
+      if (this.segmentId.length == 0) {
+        for (const i in segmentGroup) {
+            this.segmentId.push(segmentGroup[i])
+        }
+      }
       this.segmentId.forEach((_, i) => {
         this.collapse(this.segmentId[i]);
       })

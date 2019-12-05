@@ -81,6 +81,7 @@ export default {
         return;
       }
       this.loading = true
+      console.log(this.changeTree(), 'kevin----->>>>>>')
       this.tableData = this.formatData(this.changeTree());
       this.loading = false
     },
@@ -170,9 +171,11 @@ export default {
         return [];
       }
       this.list = Array.from(new Set(this.data.map((i) => i.serviceCode)));
+      console.log(this.list, 'kevin----')
       this.segmentId = [];
       const segmentGroup = {};
       const segmentIdGroup = [];
+      console.log(this.data, 'what is data')
       this.data.forEach((i) => {
         i.label = i.endpointName || 'no operation name';
         i.children = [];
@@ -209,6 +212,12 @@ export default {
       for (const i in segmentGroup) {
         if (segmentGroup[i].refs.length === 0) {
           this.segmentId.push(segmentGroup[i]);
+        }
+      }
+      // 会出现环形引用，每一个trace都被其他引用，这时候segmentId长度为0，不存在根节点，这时候全部显示
+      if (this.segmentId.length == 0) {
+        for (const i in segmentGroup) {
+            this.segmentId.push(segmentGroup[i])
         }
       }
       this.segmentId.forEach((_, i) => {

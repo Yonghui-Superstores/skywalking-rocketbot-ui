@@ -92,7 +92,7 @@ export default {
       this.tree.draw(() => {
         setTimeout(() => {
           this.loading = false          
-        }, 150);
+        }, 500);
       })
       
     }
@@ -105,7 +105,11 @@ export default {
     this.changeTree();
     this.tree = new Trace(this.$refs.traceList, this)
     this.tree.init({label:`TRACE_ROOT`, children: this.segmentId}, this.data);
-    this.tree.draw()
+    this.tree.draw(()=>{
+      setTimeout(() => {
+        this.loading = false          
+      }, 500);
+    })
     // this.computedScale();
   },
   methods: {
@@ -180,6 +184,12 @@ export default {
       for (let i in segmentGroup) {
         if(segmentGroup[i].refs.length ===0 )
         this.segmentId.push(segmentGroup[i]);
+      }
+      // 会出现环形引用，每一个trace都被其他引用，这时候segmentId长度为0，不存在根节点，这时候全部显示
+      if (this.segmentId.length == 0) {
+        for (const i in segmentGroup) {
+            this.segmentId.push(segmentGroup[i])
+        }
       }
       this.segmentId.forEach((_, i) => {
         this.collapse(this.segmentId[i]);
