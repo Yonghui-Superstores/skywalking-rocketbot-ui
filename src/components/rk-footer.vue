@@ -30,8 +30,8 @@
       </div>
       <div class="sm flex-h">
         <RkDate class="mr-10" v-model="time" :position="position||'top'" format="YYYY-MM-DD HH:mm:ss"/>
-        <span class="mr-15 cp" @click="setLang">{{lang === 'zh' ? '中' : 'En'}}</span>
-        <span>{{$t('serverZone')}} UTC {{utc >= 0 ? '+' : ''}}</span><input v-model="utc" min='-12' max="14" class="rk-footer-utc" type="number">
+        <!-- <span class="mr-15 cp" @click="setLang">{{lang === 'zh' ? '中' : 'En'}}</span>
+        <span>{{$t('serverZone')}} UTC {{utc >= 0 ? '+' : ''}}</span><input v-model="utc" min='-12' max="14" class="rk-footer-utc" type="number"> -->
       </div>
     </div>
   </footer>

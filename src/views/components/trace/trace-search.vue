@@ -56,8 +56,8 @@
         </div>
       </div>
       <div>
-        <span class="sm b grey mr-5">{{this.$t('timeRange')}}:</span>
-        <RkDate class="sm" v-model="time" position="bottom" format="YYYY-MM-DD HH:mm:ss"/>
+        <!-- <span class="sm b grey mr-5">{{this.$t('timeRange')}}:</span> -->
+        <RkDate class="sm rk-trace-time-date" v-model="time" position="bottom" format="YYYY-MM-DD HH:mm:ss"/>
       </div>
     </div>
   </div>
@@ -219,6 +219,17 @@ export default class TraceTool extends Vue {
 </script>
 
 <style lang="scss">
+.rk-trace-time-date {
+    position: fixed !important;
+    z-index: 9999;
+    right: 155px;
+    top: 11px;
+    color: #efeff1!important;
+    -webkit-box-shadow: none!important;
+    box-shadow: none!important;
+    border-top: none;
+}
+
 .rk-trace-search {
   flex-shrink: 0;
   background-color: #333840;

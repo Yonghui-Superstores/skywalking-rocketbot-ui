@@ -103,8 +103,8 @@ export default class Header extends Vue {
   }
   get isTopo() {
     // return ['/topology', '/trace'].includes(this.$route.fullPath)
-    // return ['/topology'].includes(this.$route.fullPath)
-    return true
+    return !['/trace'].includes(this.$route.fullPath)
+    // return true
   }
   private handleReload() {
     const gap = this.duration.end.getTime() - this.duration.start.getTime();
@@ -143,7 +143,7 @@ export default class Header extends Vue {
 <style lang="scss" scoped>
 .rk-footer.topology-time {
   position: absolute;
-  right: 150px;
+  right: 130px;
   top: 11px;
   // color: white;
   color: #efeff1 !important;
