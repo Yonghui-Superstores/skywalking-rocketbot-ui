@@ -235,6 +235,13 @@ export default {
 .trace-node  .node-text {
   font: 12.5px sans-serif;
   pointer-events: none;
+    // fill: green;
+  &.node-text-sub {
+    fill: #ddd;
+  }
+  &.node-text-sub.error-node-text-sub {
+    fill: white;
+  }
 }
 .domain{display: none;}
 .trace-link {
@@ -254,7 +261,10 @@ export default {
  }
  .trace-list .trace-node rect{
    &:hover{
-     fill: rgba(0,0,0,0.05)
+     fill: rgba(0,0,0,0.05);
+     & ~ .node-text.node-text-sub.error-node-text-sub {
+        fill: #ddd;
+      }
    }
  }
 </style>

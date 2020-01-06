@@ -133,7 +133,8 @@ export default class Trace {
       .attr('rx',2)
       .attr('y', -22)
       .attr('x', 20)
-      .attr('width', '100%');
+      .attr('width', '100%')
+      .attr('fill', d => d.data.isError ? '#ffb6b9': 'white'); // 有错误的添加红色背景颜色
     nodeEnter
       .append('text')
       .attr('x', 13)
@@ -158,10 +159,10 @@ export default class Trace {
       );
     nodeEnter
       .append('text')
-      .attr('class','node-text')
+      .attr('class', d => d.data.isError ? 'node-text node-text-sub error-node-text-sub' : 'node-text node-text-sub') 
       .attr('x', 35)
       .attr('y', 12)
-      .attr('fill', '#ccc')
+      // .attr('fill', d => d.data.isError? 'white': '#ccc') // 有错误的情况，第二行字体默认显示为白色
       .style('font-size', '11px')
       .text(
         d =>
