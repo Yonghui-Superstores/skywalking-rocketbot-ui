@@ -35,7 +35,7 @@
         </div>
         <div class="datepicker-popup__body">
           <rk-calendar v-model="dates[0]" :left="true"></rk-calendar>
-          <rk-calendar v-model="dates[1]" :right="true"></rk-calendar>
+          <!-- <rk-calendar v-model="dates[1]" :right="true"></rk-calendar> -->
         </div>
       </template>
       <template v-else>
