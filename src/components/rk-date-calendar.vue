@@ -78,7 +78,7 @@
       </div>
     </div>
   </div>
-  <!-- <div :class="`${pre}-foot`" v-if="m==='H'">
+  <div :class="`${pre}-foot`" v-if="m==='H'">
     <input placeholder="YYYY-MM-DD HH:mm:ss">
     <div :class="`${pre}-hour`">
       <a :title="local.hourTip" @click="showHours=!showHours,showMinutes=showSeconds=false" :class="{on:showHours}">{{hour|dd}}</a>
@@ -87,7 +87,7 @@
       <span>:</span>
       <a :title="local.secondTip" @click="showSeconds=!showSeconds,showHours=showMinutes=false" :class="{on:showSeconds}">{{second|dd}}</a>
     </div>
-  </div> -->
+  </div>
 </div>
 </template>
 

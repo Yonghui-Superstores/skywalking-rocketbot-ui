@@ -20,13 +20,11 @@ module.exports = {
     proxy: {
       '/graphql': {
         target: 'http://devtrace.itwork.yonghui.cn/',
-        //target: 'http://prdtrace.itwork.yonghui.cn/',
         // target: 'http://10.251.112.3:12800',
         changeOrigin: true,
       },
       '/user/projects': {
         target: 'http://devtrace.itwork.yonghui.cn/',
-        //target: 'http://prdtrace.itwork.yonghui.cn/',
         // target: 'http://10.251.112.3:12800',
         changeOrigin: true,
       }
