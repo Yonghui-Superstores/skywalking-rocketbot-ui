@@ -43,7 +43,7 @@ class Graph {
     .then((response) => {
       const { headers: {invalid, url} } = response;
       if (invalid === 'true') {
-        // window.location.href = url;
+        window.location.href = url;
       }
       return response;
     });

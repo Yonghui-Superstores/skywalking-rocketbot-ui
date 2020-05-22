@@ -7,9 +7,6 @@
         <div class="start-time">
           Start Time
         </div>
-        <div class="gap">
-          Gap(ms)
-        </div>
         <div class="exec-ms">
           Exec(ms)
         </div>

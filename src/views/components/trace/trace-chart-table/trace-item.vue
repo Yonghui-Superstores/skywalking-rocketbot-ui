@@ -15,9 +15,6 @@
         <div class="start-time">
           {{formatTime(data.startTime)}}
         </div>
-        <div class="gap">
-          0
-        </div>
         <div class="exec-ms">
          {{(data.endTime - data.startTime)?(data.endTime - data.startTime) : '0'}} 
         </div>
