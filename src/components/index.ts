@@ -23,10 +23,11 @@ import RkDate from './rk-date.vue';
 import RkPanel from './rk-panel.vue';
 import RkSidebox from './rk-sidebox.vue';
 import RkEcharts from './rk-echarts.vue';
+import RkEchartsScatter from './rk-echarts-scatter.vue';
 import noty from './noty';
 
 const components: any = {
-  RkHeader, RkFooter, RkProgress, RkDate, RkPanel, RkEcharts, RkPage, RkSidebox,
+  RkHeader, RkFooter, RkProgress, RkDate, RkPanel, RkEcharts, RkPage, RkSidebox,RkEchartsScatter
 };
 const componentsName: string[] = Object.keys(components);
 export default {install: (vue: any) => {

@@ -104,4 +104,12 @@ export default [
     w: 4,
     h: 350,
   },
+  {
+    o: 'Service',
+    d: 'serviceDotPlot',
+    c: 'ChartScatter',
+    t: 'Service DotPlot',
+    w: 4,
+    h: 300,
+  },
 ];

@@ -86,4 +86,9 @@ router.beforeEach((to, from, next) => {
   next();
 });
 
+const routerPush = Router.prototype.push
+Router.prototype.push = function push(location: any) {
+  return routerPush.call(this, location).catch((error: any)=> error)
+}
+
 export default router;

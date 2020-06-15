@@ -26,6 +26,7 @@ import ChartSankey from './chart-sankey.vue';
 import ChartInstance from './chart-instance.vue';
 import ChartCount from './chart-count.vue';
 import ChartEdit from './chart-edit.vue';
+import ChartScatter from './chart-scatter.vue';
 
 export default {
   ChartCount,
@@ -39,4 +40,5 @@ export default {
   ChartTrace,
   ChartSankey,
   ChartEdit,
+  ChartScatter
 };
