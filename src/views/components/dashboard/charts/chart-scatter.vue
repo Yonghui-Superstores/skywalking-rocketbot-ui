@@ -72,9 +72,6 @@ export default class Request extends Vue {
 		let requestStep = (endTime-startTime)/(this.divide)
 
 		this.processData(startTime,endTime,requestStep,xAxisStep)
-		console.log("		console.log(this.requestDate)")
-		console.log(this.requestDate)
-		console.log(this.xAxisData)
 	}
 	
 	private processData(startTime:any,endTime:any,requestStep:any,xAxisStep:any){
