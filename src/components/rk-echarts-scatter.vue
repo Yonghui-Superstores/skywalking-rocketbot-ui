@@ -152,9 +152,7 @@ export default class RkEcharts extends Vue {
   }
 
   private stopRealTime(params:any) {
-	  
 	this.brushStatus = !this.brushStatus
-	this.STOP_REAL_TIME(true)
   }
 
   private destroyed () {
