@@ -90,6 +90,14 @@ export default [
   },
   {
     o: 'Service',
+    d: 'serviceDotPlot',
+    c: 'ChartScatter',
+    t: 'Service DotPlot',
+    w: 4,
+    h: 350,
+  },
+  {
+    o: 'Service',
     d: 'serviceSlowEndpoint',
     c: 'ChartSlow',
     t: 'Service Slow Endpoint',
@@ -104,12 +112,5 @@ export default [
     w: 4,
     h: 350,
   },
-  {
-    o: 'Service',
-    d: 'serviceDotPlot',
-    c: 'ChartScatter',
-    t: 'Service DotPlot',
-    w: 4,
-    h: 300,
-  },
+  
 ];
