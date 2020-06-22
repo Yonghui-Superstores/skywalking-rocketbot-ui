@@ -57,7 +57,8 @@
       </div>
       <div>
         <!-- <span class="sm b grey mr-5">{{this.$t('timeRange')}}:</span> -->
-        <RkDate class="sm rk-trace-time-date" v-model="time" position="bottom" format="YYYY-MM-DD HH:mm:ss"/>
+        <RkDate class="sm rk-trace-time-date" v-model="time"  position="bottom" format="YYYY-MM-DD HH:mm:ss"/>
+        <!-- <RkDate class="sm rk-trace-time-date" v-model="time" position="bottom" format="YYYY-MM-DD HH:mm:ss"/> -->
       </div>
     </div>
   </div>
@@ -69,7 +70,8 @@ import { Action, Getter, State } from 'vuex-class';
 import { Trace } from '@/types/trace';
 import { DurationTime, Option } from '@/types/global';
 import TraceSelect from './trace-select.vue';
-import getProjectIdFromCookie from '@/utils/cookie.js'
+import getProjectIdFromCookie from '@/utils/cookie.js';
+import timeFormat from '@/utils/timeFormat';
 
 @Component({
   components: {TraceSelect},
@@ -79,10 +81,12 @@ export default class TraceTool extends Vue {
   @State('rocketTrace') private rocketTrace: any;
   @Getter('durationTime') private durationTime: any;
   @Getter('duration') private duration: any;
+  @Action('SET_DURATION') private SET_DURATION: any;
   @Action('rocketTrace/GET_SERVICES') private GET_SERVICES: any;
   @Action('rocketTrace/GET_INSTANCES') private GET_INSTANCES: any;
   @Action('rocketTrace/GET_TRACELIST') private GET_TRACELIST: any;
   @Action('rocketTrace/SET_TRACE_FORM') private SET_TRACE_FORM: any;
+  @Action('Trace_Date_SHOW') private Trace_Date_SHOW: any;
 
   private start: any; // 首页heatmap传递过来的参数
   private end: any; // 首页heatmap传递过来的参数
@@ -208,12 +212,20 @@ export default class TraceTool extends Vue {
     }
   }
   private mounted() {
+    // if (this.start && this.end) {
+    //   this.SET_DURATION(timeFormat([new Date(this.start),new Date(this.end)]))
+    // }
     // 这里的this.time 如果有数据来自于url，就从url里面获取否则来自于全局的这个
     this.time = [this.rocketbotGlobal.durationRow.start, this.rocketbotGlobal.durationRow.end];
     if (this.start && this.end) {
       this.time = [new Date(this.start), new Date(this.end)]
     }
+    this.Trace_Date_SHOW(false)
     this.getTraceList();
+  }
+  private destroyed () {
+    // alert('实例已销毁')
+    this.Trace_Date_SHOW(true)
   }
 }
 </script>

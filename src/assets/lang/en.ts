@@ -91,6 +91,7 @@ const m = {
   halfHourCutTip: 'Last 30 mins',
   hourCutTip: 'Last 1 hour',
   dayCutTip: 'Last 1 day',
+  twoDayCutTip: 'Last 2 day',
   weekCutTip: 'Last 1 week',
   monthCutTip: 'Last 1 month',
   serverZone: 'Server Zone',

@@ -21,6 +21,7 @@
     <use xlink:href="#timer"></use>
   </svg> -->
   <input class="cp" readonly :value="text" :class="[show ? 'focus' : '', inputClass]" :disabled="disabled" :placeholder="placeholder" :name="name" v-if="type!=='inline'"/>
+
   <a class="datepicker-close" @click.stop="cls"></a>
   <transition name="datepicker-anim">
     <div class="datepicker-popup" :class="[popupClass,{'datepicker-inline':type==='inline'},position==='top'?'top':'bottom']" tabindex="-1" v-if="show||type==='inline'">
@@ -30,8 +31,9 @@
           <button type="button" class="datepicker-popup__shortcut" @click="quickPick('half')">{{this.local.halfHourCutTip}}</button>
           <button type="button" class="datepicker-popup__shortcut" @click="quickPick('hour')">{{this.local.hourCutTip}}</button>
           <button type="button" class="datepicker-popup__shortcut" @click="quickPick('day')">{{this.local.dayCutTip}}</button>
-          <button type="button" class="datepicker-popup__shortcut" @click="quickPick('week')">{{this.local.weekCutTip}}</button>
-          <button type="button" class="datepicker-popup__shortcut" @click="quickPick('month')">{{this.local.monthCutTip}}</button>
+          <button type="button" class="datepicker-popup__shortcut" @click="quickPick('twoDay')">{{this.local.twoDayCutTip}}</button>
+          <!-- <button type="button" class="datepicker-popup__shortcut" @click="quickPick('week')">{{this.local.weekCutTip}}</button> -->
+          <!-- <button type="button" class="datepicker-popup__shortcut" @click="quickPick('month')">{{this.local.monthCutTip}}</button> -->
         </div>
         <div class="datepicker-popup__body">
           <rk-calendar v-model="dates[0]" :left="true"></rk-calendar>
@@ -119,6 +121,7 @@ export default {
         halfHourCutTip: this.$t('halfHourCutTip'),
         hourCutTip: this.$t('hourCutTip'),
         dayCutTip: this.$t('dayCutTip'),
+        twoDayCutTip: this.$t('twoDayCutTip'),
         weekCutTip: this.$t('weekCutTip'),
         monthCutTip: this.$t('monthCutTip'),
       };
@@ -218,6 +221,9 @@ export default {
           break;
         case 'day':
           start.setTime(start.getTime() - 3600 * 1000 * 24);//1 day
+          break;
+        case 'twoDay':
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 2);//2 day
           break;
         case 'week':
           start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);//1 week

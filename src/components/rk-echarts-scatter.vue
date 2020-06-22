@@ -31,6 +31,8 @@ export default class RkEcharts extends Vue {
   @Prop({ default: false }) private uncombine!: boolean;
   @Prop({ default: '100%' }) private height!: string;
   @Prop({default: '100%' }) private width!: string;
+  @Action('STOP_REAL_TIME') private STOP_REAL_TIME:any;
+
   @Action('CLEAR_CHARTS') private CLEAR_CHARTS: any;
   private myChart: any = {};
   private mousedownX: any = '';
@@ -39,7 +41,6 @@ export default class RkEcharts extends Vue {
   private mouseupY: any = '';
   
   private mounted(): void {
-	  
     this.drawEcharts();
     window.addEventListener('resize', this.myChart.resize);
 	// this.$nextTick(()=>{
@@ -52,7 +53,6 @@ export default class RkEcharts extends Vue {
   }
   @Watch('option', { deep: true })
   private onoptionChanged(newVal: any, oldVal: any): void {
-	  
     if (this.myChart) {
       if (newVal) {
         this.myChart.setOption(newVal);
@@ -72,8 +72,11 @@ export default class RkEcharts extends Vue {
     this.myChart = echarts.init(el, '');
 	let zr=this.myChart.getZr();
 	    zr.on('mousedown',(params:any)=>{
-	        var pointInPixel = [params.offsetX, params.offsetY];
-	        var pointInGrid = this.myChart.convertFromPixel('grid', pointInPixel);
+			//this.$emit('stopTiming');
+			this.STOP_REAL_TIME(true)
+
+	        let pointInPixel = [params.offsetX, params.offsetY];
+	        let pointInGrid = this.myChart.convertFromPixel('grid', pointInPixel);
 	
 	        if (this.myChart.containPixel('grid', pointInPixel)) {
 	            this.mousedownX = parseInt(this.myChart.getOption().xAxis[0].axisPointer.value)
@@ -84,8 +87,9 @@ export default class RkEcharts extends Vue {
 		
 		let zr1=this.myChart.getZr();
 		    zr1.on('mouseup',(params:any)=>{
-		        var pointInPixel = [params.offsetX, params.offsetY];
-		        var pointInGrid = this.myChart.convertFromPixel('grid', pointInPixel);
+
+		        let pointInPixel = [params.offsetX, params.offsetY];
+		        let pointInGrid = this.myChart.convertFromPixel('grid', pointInPixel);
 		
 		        if (this.myChart.containPixel('grid', pointInPixel)) {
 		            this.mouseupX = parseInt(this.myChart.getOption().xAxis[0].axisPointer.value)
@@ -135,6 +139,11 @@ export default class RkEcharts extends Vue {
 		    })
     this.myChart.setOption(this.option);
 	
+  }
+
+  private destroyed () {
+    // alert('实例已销毁')
+    this.STOP_REAL_TIME(false)
   }
   
   //日期格式:2020-06-09 14:16:00

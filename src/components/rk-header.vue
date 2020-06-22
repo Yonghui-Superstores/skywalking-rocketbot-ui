@@ -82,7 +82,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
 import { Action, State, Getter } from 'vuex-class';
 import timeFormat from '@/utils/timeFormat';
 import RkFooter from '@/components/rk-footer.vue';
@@ -94,7 +94,10 @@ import RkFooter from '@/components/rk-footer.vue';
 })
 export default class Header extends Vue {
   @Getter('duration') private duration: any;
+  @Getter('stopRealTime') private stopRealTime: any;
   @Action('SET_DURATION') private SET_DURATION: any;
+  @Action('SET_REAL_TIME') private SET_REAL_TIME: any;
+
   private show: boolean = false;
   private auto: boolean = false;
   private timer: any = null;
@@ -106,8 +109,31 @@ export default class Header extends Vue {
     return !['/trace'].includes(this.$route.fullPath)
     // return true
   }
+  @Watch('duration', { deep: true })
+  private watchDuration(newVal: any, oldVal: any) :void{
+    let gap = newVal.end.getTime() - newVal.start.getTime();
+    if(this.auto){
+      if(gap > 900000){
+        this.handleAuto()
+      }
+    }
+  }
+
+  @Watch('stopRealTime')
+  private stopReal(newVal: any, oldVal: any):void{
+    if(newVal){
+      this.handleAuto()
+    }
+  }
+
   private handleReload() {
-    const gap = this.duration.end.getTime() - this.duration.start.getTime();
+    let gap = this.duration.end.getTime() - this.duration.start.getTime();
+    if(this.auto){
+      if(gap > 900000){
+        this.SET_DURATION(timeFormat([new Date(new Date().getTime()-900000),new Date()]))
+      }
+    }
+	  gap = this.duration.end.getTime() - this.duration.start.getTime();
     const utcCopy: any = -(new Date().getTimezoneOffset() / 60);
     this.$emit('reloadFooter', [
       new Date(new Date().getTime() - gap),
@@ -120,6 +146,7 @@ export default class Header extends Vue {
   }
   private handleAuto() {
     this.auto = !this.auto;
+    this.SET_REAL_TIME(this.auto)
     if (this.auto) {
       this.handleReload();
       this.timer = setInterval(this.handleReload, 6000);

@@ -91,6 +91,7 @@ const m = {
   halfHourCutTip: '最近30分钟',
   hourCutTip: '最近1小时',
   dayCutTip: '最近1天',
+  twoDayCutTip: '最近2天',
   weekCutTip: '最近1周',
   monthCutTip: '最近1月',
   serverZone: '服务器时区',

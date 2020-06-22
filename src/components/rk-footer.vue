@@ -28,7 +28,7 @@
           <span class="vm">Connect Error</span>
         </div> -->
       </div>
-      <div class="sm flex-h">
+      <div v-if="traceDateShow" class="sm flex-h">
         <RkDate class="mr-10" v-model="time" :position="position||'top'" format="YYYY-MM-DD HH:mm:ss"/>
         <!-- <span class="mr-15 cp" @click="setLang">{{lang === 'zh' ? '中' : 'En'}}</span>
         <span>{{$t('serverZone')}} UTC {{utc >= 0 ? '+' : ''}}</span><input v-model="utc" min='-12' max="14" class="rk-footer-utc" type="number"> -->
@@ -39,7 +39,7 @@
 
 <script lang="ts">
 import { Vue, Component, Watch, Prop } from 'vue-property-decorator';
-import { State, Action, Mutation } from 'vuex-class';
+import { State, Action, Mutation,Getter } from 'vuex-class';
 import timeFormat from '@/utils/timeFormat';
 
 @Component
@@ -47,14 +47,17 @@ export default class Footer extends Vue {
   @State('rocketbot') private rocketbotGlobal: any;
   @Action('SET_DURATION') private SET_DURATION: any;
   @Mutation('SET_UTC') private SET_UTC: any;
+  @Getter('traceDateShow') private traceDateShow: any;
   private lang: any = '';
   private time: Date[] = [new Date(), new Date()];
   private utc: any = window.localStorage.getItem('utc') || -(new Date().getTimezoneOffset() / 60);
   @Prop() public propClass!: any;
   @Prop() public position!: any;
+
   get eventHub() {
       return this.$store.getters.globalEventHub;
-  }  
+  }
+
   @Watch('time')
   private onTimeUpdate() {
     this.SET_DURATION(timeFormat(this.time));
@@ -83,7 +86,7 @@ export default class Footer extends Vue {
     this.time = [this.rocketbotGlobal.durationRow.start, this.rocketbotGlobal.durationRow.end];
   }
   
-  private mounted() {
+  private mounted() {    
     this.eventHub.$on('reloadNewFooter', (timeArray: any)=>{
       this.time = timeArray
     })
