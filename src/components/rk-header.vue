@@ -119,7 +119,7 @@ export default class Header extends Vue {
     }
   }
 
-  @Watch('stopRealTime')
+  @Watch('stopRealTime',{ deep: true })
   private stopReal(newVal: any, oldVal: any):void{
     if(newVal){
       clearInterval(this.timer);

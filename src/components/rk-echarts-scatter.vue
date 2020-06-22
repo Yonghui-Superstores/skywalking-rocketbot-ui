@@ -39,6 +39,8 @@ export default class RkEcharts extends Vue {
   private mousedownY: any = '';
   private mouseupX: any = '';
   private mouseupY: any = '';
+  private brushStatus: Boolean = false;
+
   
   private mounted(): void {
     this.drawEcharts();
@@ -73,6 +75,12 @@ export default class RkEcharts extends Vue {
 	    zr.on('mousedown',(params:any)=>{
 			//this.$emit('stopTiming');
 
+			if(this.brushStatus){
+				this.STOP_REAL_TIME(true)
+			}else{
+				this.STOP_REAL_TIME(false)
+			}
+
 	        let pointInPixel = [params.offsetX, params.offsetY];
 	        let pointInGrid = this.myChart.convertFromPixel('grid', pointInPixel);
 	
@@ -85,6 +93,7 @@ export default class RkEcharts extends Vue {
 		
 		let zr1=this.myChart.getZr();
 		    zr1.on('mouseup',(params:any)=>{
+				
 
 		        let pointInPixel = [params.offsetX, params.offsetY];
 		        let pointInGrid = this.myChart.convertFromPixel('grid', pointInPixel);
@@ -133,7 +142,8 @@ export default class RkEcharts extends Vue {
 						}
 					}
 				},1000)
-		
+				this.STOP_REAL_TIME(false)
+
 		    })
 	this.myChart.setOption(this.option);
 
@@ -142,6 +152,8 @@ export default class RkEcharts extends Vue {
   }
 
   private stopRealTime(params:any) {
+	  
+	this.brushStatus = !this.brushStatus
 	this.STOP_REAL_TIME(true)
   }
 
