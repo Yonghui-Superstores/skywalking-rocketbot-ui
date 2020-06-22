@@ -58,7 +58,6 @@
       <div>
         <!-- <span class="sm b grey mr-5">{{this.$t('timeRange')}}:</span> -->
         <RkDate class="sm rk-trace-time-date" v-model="time"  position="bottom" format="YYYY-MM-DD HH:mm:ss"/>
-        <!-- <RkDate class="sm rk-trace-time-date" v-model="time" position="bottom" format="YYYY-MM-DD HH:mm:ss"/> -->
       </div>
     </div>
   </div>
@@ -79,6 +78,7 @@ import timeFormat from '@/utils/timeFormat';
 export default class TraceTool extends Vue {
   @State('rocketbot') private rocketbotGlobal: any;
   @State('rocketTrace') private rocketTrace: any;
+	@State('rocketOption') private stateDashboardOption!: any;
   @Getter('durationTime') private durationTime: any;
   @Getter('duration') private duration: any;
   @Action('SET_DURATION') private SET_DURATION: any;
@@ -87,6 +87,7 @@ export default class TraceTool extends Vue {
   @Action('rocketTrace/GET_TRACELIST') private GET_TRACELIST: any;
   @Action('rocketTrace/SET_TRACE_FORM') private SET_TRACE_FORM: any;
   @Action('Trace_Date_SHOW') private Trace_Date_SHOW: any;
+  
 
   private start: any; // 首页heatmap传递过来的参数
   private end: any; // 首页heatmap传递过来的参数
@@ -154,6 +155,7 @@ export default class TraceTool extends Vue {
     this.traceState = i;
   }
   private getTraceList() {
+    
     this.GET_SERVICES({duration: this.durationTime});
     const temp: any = {
         queryDuration: this.globalTimeFormate([
@@ -212,6 +214,11 @@ export default class TraceTool extends Vue {
     }
   }
   private mounted() {
+    if(this.stateDashboardOption.currentService.key != null && this.stateDashboardOption.currentService.label != null){
+      this.service = this.stateDashboardOption.currentService
+    }else{
+      this.service = {label: 'All', key: ''}
+    }
     // if (this.start && this.end) {
     //   this.SET_DURATION(timeFormat([new Date(this.start),new Date(this.end)]))
     // }

@@ -122,7 +122,8 @@ export default class Header extends Vue {
   @Watch('stopRealTime')
   private stopReal(newVal: any, oldVal: any):void{
     if(newVal){
-      this.handleAuto()
+      clearInterval(this.timer);
+      this.auto = false
     }
   }
 

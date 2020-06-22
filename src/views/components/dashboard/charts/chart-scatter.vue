@@ -32,11 +32,6 @@ export default class Request extends Vue {
     @Prop() private intervalTime!: any;
     @Getter('realTime') private realTime: any;
 
-    
-    //基础数据
-    //private x = 0;
-    //private yAxis = 50;
-
     //整合
     private startTime: any;
     private endTime: any;
@@ -229,8 +224,8 @@ export default class Request extends Vue {
                         }`,
                     variables: {
                         duration: {
-                            start: start,//'2020-06-20 192310',
-                            end: end,//'2020-06-20 192315',
+                            start: start,
+                            end: end,
                             step: "SECOND"
                         },
                         serviceId: this.stateDashboardOption.currentService.key || '',
@@ -392,9 +387,6 @@ export default class Request extends Vue {
         brush: {
             toolbox: ['rect'],
             xAxisIndex: 0,
-            takeGlobalCursor:{
-
-            }
         },
         xAxis: [{
             type: 'category',
