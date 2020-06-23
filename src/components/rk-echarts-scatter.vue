@@ -100,7 +100,7 @@ export default class RkEcharts extends Vue {
 		
 		        if (this.myChart.containPixel('grid', pointInPixel)) {
 		            this.mouseupX = parseInt(this.myChart.getOption().xAxis[0].axisPointer.value)
-		            this.mouseupY = Math.ceil(this.myChart.getOption().yAxis[0].axisPointer.value)
+					this.mouseupY = Math.ceil(this.myChart.getOption().yAxis[0].axisPointer.value)
 		        }
 
 				setTimeout(()=>{

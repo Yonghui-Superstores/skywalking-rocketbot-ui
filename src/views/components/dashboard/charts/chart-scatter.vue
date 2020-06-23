@@ -49,7 +49,7 @@ export default class Request extends Vue {
     private successData:Array<any> = [];
     private failureData:Array<any> = [];
     //X轴移动跨度
-    private variable:number = 2;
+    private variable:number = 3;
     //定时器
     private timing:any;
     //请求中断
@@ -437,7 +437,7 @@ export default class Request extends Vue {
             type: 'scatter',
             color:'#24b7f2',
             data: this.successData,
-            symbolSize: 3,
+            symbolSize: 2,
             large: true,
             largeThreshold: 1000,
             progressive: 80000,
@@ -448,7 +448,7 @@ export default class Request extends Vue {
             type: 'scatter',
             color:'#FF6347',
             data: this.failureData,
-            symbolSize: 3,
+            symbolSize: 2,
             large: true,
             largeThreshold: 1000,
             progressive: 80000,
