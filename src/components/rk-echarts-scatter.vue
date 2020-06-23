@@ -22,7 +22,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
-import echarts from 'echarts';
+import echarts from 'echarts/index.js';
 import { Action } from 'vuex-class';
 @Component
 export default class RkEcharts extends Vue {
