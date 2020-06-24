@@ -66,7 +66,7 @@ export default class RkTopSlow extends Vue {
           // instanceKey,
         },
       });
-    } else if (this.type ==='Endpoint Slow') {
+    } else if (this.type === 'Endpoint Slow') {
       this.$router.push({
         path: '/trace',
         query: {
@@ -75,6 +75,14 @@ export default class RkTopSlow extends Vue {
         },
       });
       
+    }else if(this.type === 'Global Top Throughput'){
+      this.$router.push({
+        path: '/trace',
+        query: {
+          service: i.label,
+          serviceKey: i.key,
+        },
+      });
     }
   }
   get maxValue() {

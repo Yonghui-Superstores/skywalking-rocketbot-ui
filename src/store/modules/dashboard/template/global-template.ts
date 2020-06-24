@@ -49,9 +49,17 @@ export default [
   //   // h: '25%',
 
   // },
+  // {
+  //   d: 'globalThroughput',
+  //   c: 'ChartTrace',
+  //   t: 'Global Top Throughput',
+  //   w: 6,
+  //   h: 350,
+  //   // h: '25%',
+  // },
   {
     d: 'globalThroughput',
-    c: 'ChartTrace',
+    c: 'ChartSlow',
     t: 'Global Top Throughput',
     w: 6,
     h: 350,

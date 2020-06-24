@@ -354,7 +354,7 @@ export default class Request extends Vue {
                     backgroundColor:'#3259B8',
                     formatter:function (params:any) {
                         if(params.axisDimension ==='y'){
-                            params.value = parseInt(params.value)
+                            params.value = Math.floor(params.value)
                         }
                         return params.value
                     }
@@ -413,6 +413,7 @@ export default class Request extends Vue {
         yAxis: [{
             type: 'value',
             scale: true,
+            minInterval:1,
             min:0,
             max: 10000,
             axisLabel: { color: '#9da5b2', fontSize: '11' },

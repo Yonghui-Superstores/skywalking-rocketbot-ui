@@ -23,7 +23,7 @@
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
 import echarts from 'echarts/index.js';
-import { Action } from 'vuex-class';
+import { Action,State } from 'vuex-class';
 @Component
 export default class RkEcharts extends Vue {
   @Prop() private option: any;
@@ -31,8 +31,8 @@ export default class RkEcharts extends Vue {
   @Prop({ default: false }) private uncombine!: boolean;
   @Prop({ default: '100%' }) private height!: string;
   @Prop({default: '100%' }) private width!: string;
+  @State('rocketOption') private stateDashboardOption!: any;
   @Action('STOP_REAL_TIME') private STOP_REAL_TIME:any;
-
   @Action('CLEAR_CHARTS') private CLEAR_CHARTS: any;
   private myChart: any = {};
   private mousedownX: any = '';
@@ -74,7 +74,6 @@ export default class RkEcharts extends Vue {
 	let zr=this.myChart.getZr();
 	    zr.on('mousedown',(params:any)=>{
 			//this.$emit('stopTiming');
-
 			if(this.brushStatus){
 				this.STOP_REAL_TIME(true)
 			}else{
@@ -88,13 +87,10 @@ export default class RkEcharts extends Vue {
 	            this.mousedownX = parseInt(this.myChart.getOption().xAxis[0].axisPointer.value)
 	            this.mousedownY = Math.ceil(this.myChart.getOption().yAxis[0].axisPointer.value)
 	        }
-	
 	    })
 		
 		let zr1=this.myChart.getZr();
 		    zr1.on('mouseup',(params:any)=>{
-				
-
 		        let pointInPixel = [params.offsetX, params.offsetY];
 		        let pointInGrid = this.myChart.convertFromPixel('grid', pointInPixel);
 		
@@ -115,7 +111,9 @@ export default class RkEcharts extends Vue {
 						  min,
 						  max,
 						  start,
-						  end
+						  end,
+						  service:this.stateDashboardOption.currentService.label,
+						  serviceKey:this.stateDashboardOption.currentService.key
 						}
 						
 						if(this.mousedownY <= this.mouseupY){

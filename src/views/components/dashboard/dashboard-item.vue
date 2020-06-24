@@ -17,7 +17,7 @@
 
  <template>
   <div class="dashboard-item" :class="`g-sm-${i.w}`" :style="`height:${i.h}px;`"
-    draggable="true" @dragstart="$emit('dragStart', index)" @dragover="$event.preventDefault();" @drop="drop">
+    draggable="false" @dragstart="$emit('dragStart', index)" @dragover="$event.preventDefault();" @drop="drop">
     <div class="dashboard-item-title ell">
         <svg class="icon cp red r" v-if="rocketGlobal.edit" @click="DELETE_COMP(index)">
           <use xlink:href="#file-deletion"></use>

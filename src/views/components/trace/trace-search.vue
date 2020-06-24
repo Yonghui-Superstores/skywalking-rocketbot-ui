@@ -214,11 +214,12 @@ export default class TraceTool extends Vue {
     }
   }
   private mounted() {
-    if(this.stateDashboardOption.currentService.key != null && this.stateDashboardOption.currentService.label != null){
-      this.service = this.stateDashboardOption.currentService
-    }else{
-      this.service = {label: 'All', key: ''}
-    }
+    // if(this.stateDashboardOption.currentService.key != null && this.stateDashboardOption.currentService.label != null){
+    //   this.service = this.stateDashboardOption.currentService
+    // }else{
+    //   this.service = {label: 'All', key: ''}
+    // }
+    
     // if (this.start && this.end) {
     //   this.SET_DURATION(timeFormat([new Date(this.start),new Date(this.end)]))
     // }
