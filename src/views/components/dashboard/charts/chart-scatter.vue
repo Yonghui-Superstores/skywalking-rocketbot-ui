@@ -36,7 +36,6 @@ export default class Request extends Vue {
     private startTime: any;
     private endTime: any;
 
-
     //X轴日期数据集
     private xAxisData:Array<any> = [];
     private xAxisStep:number = 1;
@@ -329,8 +328,8 @@ export default class Request extends Vue {
     return {
       animation:false,
         legend: {
-            top: 3,
-            right: 25,
+            top: 0,
+            right: 0,
             data: ['success', 'failure'],
             itemWidth:10,
             itemHeight:10,
@@ -340,11 +339,14 @@ export default class Request extends Vue {
             }
         },
         grid: {
-            top: 25,
+            top: 20,
             left: 0,
-            right: 20,
+            right: 0,
             bottom: 5,
             containLabel: true,
+        },
+        toolbox: {
+            show:false
         },
         tooltip: {
             trigger: 'item',
@@ -420,6 +422,9 @@ export default class Request extends Vue {
             nameTextStyle: {
                 color: '#3259B8',
                 fontSize: 14
+            },
+            axisPointer:{
+                show:false
             },
             axisTick: {
                 show: false,

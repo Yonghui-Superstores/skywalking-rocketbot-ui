@@ -35,24 +35,30 @@ export default class RkEcharts extends Vue {
   @Action('STOP_REAL_TIME') private STOP_REAL_TIME:any;
   @Action('CLEAR_CHARTS') private CLEAR_CHARTS: any;
   private myChart: any = {};
-  private mousedownX: any = '';
-  private mousedownY: any = '';
-  private mouseupX: any = '';
-  private mouseupY: any = '';
-  private brushStatus: Boolean = false;
-
-  
+  private min: any = '';
+  private max: any = '';
+  private start: any = '';
+  private end: any = '';
+  private query:any = {
+	  min:'',
+	  max:'',
+	  start:'',
+	  end:'',
+	  service:'',
+	  serviceKey:''
+  }
   private mounted(): void {
     this.drawEcharts();
     window.addEventListener('resize', this.myChart.resize);
 	// this.$nextTick(()=>{
 	// 	console.log("完成")
 	// })
-
   }
+
   private beforeDestroy(): void {
     window.removeEventListener('resize', this.myChart.resize);
   }
+
   @Watch('option', { deep: true })
   private onoptionChanged(newVal: any, oldVal: any): void {
     if (this.myChart) {
@@ -64,7 +70,6 @@ export default class RkEcharts extends Vue {
     } else {
       this.drawEcharts();
     }
-	
   }
   
   private drawEcharts(): void {
@@ -73,84 +78,49 @@ export default class RkEcharts extends Vue {
     this.myChart = echarts.init(el, '');
 	let zr=this.myChart.getZr();
 	    zr.on('mousedown',(params:any)=>{
-			//this.$emit('stopTiming');
-			if(this.brushStatus){
-				this.STOP_REAL_TIME(true)
-			}else{
-				this.STOP_REAL_TIME(false)
-			}
-
-	        let pointInPixel = [params.offsetX, params.offsetY];
-	        let pointInGrid = this.myChart.convertFromPixel('grid', pointInPixel);
-	
-	        if (this.myChart.containPixel('grid', pointInPixel)) {
-	            this.mousedownX = parseInt(this.myChart.getOption().xAxis[0].axisPointer.value)
-	            this.mousedownY = Math.ceil(this.myChart.getOption().yAxis[0].axisPointer.value)
-	        }
+			this.STOP_REAL_TIME(false)
+			// this.$emit('stopTiming');
+			this.STOP_REAL_TIME(true)
 	    })
 		
-		let zr1=this.myChart.getZr();
-		    zr1.on('mouseup',(params:any)=>{
-		        let pointInPixel = [params.offsetX, params.offsetY];
-		        let pointInGrid = this.myChart.convertFromPixel('grid', pointInPixel);
-		
-		        if (this.myChart.containPixel('grid', pointInPixel)) {
-		            this.mouseupX = parseInt(this.myChart.getOption().xAxis[0].axisPointer.value)
-					this.mouseupY = Math.ceil(this.myChart.getOption().yAxis[0].axisPointer.value)
-		        }
-
+		zr.on('mouseup',(params:any)=>{
+			if(this.min !== this.max && this.start !== this.end){
 				setTimeout(()=>{
-					if(this.mouseupX != '' && this.mouseupX != null && this.mouseupY != '' && this.mouseupY != null){
-						
-						let min = ''
-						let max = ''
-						let start = ''
-						let end = ''
-						
-						let query: any = {
-						  min,
-						  max,
-						  start,
-						  end,
-						  service:this.stateDashboardOption.currentService.label,
-						  serviceKey:this.stateDashboardOption.currentService.key
-						}
-						
-						if(this.mousedownY <= this.mouseupY){
-							query.min = this.mousedownY
-							query.max = this.mouseupY
-						}else{
-							query.min = this.mouseupY
-							query.max = this.mousedownY
-						}
-						
-						if(this.mousedownX <= this.mouseupX){
-							query.start = this.getTimeRange(this.xAxisData[this.mousedownX])
-							query.end = this.getTimeRange(this.xAxisData[this.mouseupX])
-						}else{
-							query.start = this.getTimeRange(this.xAxisData[this.mouseupX])
-							query.end = this.getTimeRange(this.xAxisData[this.mousedownX])
-						}
-						
-						if(this.mousedownY != this.mouseupY && this.mousedownX != this.mouseupX){
-							this.$router.push({
-							  path: '/trace',
-							  query
-							});
-						}
-					}
+					this.$router.push({
+						path: '/trace',
+						query:this.query
+					});
 				},1000)
 				this.STOP_REAL_TIME(false)
-
-		    })
+			}
+		})
 	this.myChart.setOption(this.option);
 
+	this.myChart.dispatchAction({
+        type: 'takeGlobalCursor',
+        key: 'brush',
+        brushOption: {
+            brushType: 'rect',
+        }
+    });
+	//框选获取横纵坐标
 	this.myChart.on('brushSelected', this.stopRealTime);
-	
   }
 
   private stopRealTime(params:any) {
-	this.brushStatus = !this.brushStatus
+	if(params.batch[0].areas.length >0){
+		this.min = params.batch[0].areas[0].coordRange[1][0]
+		this.max = params.batch[0].areas[0].coordRange[1][1]
+		this.start = params.batch[0].areas[0].coordRange[0][0]
+		this.end = params.batch[0].areas[0].coordRange[0][1]
+
+		this.query.min = Math.floor(this.min<0 ?0 :this.min)
+		this.query.max = Math.floor(this.max>10000 ?10000 :this.max)
+		this.query.start = this.getTimeRange(this.xAxisData[this.start<0 ?0 :this.start])
+		this.query.end = this.getTimeRange(this.xAxisData[this.end>399 ?399 :this.end])
+		this.query.service = this.stateDashboardOption.currentService.label,
+	    this.query.serviceKey = this.stateDashboardOption.currentService.key
+	}
   }
 
   private destroyed () {

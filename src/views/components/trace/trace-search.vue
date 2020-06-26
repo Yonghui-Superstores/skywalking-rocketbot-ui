@@ -214,15 +214,6 @@ export default class TraceTool extends Vue {
     }
   }
   private mounted() {
-    // if(this.stateDashboardOption.currentService.key != null && this.stateDashboardOption.currentService.label != null){
-    //   this.service = this.stateDashboardOption.currentService
-    // }else{
-    //   this.service = {label: 'All', key: ''}
-    // }
-    
-    // if (this.start && this.end) {
-    //   this.SET_DURATION(timeFormat([new Date(this.start),new Date(this.end)]))
-    // }
     // 这里的this.time 如果有数据来自于url，就从url里面获取否则来自于全局的这个
     this.time = [this.rocketbotGlobal.durationRow.start, this.rocketbotGlobal.durationRow.end];
     if (this.start && this.end) {
