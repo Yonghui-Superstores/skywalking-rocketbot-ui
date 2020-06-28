@@ -29,7 +29,7 @@ import timeFormat from '@/utils/timeFormat';
 
 @Component
 export default class Heatmap extends Vue {
-  @Prop() private title!: string;
+  // @Prop() private title!: string;
   @Prop() private type!: string;
   @Prop() private data!: any;
   @Prop() private intervalTime!: any;
@@ -101,7 +101,7 @@ export default class Heatmap extends Vue {
   }
   private mounted() {
     const chart: any = this.$refs.chart;
-    if (this.title == 'Global Heatmap') {
+    if (this.type == 'Global Heatmap') {
       chart.myChart.on('click', (params: any) => {
         let data = params.data
         if (data[2] > 0) {

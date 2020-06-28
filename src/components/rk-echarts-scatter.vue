@@ -115,11 +115,11 @@ export default class RkEcharts extends Vue {
 		this.end = params.batch[0].areas[0].coordRange[0][1]
 
 		this.query.min = Math.floor(this.min<0 ?0 :this.min)
-		this.query.max = Math.floor(this.max>10000 ?10000 :this.max)
+		this.query.max = this.max>=10000 ?'' :Math.floor(this.max)    
 		this.query.start = this.getTimeRange(this.xAxisData[this.start<0 ?0 :this.start])
 		this.query.end = this.getTimeRange(this.xAxisData[this.end>399 ?399 :this.end])
 		this.query.service = this.stateDashboardOption.currentService.label,
-	    this.query.serviceKey = this.stateDashboardOption.currentService.key
+	  this.query.serviceKey = this.stateDashboardOption.currentService.key
 	}
   }
 

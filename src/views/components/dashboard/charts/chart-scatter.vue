@@ -363,11 +363,11 @@ export default class Request extends Vue {
                 },
 
             },
-            formatter: function(params:any) {
+            formatter:(params:any) =>{
                 if (params.value.length > 1) {
                     return '时间: ' +
-                        // getTime(params.value[0]) + '<br/> ' +'响应时间: '+
-                        params.name + '<br/> ' +'响应时间: '+
+                        // params.name + '<br/> ' +'响应时间: '+
+                        this.xAxisData[Math.round(params.value[0])] + '<br/> ' +'响应时间: '+
                         params.value[1] + ' ms ';
 
                     function getTime(value:any) {
@@ -384,7 +384,6 @@ export default class Request extends Vue {
                         params.value + ' time ';
                 }
             },
-
         },
         brush: {
             toolbox: ['rect'],
