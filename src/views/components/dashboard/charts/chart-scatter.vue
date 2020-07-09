@@ -326,11 +326,11 @@ export default class Request extends Vue {
 	
   get option() {
     return {
-      animation:false,
+        animation:false,
         legend: {
             top: 0,
             right: 0,
-            data: ['success', 'failure'],
+            data: ['Success', 'Error'],
             itemWidth:10,
             itemHeight:10,
             textStyle: {
@@ -387,7 +387,9 @@ export default class Request extends Vue {
         },
         brush: {
             toolbox: ['rect'],
-            xAxisIndex: 0,
+            xAxisIndex: 'all',
+            throttleType: 'debounce',//开启选中延迟后调用回调延迟
+            throttleDelay: 1000,//选中延迟后调用回调延迟时间
         },
         xAxis: [{
             type: 'category',
@@ -416,7 +418,7 @@ export default class Request extends Vue {
             scale: true,
             minInterval:1,
             min:0,
-            max: 10000,
+            max: 9000,
             axisLabel: { color: '#9da5b2', fontSize: '11' },
             nameTextStyle: {
                 color: '#3259B8',
@@ -438,7 +440,7 @@ export default class Request extends Vue {
             }
         }],
         series: [{
-            name: 'success',
+            name: 'Success',
             type: 'scatter',
             color:'#24b7f2',
             data: this.successData,
@@ -449,7 +451,7 @@ export default class Request extends Vue {
             progressiveThreshold: 80000,
         },
         {
-            name: 'failure',
+            name: 'Error',
             type: 'scatter',
             color:'#FF6347',
             data: this.failureData,

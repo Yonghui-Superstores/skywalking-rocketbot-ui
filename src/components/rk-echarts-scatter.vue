@@ -35,6 +35,7 @@ export default class RkEcharts extends Vue {
   @Action('STOP_REAL_TIME') private STOP_REAL_TIME:any;
   @Action('CLEAR_CHARTS') private CLEAR_CHARTS: any;
   private myChart: any = {};
+  private isJump: Boolean = true;
   private min: any = '';
   private max: any = '';
   private start: any = '';
@@ -45,7 +46,8 @@ export default class RkEcharts extends Vue {
 	  start:'',
 	  end:'',
 	  service:'',
-	  serviceKey:''
+    serviceKey:'',
+    traceState:'ALL'
   }
   private mounted(): void {
     this.drawEcharts();
@@ -71,40 +73,65 @@ export default class RkEcharts extends Vue {
       this.drawEcharts();
     }
   }
-  
   private drawEcharts(): void {
     const el: any = this.$el;
-	
     this.myChart = echarts.init(el, '');
-	let zr=this.myChart.getZr();
-	    zr.on('mousedown',(params:any)=>{
-			this.STOP_REAL_TIME(false)
-			// this.$emit('stopTiming');
-			this.STOP_REAL_TIME(true)
-	    })
+
+    this.myChart.on('legendselectchanged',(v:any)=>{
+      if(v.selected.Success){
+        this.query.traceState = 'SUCCESS'
+      }
+      if(v.selected.Error){
+        this.query.traceState = 'ERROR'
+      }
+      if(v.selected.Success && v.selected.Error){
+        this.query.traceState = 'ALL'
+      }
+      if(!v.selected.Success && !v.selected.Error){
+        this.query.traceState = 'Invalid'
+      }
+      this.myChart.dispatchAction({
+           type: 'brush',
+           xAxisIndex:'all',
+           areas:[]
+       });
+      this.isJump = false
+    })
+	
+    let zr=this.myChart.getZr();
+        zr.on('mousedown',(params:any)=>{
+        this.STOP_REAL_TIME(false)
+        // this.$emit('stopTiming');
+        this.isJump = true
+        this.STOP_REAL_TIME(true)
+        })
 		
-		zr.on('mouseup',(params:any)=>{
-			if(this.min !== this.max && this.start !== this.end){
-				setTimeout(()=>{
-					this.$router.push({
-						path: '/trace',
-						query:this.query
-					});
-				},1000)
-				this.STOP_REAL_TIME(false)
-			}
-		})
+		// zr.on('mouseup',(params:any)=>{
+		// 		setTimeout(()=>{
+    //       if(this.isJump && this.query.traceState !== "Invalid" && this.query.min !== this.query.max && this.query.start !== this.query.end){
+    //           let routeUrl = this.$router.resolve({path: '/trace',query:this.query})
+    //           window.open(routeUrl.href,'_blank')
+    //           this.query.min = 0
+    //           this.query.max = 0
+    //           this.STOP_REAL_TIME(false)
+    //       }
+    //       this.myChart.dispatchAction({
+    //           type: 'brush',
+    //           areas:[]
+    //       });
+    //     },1000)
+		// })
 	this.myChart.setOption(this.option);
 
 	this.myChart.dispatchAction({
-        type: 'takeGlobalCursor',
-        key: 'brush',
-        brushOption: {
-            brushType: 'rect',
-        }
-    });
+      type: 'takeGlobalCursor',
+      key: 'brush',
+      brushOption: {
+          brushType: 'rect',
+      }
+  });
 	//框选获取横纵坐标
-	this.myChart.on('brushSelected', this.stopRealTime);
+  this.myChart.on('brushSelected', this.stopRealTime);
   }
 
   private stopRealTime(params:any) {
@@ -115,11 +142,24 @@ export default class RkEcharts extends Vue {
 		this.end = params.batch[0].areas[0].coordRange[0][1]
 
 		this.query.min = Math.floor(this.min<0 ?0 :this.min)
-		this.query.max = this.max>=10000 ?'' :Math.floor(this.max)    
+		this.query.max = this.max>=9000 ?'' :Math.floor(this.max)    
 		this.query.start = this.getTimeRange(this.xAxisData[this.start<0 ?0 :this.start])
 		this.query.end = this.getTimeRange(this.xAxisData[this.end>399 ?399 :this.end])
 		this.query.service = this.stateDashboardOption.currentService.label,
-	  this.query.serviceKey = this.stateDashboardOption.currentService.key
+    this.query.serviceKey = this.stateDashboardOption.currentService.key
+    
+    if(this.isJump && this.query.traceState !== "Invalid" && this.query.min !== this.query.max && this.query.start !== this.query.end){
+        let routeUrl = this.$router.resolve({path: '/trace',query:this.query})
+        window.open(routeUrl.href,'_blank')
+        this.query.min = 0
+        this.query.max = 0
+        this.STOP_REAL_TIME(false)
+    }
+    this.myChart.dispatchAction({
+        type: 'brush',
+        areas:[]
+    });
+
 	}
   }
 

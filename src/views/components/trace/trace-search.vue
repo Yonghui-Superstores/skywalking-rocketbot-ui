@@ -187,7 +187,7 @@ export default class TraceTool extends Vue {
     // this.GET_TRACELIST();
   }
   private created() {
-    const {endpoint, service, serviceKey, instance, instanceKey, min, max, start, end, tId} = this.$route.query;
+    const {endpoint, service, serviceKey, instance, instanceKey, min, max, start, end, tId, traceState} = this.$route.query;
     if (endpoint !== undefined) {
       this.endpointName = endpoint.toString().trim();
     }
@@ -207,7 +207,21 @@ export default class TraceTool extends Vue {
     if (end != undefined) {
       this.end = end
     }
-
+    if (traceState != undefined) {
+        switch (traceState) {
+          case 'SUCCESS':
+            this.traceState = {label:'Success',key:'SUCCESS'}
+            break;
+          case 'ERROR':
+            this.traceState = {label:'Error',key:'ERROR'}
+            break;
+          case 'ALL':
+            this.traceState = {label:'All',key:'ALL'}
+            break;
+          default:
+            break;
+        }
+    }
     // 端点 slow endpoint跳转
     if (tId != undefined) {
       this.traceId = <string>tId
