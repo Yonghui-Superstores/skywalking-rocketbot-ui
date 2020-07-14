@@ -105,22 +105,6 @@ export default class RkEcharts extends Vue {
         this.isJump = true
         this.STOP_REAL_TIME(true)
         })
-		
-		// zr.on('mouseup',(params:any)=>{
-		// 		setTimeout(()=>{
-    //       if(this.isJump && this.query.traceState !== "Invalid" && this.query.min !== this.query.max && this.query.start !== this.query.end){
-    //           let routeUrl = this.$router.resolve({path: '/trace',query:this.query})
-    //           window.open(routeUrl.href,'_blank')
-    //           this.query.min = 0
-    //           this.query.max = 0
-    //           this.STOP_REAL_TIME(false)
-    //       }
-    //       this.myChart.dispatchAction({
-    //           type: 'brush',
-    //           areas:[]
-    //       });
-    //     },1000)
-		// })
 	this.myChart.setOption(this.option);
 
 	this.myChart.dispatchAction({

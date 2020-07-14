@@ -177,6 +177,9 @@ const actions: ActionTree<State, any> = {
       .query('queryInstances')
       .params({serviceId: context.state.currentService.key, ...params})
       .then((res: AxiosResponse) => {
+        if(res.data.data.getServiceInstances.length > 0){
+          context.commit('SET_CURRENT_INSTANCE', res.data.data.getServiceInstances[0].key);
+        }
         context.commit(types.SET_INSTANCES, res.data.data.getServiceInstances);
       });
   },
