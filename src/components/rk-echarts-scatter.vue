@@ -138,12 +138,16 @@ export default class RkEcharts extends Vue {
         this.query.min = 0
         this.query.max = 0
         this.STOP_REAL_TIME(false)
+        this.myChart.dispatchAction({
+            type: 'axisAreaSelect',
+            intervals: []
+        });
+        this.myChart.dispatchAction({
+            type: 'brush',
+            command: 'clear',
+            areas: []
+        });
     }
-    this.myChart.dispatchAction({
-        type: 'brush',
-        areas:[]
-    });
-
 	}
   }
 
