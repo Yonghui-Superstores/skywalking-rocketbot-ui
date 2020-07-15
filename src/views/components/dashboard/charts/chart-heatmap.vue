@@ -167,8 +167,9 @@ export default class Heatmap extends Vue {
       return [this.dateToString(startDateObj), this.dateToString(endDateObj)]
 
   }
+  //兼容Safari时间格式为YYYY/MM/DD HH:mm:ss,之前为YYYY-MM-DD HH:mm:ss
   private dateToString(obj: any) {
-    return obj.format('YYYY-MM-DD HH:mm:ss')
+    return obj.format('YYYY/MM/DD HH:mm:ss')
   }
 }
 </script>

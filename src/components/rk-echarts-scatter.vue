@@ -127,8 +127,8 @@ export default class RkEcharts extends Vue {
 
 		this.query.min = Math.floor(this.min<0 ?0 :this.min)
 		this.query.max = this.max>=9000 ?'' :Math.floor(this.max)    
-		this.query.start = this.getTimeRange(this.xAxisData[this.start<0 ?0 :this.start])
-		this.query.end = this.getTimeRange(this.xAxisData[this.end>399 ?399 :this.end])
+		this.query.start = this.dataCompatible(this.xAxisData[this.start<0 ?0 :this.start])
+		this.query.end = this.dataCompatible(this.xAxisData[this.end>399 ?399 :this.end])
 		this.query.service = this.stateDashboardOption.currentService.label,
     this.query.serviceKey = this.stateDashboardOption.currentService.key
     
@@ -161,6 +161,14 @@ export default class RkEcharts extends Vue {
 	  let year = new Date().getFullYear()
 	  let timeArr = params.split(/\n/)
 	  return year+"-"+ timeArr[1]+ " " + timeArr[0]
+  }
+
+    //兼容Safari，
+  private dataCompatible(time:any){
+    let year = new Date().getFullYear()
+    let timeArr = time.split(/\n/)
+    let newTime = year+"-"+ timeArr[1]+ " " + timeArr[0]
+    return newTime.replace(/-/g, "/");
   }
 }
 </script>
