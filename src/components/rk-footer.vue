@@ -60,6 +60,11 @@ export default class Footer extends Vue {
 
   @Watch('time')
   private onTimeUpdate() {
+    if(this.time[0] > this.time[1]){
+      let transit = this.time[1]
+      this.time[1] = this.time[0]
+      this.time[0] = transit
+    }
     this.SET_DURATION(timeFormat(this.time));
   }
   @Watch('utc')

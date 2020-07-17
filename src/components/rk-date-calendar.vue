@@ -236,7 +236,7 @@ export default {
         minute,
         second
       );
-      const t = $this.parse(time);
+      let t = $this.parse(time);
       const f = $this.$parent.tf;
       const classObj = {};
       let flag = false;
@@ -248,13 +248,26 @@ export default {
         flag = f($this.value, format) === f(time, format);
       }
       classObj[`${$this.pre}-date`] = true;
-      classObj[`${$this.pre}-date-disabled`] =
+
+      let endTime = this.getTime(t)
+      let startTime = this.getTime($this.start)
+      if(endTime === startTime){
+        t = new Date(endTime+" 23:59:59").getTime()/1000
+      }
+      classObj[`${$this.pre}-date-disabled`] = 
         ($this.right && t < $this.start) ||
         $this.$parent.disabledDate(time, format);
       classObj[`${$this.pre}-date-on`] =
         ($this.left && t > $this.start) || ($this.right && t < $this.end);
       classObj[`${$this.pre}-date-selected`] = flag;
       return classObj;
+    },
+    getTime(t){
+        let time = new Date(t*1000)
+        let y = time.getFullYear()
+        let m = time.getMonth()+1
+        let d = time.getDate()
+        return y+"-"+m+"-"+d
     },
     nm() {
       if (this.month < 11) {

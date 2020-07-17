@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component,Watch } from 'vue-property-decorator';
 import { Action, Getter, State } from 'vuex-class';
 import { Trace } from '@/types/trace';
 import { DurationTime, Option } from '@/types/global';
@@ -225,6 +225,17 @@ export default class TraceTool extends Vue {
     // 端点 slow endpoint跳转
     if (tId != undefined) {
       this.traceId = <string>tId
+    }
+  }
+
+  @Watch('time')
+  private onTimeUpdate() {
+    if(this.time[0] > this.time[1]){
+      let transit = this.time[1]
+      this.time[1] = this.time[0]
+      this.time[0] = transit
+      this.SET_DURATION(timeFormat(this.time));
+      this.getTraceList();
     }
   }
   private mounted() {

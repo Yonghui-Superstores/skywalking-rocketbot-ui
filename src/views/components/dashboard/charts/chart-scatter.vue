@@ -176,7 +176,7 @@ export default class Request extends Vue {
 
             this.xAxisData = []
             if(this.step ==2){
-                for (let i = startTime; i <= endTime; i+= this.xAxisStep) {
+                for (let i = startTime; i <= endTime; i+= Math.floor(this.xAxisStep)) {
                     this.xAxisData.push(this.getAxisTime(i))
                 }
             }else{
