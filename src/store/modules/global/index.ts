@@ -103,6 +103,7 @@ export interface State {
   edit: boolean;
   lock: boolean;
   utc: string | number;
+  userAuth: boolean;
 }
 
 const initState: State = {
@@ -112,6 +113,7 @@ const initState: State = {
   edit: false,
   lock: true,
   utc: window.localStorage.getItem('utc') || -(new Date().getTimezoneOffset() / 60),
+  userAuth: false,
 };
 
 // getters
@@ -175,6 +177,9 @@ const mutations: MutationTree<State> = {
   },
   [types.SET_UTC](state: State, data: number): void {
     state.utc = data;
+  },
+  [types.SET_USERAUTH](state: State, data: boolean): void {
+    state.userAuth = data;
   },
   [types.SET_EVENTS](state: State, data: any[]): void {
     state.eventStack = data;

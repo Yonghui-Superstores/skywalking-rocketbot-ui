@@ -23,6 +23,8 @@ import { AxiosResponse } from 'axios';
 import { ActionTree, Commit, Dispatch, MutationTree } from 'vuex';
 
 export interface State {
+  project: any;
+  projects: Option[];
   services: Option[];
   instances: Option[];
   traceForm: any;
@@ -33,6 +35,8 @@ export interface State {
 }
 
 const initState: State = {
+  project: {},
+  projects: [],
   services: [],
   instances: [],
   traceForm: {
@@ -57,6 +61,10 @@ const getters = {};
 
 // mutations
 const mutations: MutationTree<State> = {
+  [types.SET_PROJECTS](state: State, data: Option[]): void {
+    state.projects = [{ label: 'All', key: '' }].concat(data);
+    // state.project = data[0];
+  },
   [types.SET_SERVICES](state: State, data: Option[]): void {
     state.services = [{ label: 'All', key: '' }].concat(data);
   },
@@ -111,7 +119,25 @@ const mutations: MutationTree<State> = {
 
 // actions
 const actions: ActionTree<State, any> = {
-  GET_SERVICES(context: { commit: Commit }, params: { duration: any; keyword: string }): Promise<void> {
+  // tslint:disable-next-line:max-line-length
+  GET_PROJECTS(context: { commit: Commit }, params: { duration: any; projectNames: any }) {
+    let projectIds: any[] = [];
+    const projects = window.localStorage.getItem('projectIds');
+    if ( projects !== null) {
+      projectIds = JSON.parse(projects);
+    }
+    if (!params.projectNames) {
+      params.projectNames = projectIds;
+    }
+    return graph
+      .query('queryProjects')
+      .params(params)
+      .then((res: AxiosResponse) => {
+        context.commit(types.SET_PROJECTS, res.data.data.projects);
+      });
+  },
+  // tslint:disable-next-line:max-line-length
+  GET_SERVICES(context: { commit: Commit }, params: { duration: any; keyword: string, projectId: string}): Promise<void> {
     if (!params.keyword) {
       params.keyword = '';
     }

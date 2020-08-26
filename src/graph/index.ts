@@ -47,7 +47,13 @@ class Graph {
         variables: variablesData,
       },
       { cancelToken: cancelToken() },
-    );
+    ).then((response) => {
+      const { headers: {invalid, url} } = response;
+      if (invalid === 'true') {
+        window.location.href = url;
+      }
+      return response;
+    });
   }
 }
 

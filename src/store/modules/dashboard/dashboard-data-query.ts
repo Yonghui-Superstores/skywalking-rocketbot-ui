@@ -36,7 +36,8 @@ const actions: ActionTree<State, any> = {
       type: string;
     },
   ) {
-    const { currentDatabase, currentEndpoint, currentInstance, currentService } = context.rootState.rocketOption;
+    // tslint:disable-next-line:max-line-length
+    const { currentDatabase, currentEndpoint, currentInstance, currentService, currentProject } = context.rootState.rocketOption;
     const dashboard: string = `${window.localStorage.getItem('dashboard')}`;
     const tree = dashboard ? JSON.parse(dashboard) : context.state.tree;
     const normal = params.type ? true : tree[context.state.group].type === 'database' ? false : true;
@@ -63,6 +64,7 @@ const actions: ActionTree<State, any> = {
     // remove the space at the beginning and end of the string
     const metricNames = config.metricName.split(',').map((item: string) => item.replace(/^\s*|\s*$/g, ''));
     const labelsIndex = (config.labelsIndex || '').split(',').map((item: string) => item.replace(/^\s*|\s*$/g, ''));
+    const currentProjectId = config.independentSelector ? config.currentProject : currentProject.label;
     const currentServiceId = config.independentSelector ? config.currentService : currentService.label;
     const currentInstanceId = config.independentSelector ? config.currentInstance : currentInstance.label;
     const currentEndpointId = config.independentSelector ? config.currentEndpoint : currentEndpoint.label;
@@ -95,6 +97,32 @@ const actions: ActionTree<State, any> = {
               },
               labels,
             };
+      } else if (config.entityType === 'Project') {
+        variables = names.includes(config.queryMetricType)
+          ? {
+              duration: params.duration,
+              condition: {
+                name,
+                parentService: null,
+                projectName: currentProjectId,
+                normal: true,
+                scope: config.entityType,
+                topN: 10,
+                order: config.sortOrder || 'DES',
+              },
+            }
+          : {
+              duration: params.duration,
+              condition: {
+                name,
+                entity: {
+                  projectName: currentProjectId,
+                  scope: config.entityType,
+                  normal: true,
+                },
+              },
+              labels,
+            };
       } else {
         if (names.includes(config.queryMetricType)) {
           const parentService = normal ? currentServiceId : currentDatabaseId;
@@ -106,6 +134,7 @@ const actions: ActionTree<State, any> = {
             duration: params.duration,
             condition: {
               name,
+              projectName: currentProjectId,
               parentService: config.parentService ? parentService : null,
               normal,
               scope: normal ? config.entityType : config.parentService ? 'Service' : config.entityType,

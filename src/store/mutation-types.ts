@@ -39,6 +39,7 @@ export const CLEAR_CHARTS = 'CLEAR_CHARTS';
 export const SET_LOCK = 'SET_LOCK';
 export const SET_EDIT = 'SET_EDIT';
 export const SET_UTC = 'SET_UTC';
+export const SET_USERAUTH = 'SET_USERAUTH';
 
 // dashboard
 export const SET_GLOBAL = 'SET_GLOBAL';
@@ -55,6 +56,7 @@ export const SET_ENDPOINT_INFO = 'SET_ENDPOINT_INFO';
 export const SET_INSTANCES = 'SET_INSTANCES';
 export const SET_CURRENT_INSTANCE = 'SET_CURRENT_INSTANCE';
 export const SET_INSTANCE_INFO = 'SET_INSTANCE_INFO';
+export const SET_PROJECTS = 'SET_PROJECTS';
 
 // alarm
 export const SET_ALARM = 'SET_ALARM';

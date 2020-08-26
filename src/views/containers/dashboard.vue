@@ -99,6 +99,7 @@ limitations under the License. -->
       this.MIXHANDLE_GET_OPTION({
         compType: this.compType,
         duration: this.durationTime,
+        projectId: this.stateDashboardOption.currentProject.key,
         keywordServiceName:
           this.rocketComps.tree[this.rocketComps.group] && this.rocketComps.tree[this.rocketComps.group].serviceFilter,
       });

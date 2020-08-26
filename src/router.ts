@@ -24,6 +24,8 @@ import Trace from './views/containers/trace.vue';
 import Topology from './views/containers/topology/topology.vue';
 import Alarm from './views/containers/alarm.vue';
 import Profile from './views/containers/profile.vue';
+import store from './store/modules/global';
+import Axios from 'axios';
 
 Vue.use(Router);
 window.axiosCancel = [];
@@ -68,6 +70,24 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
+  if (to.path === '/' && to.query.projectId) {
+    const defaultProjectId: string = to.query.projectId as string;
+    window.localStorage.setItem('defaultProjectId', defaultProjectId);
+    let projectIds: any[] = [];
+
+    Axios.get('/user/admin').then( (res) => {
+      // tslint:disable-next-line:no-empty
+      if ( res.data.code === 200 ) {
+        store.state.userAuth = res.data.data.admin;
+      }
+    });
+
+    Axios.get('/user/projects').then( (res) => {
+      projectIds = res.data.data.projects;
+      window.localStorage.setItem('projectIds', JSON.stringify(projectIds));
+    });
+
+  }
   const token = window.localStorage.getItem('skywalking-authority');
   if (window.axiosCancel.length !== 0) {
     for (const func of window.axiosCancel) {

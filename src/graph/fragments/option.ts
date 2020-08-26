@@ -15,10 +15,20 @@
  * limitations under the License.
  */
 
-export const Services = {
-  variable: ['$duration: Duration!', '$keyword: String!'],
+export const Projects = {
+  variable: ['$duration: Duration!', '$projectNames: [String!]!'],
   query: `
-    services: searchServices(duration: $duration, keyword: $keyword) {
+    projects: getProjects(duration: $duration, projectNames: $projectNames) {
+      key: id
+      label: name
+    }
+  `,
+};
+
+export const Services = {
+  variable: ['$duration: Duration!', '$keyword: String!', '$projectId: String!'],
+  query: `
+    services: searchServices(duration: $duration, keyword: $keyword, projectId: $projectId) {
       key: id
       label: name
     }

@@ -15,7 +15,7 @@ limitations under the License. -->
 
 <template>
   <div class="flex-h btn-box">
-    <div class="rk-dashboard-bar-btn">
+    <div class="rk-dashboard-bar-btn" v-if="rocketGlobal.userAuth">
       <span v-tooltip:bottom="{ content: rocketGlobal.edit ? 'view' : 'edit' }">
         <svg
           class="icon lg vm cp rk-btn ghost"

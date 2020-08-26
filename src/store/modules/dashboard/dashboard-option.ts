@@ -21,6 +21,8 @@ import { AxiosResponse } from 'axios';
 import graph from '@/graph';
 
 export interface State {
+  projects: any[];
+  currentProject: any;
   services: any[];
   currentService: any;
   databases: any;
@@ -33,6 +35,8 @@ export interface State {
 }
 
 const initState: State = {
+  projects: [],
+  currentProject: {},
   services: [],
   currentService: {},
   endpoints: [],
@@ -49,6 +53,15 @@ const getters = {};
 
 // mutations
 const mutations: MutationTree<State> = {
+  [types.SET_PROJECTS](state: State, data: any) {
+    state.projects = data;
+    state.currentProject = data[0] || {};
+  },
+  [types.SET_CURRENT_PROJECT](state: State, project: any) {
+    state.currentProject = project;
+    state.updateDashboard = project;
+  },
+
   [types.SET_SERVICES](state: State, data: any) {
     state.services = data;
     state.currentService = data[0] || {};
@@ -107,9 +120,28 @@ const mutations: MutationTree<State> = {
 
 // actions
 const actions: ActionTree<State, any> = {
-  GET_SERVICES(context: { commit: Commit }, params: { duration: any; keyword: string }) {
+  GET_PROJECTS(context: { commit: Commit }, params: { duration: any; projectNames: any }) {
+    let projectIds: any[] = [];
+    const projects = window.localStorage.getItem('projectIds');
+    if ( projects !== null) {
+      projectIds = JSON.parse(projects);
+    }
+    if (!params.projectNames) {
+      params.projectNames = projectIds;
+    }
+    return graph
+      .query('queryProjects')
+      .params(params)
+      .then((res: AxiosResponse) => {
+        context.commit(types.SET_PROJECTS, res.data.data.projects);
+      });
+  },
+  GET_SERVICES(context: { commit: Commit; state: any }, params: { duration: any; keyword: string , projectId: string}) {
     if (!params.keyword) {
       params.keyword = '';
+    }
+    if (!params.projectId) {
+      params.projectId = context.state.currentProject.key;
     }
     return graph
       .query('queryServices')
@@ -141,6 +173,18 @@ const actions: ActionTree<State, any> = {
         context.commit(types.SET_ENDPOINTS, res.data.data.endpoints);
       });
   },
+  GET_SERVICE_SERVICES(context: { commit: Commit; state: any }, params: any) {
+    if (!context.state.currentProject.key) {
+      context.commit(types.SET_PROJECTS, []);
+      return;
+    }
+    return graph
+      .query('queryServices')
+      .params({ projectId: context.state.currentProject.key || '', ...params })
+      .then((res: AxiosResponse) => {
+        context.commit(types.SET_SERVICES, res.data.data.services);
+      });
+  },
   GET_SERVICE_INSTANCES(context: { commit: Commit; state: any }, params: any) {
     if (!context.state.currentService.key) {
       context.commit(types.SET_INSTANCES, []);
@@ -168,6 +212,15 @@ const actions: ActionTree<State, any> = {
       .then((res: AxiosResponse) => {
         context.commit(types.SET_DATABASES, res.data.data.services);
       });
+  },
+  SELECT_PROJECT(context: { commit: Commit; dispatch: Dispatch }, params: any) {
+    if (!params.project.key) {
+      return;
+    }
+    context.commit('SET_CURRENT_PROJECT', params.project);
+    context.dispatch('GET_SERVICE_SERVICES', { duration: params.duration, keyword: '' });
+    context.dispatch('GET_SERVICE_ENDPOINTS', {});
+    context.dispatch('GET_SERVICE_INSTANCES', { duration: params.duration });
   },
   SELECT_SERVICE(context: { commit: Commit; dispatch: Dispatch }, params: any) {
     if (!params.service.key) {
@@ -197,7 +250,9 @@ const actions: ActionTree<State, any> = {
     switch (params.compType) {
       case 'service':
         return context
-          .dispatch('GET_SERVICES', { duration: params.duration, keyword: params.keywordServiceName })
+          .dispatch('GET_PROJECTS', { duration: params.duration, projectNames: params.projectNames })
+          // tslint:disable-next-line:max-line-length
+          .then(() => context.dispatch('GET_SERVICES', { duration: params.duration, keyword: params.keywordServiceName, projectId: params.projectId }))
           .then(() => context.dispatch('GET_SERVICE_ENDPOINTS', {}))
           .then(() => context.dispatch('GET_SERVICE_INSTANCES', { duration: params.duration }));
       case 'database':

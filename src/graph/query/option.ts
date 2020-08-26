@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-import { Services, Endpoints, Instances, Database, OAPTimeInfo } from '../fragments/option';
+import { Projects, Services, Endpoints, Instances, Database, OAPTimeInfo } from '../fragments/option';
+
+export const queryProjects = `query queryProjects(${Projects.variable}) {${Projects.query}}`;
 
 export const queryServices = `query queryServices(${Services.variable}) {${Services.query}}`;
 

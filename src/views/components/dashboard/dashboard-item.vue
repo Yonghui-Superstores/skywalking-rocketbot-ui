@@ -21,7 +21,7 @@ limitations under the License. -->
       <span>{{ title }}</span>
       <span v-show="unit"> ( {{ unit }} ) </span>
       <span v-show="status === 'UNKNOWN'" class="item-status">( {{ $t('unknownMetrics') }} )</span>
-      <span v-show="!rocketGlobal.edit && !pageTypes.includes(type)" @click="editComponentConfig">
+      <span v-if="rocketGlobal.userAuth" v-show="!rocketGlobal.edit && !pageTypes.includes(type)" @click="editComponentConfig">
         <svg class="icon cp r">
           <use xlink:href="#lock"></use>
         </svg>

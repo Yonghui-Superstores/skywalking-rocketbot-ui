@@ -33,6 +33,14 @@ limitations under the License. -->
       </div>
       <ToolBarSelect
         v-if="compType === dashboardType.SERVICE"
+        @onChoose="selectProject"
+        :title="this.$t('currentProject')"
+        :current="stateDashboard.currentProject"
+        :data="stateDashboard.projects"
+        icon="package"
+      />
+      <ToolBarSelect
+        v-if="compType === dashboardType.SERVICE"
         @onChoose="selectService"
         :title="this.$t('currentService')"
         :current="stateDashboard.currentService"
@@ -87,6 +95,7 @@ limitations under the License. -->
     @Mutation('ADD_COMP') private ADD_COMP: any;
     @Mutation('SET_CURRENT_SERVICE_FILTER') private SET_CURRENT_SERVICE_FILTER: any;
     @Mutation('UPDATE_DASHBOARD') private UPDATE_DASHBOARD: any;
+    @Action('SELECT_PROJECT') private SELECT_PROJECT: any;
     @Action('SELECT_SERVICE') private SELECT_SERVICE: any;
     @Action('SELECT_DATABASE') private SELECT_DATABASE: any;
     @Action('SELECT_ENDPOINT') private SELECT_ENDPOINT: any;
@@ -99,6 +108,9 @@ limitations under the License. -->
         return 0;
       }
       return current[current.length - 1].k;
+    }
+    private selectProject(i: any) {
+      this.SELECT_PROJECT({ project: i, duration: this.durationTime });
     }
     private selectService(i: any) {
       this.SELECT_SERVICE({ service: i, duration: this.durationTime });

@@ -37,6 +37,13 @@ limitations under the License. -->
       <div class="flex-h">
         <TraceSelect
           :hasSearch="true"
+          :title="this.$t('project')"
+          :value="project"
+          @input="chooseProject"
+          :data="rocketTrace.projects"
+        />
+        <TraceSelect
+          :hasSearch="true"
           :title="this.$t('service')"
           :value="service"
           @input="chooseService"
@@ -124,12 +131,14 @@ limitations under the License. -->
     @Getter('durationTime') private durationTime: any;
     @Getter('duration') private duration: any;
     @Action('RESET_DURATION') private RESET_DURATION: any;
+    @Action('rocketTrace/GET_PROJECTS') private GET_PROJECTS: any;
     @Action('rocketTrace/GET_SERVICES') private GET_SERVICES: any;
     @Action('rocketTrace/GET_INSTANCES') private GET_INSTANCES: any;
     @Action('rocketTrace/GET_TRACELIST') private GET_TRACELIST: any;
     @Action('rocketTrace/SET_TRACE_FORM') private SET_TRACE_FORM: any;
     @Mutation('rocketTrace/SET_TRACE_FORM_ITEM')
     private SET_TRACE_FORM_ITEM: any;
+    private project: Option = { label: 'All', key: '' };
     private service: Option = { label: 'All', key: '' };
     private time!: Date[];
     private status: boolean = true;
@@ -151,7 +160,7 @@ limitations under the License. -->
       this.tagsList = localStorage.getItem('traceTags') ? JSON.parse(localStorage.getItem('traceTags') || '') : [];
     }
     private mounted() {
-      this.getTraceList();
+      this.GET_PROJECTS({ duration: this.durationTime });
       if (this.service && this.service.key) {
         this.GET_INSTANCES({
           duration: this.durationTime,
@@ -210,6 +219,20 @@ limitations under the License. -->
       };
     }
 
+    private chooseProject(i: any) {
+      if (this.project.key === i.key) {
+        return;
+      }
+      this.service = { label: 'All', key: '' };
+      this.instance = { label: 'All', key: '' };
+      this.project = i;
+      if (i.key === '') {
+        return;
+      }
+      this.GET_SERVICES({ duration: this.durationTime, projectId: i.key});
+      this.GET_INSTANCES({ duration: this.durationTime, serviceId: '' });
+    }
+
     private chooseService(i: any) {
       if (this.service.key === i.key) {
         return;
@@ -227,7 +250,6 @@ limitations under the License. -->
     }
 
     private getTraceList() {
-      this.GET_SERVICES({ duration: this.durationTime });
       const temp: any = {
         queryDuration: this.globalTimeFormat([
           new Date(
@@ -242,8 +264,18 @@ limitations under the License. -->
         traceState: this.traceState.key,
         paging: { pageNum: 1, pageSize: 15, needTotal: true },
         queryOrder: this.rocketTrace.traceForm.queryOrder,
+        projectIds: [],
       };
-
+      temp.projectIds = [];
+      if (this.project.key === '') {
+        this.rocketTrace.projects.forEach((element: any) => {
+          if ( element.key !== '' ) {
+            temp.projectIds.push(element.key);
+          }
+        });
+      } else {
+        temp.projectIds.push(this.project.key);
+      }
       if (this.service.key) {
         temp.serviceId = this.service.key;
       }
@@ -293,6 +325,7 @@ limitations under the License. -->
       localStorage.removeItem('maxTraceDuration');
       this.minTraceDuration = '';
       localStorage.removeItem('minTraceDuration');
+      this.project = this.rocketTrace.projects[0];
       this.service = { label: 'All', key: '' };
       this.instance = { label: 'All', key: '' };
       this.endpointName = '';
