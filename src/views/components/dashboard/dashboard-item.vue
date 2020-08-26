@@ -112,9 +112,9 @@ limitations under the License. -->
       if (!types.includes(this.updateObjects)) {
         return;
       }
-      setTimeout(() => {
-        this.chartRender();
-      }, 200);
+      // setTimeout(() => {
+      //   this.chartRender();
+      // }, 200);
     }
 
     private chartRender() {

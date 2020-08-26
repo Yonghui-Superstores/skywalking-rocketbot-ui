@@ -56,6 +56,7 @@ const mutations: MutationTree<State> = {
   [types.SET_PROJECTS](state: State, data: any) {
     state.projects = data;
     state.currentProject = data[0] || {};
+    state.updateDashboard = data[0];
   },
   [types.SET_CURRENT_PROJECT](state: State, project: any) {
     state.currentProject = project;

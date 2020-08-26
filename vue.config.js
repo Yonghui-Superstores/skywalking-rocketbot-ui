@@ -19,15 +19,18 @@ module.exports = {
   devServer: {
     proxy: {
       '/graphql': {
-        target: 'http://10.67.85.171:12800/',
+        // target: 'http://10.67.85.171:12800/',
 
-        // target: 'http://devtrace.itwork.yonghui.cn/',
+        target: 'http://devtrace.itwork.yonghui.cn/',
+        // target: `${process.env.SW_PROXY_TARGET || 'http://127.0.0.1:12800'}`,
+        // target: 'http://122.112.182.72:12800/',
         changeOrigin: true,
       },
       '/user': {
-        target: 'http://10.67.85.171:8080/',
+        // target: 'http://10.67.85.171:8080/',
 
-        // target: 'http://devtrace.itwork.yonghui.cn/',
+        target: 'http://devtrace.itwork.yonghui.cn/',
+        // target: 'http://122.112.182.72:8080/',
         changeOrigin: true,
       }
     },
