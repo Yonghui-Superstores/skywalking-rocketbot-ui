@@ -82,6 +82,75 @@ const readSampledRecords = {
   }`,
 };
 
+// 为了兼容散点创建了新的查询模版 readScatterDots
+const readScatterDots2 = {
+  variable: ['$condition: MetricsCondition!, $duration: Duration!'],
+  fragment: `
+  success: readDots(condition: $condition,duration: $duration) {
+    values {
+      id
+      values
+    }
+    buckets {
+      min
+      max
+    }
+  },
+  failure: readDots(condition: $condition,duration: $duration) {
+    values {
+      id
+      values
+    }
+    buckets {
+      min
+      max
+    }
+  }`,
+};
+
+const readScatterDots = {
+  // variable 未使用
+  variable: ['$scope:Scope!,$serviceName:String!,$normal:Boolean! $duration: Duration!'],
+  fragment: `query queryData($scope:Scope!,$serviceName:String!,$normal:Boolean!,$duration: Duration!) {
+    successDots: readDots(
+    condition: {
+      name: "service_success_dot_heatmap",
+      entity: {
+        scope: $scope,
+        serviceName: $serviceName,
+        normal: $normal
+      }
+    },duration: $duration) {
+      values {
+        id
+        values
+      }
+      buckets {
+        min
+        max
+      }
+    },
+    failureDots: readDots(
+    condition: {
+      name: "service_failure_dot_heatmap",
+      entity: {
+        scope: $scope,
+        serviceName: $serviceName,
+        normal: $normal
+      }
+    },duration: $duration) {
+      values {
+        id
+        values
+      }
+      buckets {
+        min
+        max
+      }
+    }
+  }`,
+};
+
 export default {
   readSampledRecords,
   readHeatMap,
@@ -89,4 +158,5 @@ export default {
   sortMetrics,
   readMetricsValue,
   readMetricsValues,
+  readScatterDots,
 };

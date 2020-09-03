@@ -32,6 +32,7 @@ limitations under the License. -->
         <component
           :is="rocketGlobal.edit ? 'ChartEdit' : itemConfig.chartType"
           ref="chart"
+          :name="item.title"
           :item="itemConfig"
           :index="index"
           :intervalTime="intervalTime"
@@ -77,16 +78,21 @@ limitations under the License. -->
   })
   export default class DashboardItem extends Vue {
     @State('rocketOption') private rocketOption: any;
+    @State('scatterData') private scatterData: any;
     @State('rocketbot') private rocketGlobal: any;
     @Mutation('EDIT_COMP_CONFIG') private EDIT_COMP_CONFIG: any;
     @Mutation('DELETE_COMP') private DELETE_COMP: any;
     @Mutation('rocketTopo/DELETE_TOPO_ENDPOINT') private DELETE_TOPO_ENDPOINT: any;
     @Mutation('rocketTopo/DELETE_TOPO_INSTANCE') private DELETE_TOPO_INSTANCE: any;
+    @Action('SET_SCATTER_DATA') private SET_SCATTER_DATA: any;
     @Action('GET_QUERY') private GET_QUERY: any;
     @Getter('intervalTime') private intervalTime: any;
     @Getter('durationTime') private durationTime: any;
+    @Getter('dateTime') private dateTime: any;
+    @Getter('realTime') private realTime: any;
     @Prop() private item!: any;
     @Prop() private index!: number;
+    // type一直为undfind，改为titel值
     @Prop() private type!: string;
     @Prop() private updateObjects!: string;
 
@@ -99,6 +105,7 @@ limitations under the License. -->
     private height = 300;
     private chartSource: any = {};
     private itemConfig: any = {};
+    private queryIndex: number = 0;
 
     private created() {
       this.status = this.item.metricType;
@@ -112,9 +119,11 @@ limitations under the License. -->
       if (!types.includes(this.updateObjects)) {
         return;
       }
-      // setTimeout(() => {
-      //   this.chartRender();
-      // }, 200);
+      if (this.rocketOption.currentProject.key !== undefined) {
+        setTimeout(() => {
+          this.chartRender();
+        }, 200);
+      }
     }
 
     private chartRender() {
@@ -122,25 +131,85 @@ limitations under the License. -->
         return;
       }
 
-      this.GET_QUERY({
+      const { queryMetricType } = this.itemConfig;
+      if (queryMetricType !== QueryTypes.ReadScatterDots) {
+        this.GET_QUERY({
         duration: this.durationTime,
         index: this.index,
         type: this.type,
-      }).then((params: Array<{ metricName: string; [key: string]: any; config: any }>) => {
-        if (!params) {
-          return;
-        }
-        if (!params.length) {
-          return;
-        }
-        this.itemConfig = params[0].config;
-        const { queryMetricType } = this.itemConfig;
-        let data = params;
-        if (queryMetricType !== QueryTypes.ReadMetricsValues) {
-          data = [params[0]];
-        }
-        this.chartValue(data);
+        }).then((params: Array<{ metricName: string; [key: string]: any; config: any }>) => {
+          if (!params) {
+            return;
+          }
+          if (!params.length) {
+            return;
+          }
+          this.itemConfig = params[0].config;
+          // const { queryMetricType } = this.itemConfig;
+          let data = params;
+          if (queryMetricType !== QueryTypes.ReadMetricsValues) {
+            data = [params[0]];
+          }
+          this.chartValue(data);
+        });
+      } else {
+        this.clearParam();
+        this.SET_SCATTER_DATA({
+          start: this.dateTime.start,
+          end: this.dateTime.end,
+        });
+
+        this.queryIndex = (this.scatterData.requestDate.length - 1);
+        this.scatterData.timing = setInterval(() => {
+          this.GET_QUERY({
+            duration: {
+              start: this.scatterData.requestDate[this.queryIndex - 1],
+              end: this.scatterData.requestDate[this.queryIndex],
+              step: 'SECOND',
+              gap: 1,
+            },
+            index: this.index,
+            type: this.type,
+          }).then((params: Array<{ metricName: string; [key: string]: any; config: any }>) => {
+            if (!params) {
+              return;
+            }
+            if (!params.length) {
+              return;
+            }
+            this.itemConfig = params[0].config;
+            let data = params;
+            if (queryMetricType !== QueryTypes.ReadMetricsValues) {
+              const res = {
+                config: params[0].config,
+                metricName: params[0].metricName,
+                readScatterDots: {
+                  successDots: params[0].successDots,
+                  failureDots: params[0].failureDots,
+                },
+              };
+              data = [res];
+            }
+            this.chartValue(data);
+          });
+          this.queryIndex--;
+          if (this.queryIndex === 0) {
+            clearInterval(this.scatterData.timing);
+          }
+        }, 200);
+      }
+    }
+
+    private clearParam() {
+      this.scatterData.axiosCancel.forEach((v: any) => {
+        v.cancel('已终止请求');
       });
+      this.scatterData.axiosCancel = [];
+      clearInterval(this.scatterData.timing);
+      if (!this.rocketGlobal.handleAutoStatue) {
+        this.scatterData.successData = [];
+        this.scatterData.failureData = [];
+      }
     }
 
     private chartValue(data: Array<{ metricName: string; [key: string]: any; config: any }>) {
@@ -218,9 +287,52 @@ limitations under the License. -->
             }
           }
         }
+        if (queryMetricType === QueryTypes.ReadScatterDots) {
+          let successDots = [] as any;
+          let failureDots = [] as any;
+
+          if (!(resVal && resVal.successDots.values)) {
+            this.scatterData.successData = [];
+            this.scatterData.failureData = [];
+            this.scatterData.yAxisData = [];
+            return;
+          }
+          successDots = this.setScatterX(resVal.successDots.values);
+          failureDots = this.setScatterX(resVal.failureDots.values);
+
+          if (this.rocketGlobal.handleAutoStatue) {
+            this.scatterData.successData = successDots;
+            this.scatterData.failureData = failureDots;
+          } else {
+            this.scatterData.successData.push(...successDots);
+            this.scatterData.failureData.push(...failureDots);
+          }
+          if (resVal.successDots.buckets.length) {
+            this.scatterData.yAxisData = [resVal.successDots.buckets[0].min,
+             ...resVal.successDots.buckets.map((item: { min: string; max: string }) => item.max)];
+            this.scatterData.yAxisData.splice(this.scatterData.yAxisData.length - 1, 1);
+          }
+          this.scatterData.divideIndex--;
+        }
       }
     }
-
+    private setScatterX(data: any[]) {
+      const scatterDats: any[] = [];
+      data.forEach((items: { values: number[] }, x: number) => {
+        const grids: any[] = [];
+        items.values.forEach((value: any, y: number) => {
+          if (value > 0) {
+            grids.push([this.scatterData.divideIndex >= 1
+            ? Math.round(450 / this.scatterData.divide) * this.scatterData.divideIndex + x
+            : x,
+            y,
+            ]);
+          }
+        });
+        scatterDats.push(...grids);
+      });
+      return scatterDats;
+    }
     private editComponentConfig() {
       this.dialogConfigVisible = true;
     }
@@ -285,7 +397,6 @@ limitations under the License. -->
         this.DELETE_COMP(index);
       }
     }
-
     @Watch('rocketOption.updateDashboard')
     private watchCurrentSelectors() {
       setTimeout(() => {

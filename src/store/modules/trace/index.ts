@@ -21,6 +21,7 @@ import { Option } from '@/types/global';
 import { Span, Trace } from '@/types/topo';
 import { AxiosResponse } from 'axios';
 import { ActionTree, Commit, Dispatch, MutationTree } from 'vuex';
+import global from '../global';
 
 export interface State {
   project: any;
@@ -128,6 +129,9 @@ const actions: ActionTree<State, any> = {
     }
     if (!params.projectNames) {
       params.projectNames = projectIds;
+    }
+    if (global.state.userAuth) {
+      params.projectNames = [];
     }
     return graph
       .query('queryProjects')

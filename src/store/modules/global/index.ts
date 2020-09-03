@@ -57,6 +57,14 @@ const dateFormat = (date: Date, step: string): string => {
   if (step === 'MINUTE') {
     return `${year}-${month}-${day} ${hour}${minute}`;
   }
+  const secondTemp = date.getSeconds();
+  let second: string = `${secondTemp}`;
+  if (secondTemp < 10) {
+    second = `0${secondTemp}`;
+  }
+  if (step === 'SECOND') {
+    return `${year}-${month}-${day} ${hour}${minute}${second}`;
+  }
   return '';
 };
 const dateFormatTime = (date: Date, step: string): string => {
@@ -104,6 +112,8 @@ export interface State {
   lock: boolean;
   utc: string | number;
   userAuth: boolean;
+  stopRealTime: boolean;
+  handleAutoStatue: boolean;
 }
 
 const initState: State = {
@@ -114,6 +124,8 @@ const initState: State = {
   lock: true,
   utc: window.localStorage.getItem('utc') || -(new Date().getTimezoneOffset() / 60),
   userAuth: false,
+  stopRealTime: false,
+  handleAutoStatue: false,
 };
 
 // getters
@@ -163,6 +175,23 @@ const getters = {
       step: getter.duration.step,
     };
   },
+  secondTime(_: State, getter: any): DurationTime {
+    return {
+      start: dateFormat(getter.duration.start, 'SECOND'),
+      end: dateFormat(getter.duration.end, 'SECOND'),
+      step: 'SECOND',
+    };
+  },
+  dateTime(_: State, getter: any): DurationTime {
+    return {
+      start: getter.duration.start,
+      end: getter.duration.end,
+      step: 'SECOND',
+    };
+  },
+  stopRealTime(state: State): boolean {
+    return state.stopRealTime;
+  },
 };
 
 // mutations
@@ -199,6 +228,9 @@ const mutations: MutationTree<State> = {
   },
   [types.SET_EDIT](state: State, status: boolean): void {
     state.edit = status;
+  },
+  [types.STOP_REAL_TIME](state: State, status: boolean): void {
+    state.stopRealTime = status;
   },
 };
 

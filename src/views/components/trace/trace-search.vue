@@ -86,7 +86,7 @@ limitations under the License. -->
         </div>
       </div>
       <div class="flex-h">
-        <div class="mr-10" style="padding-top: 5px">
+        <div class="mr-10" style="padding-top: 5px" v-if="rocketbotGlobal.userAuth">
           <span class="sm grey">{{ this.$t('tags') }}: </span>
           <span class="rk-trace-tags">
             <span class="selected" v-for="(item, index) in tagsList" :key="index">
@@ -137,36 +137,79 @@ limitations under the License. -->
     @Action('rocketTrace/GET_TRACELIST') private GET_TRACELIST: any;
     @Action('rocketTrace/SET_TRACE_FORM') private SET_TRACE_FORM: any;
     @Mutation('rocketTrace/SET_TRACE_FORM_ITEM')
+
+    private start: any; // 首页heatmap传递过来的参数
+    private end: any; // 首页heatmap传递过来的参数
     private SET_TRACE_FORM_ITEM: any;
     private project: Option = { label: 'All', key: '' };
     private service: Option = { label: 'All', key: '' };
     private time!: Date[];
     private status: boolean = true;
-    private maxTraceDuration: string = localStorage.getItem('maxTraceDuration') || '';
-    private minTraceDuration: string = localStorage.getItem('minTraceDuration') || '';
+    private maxTraceDuration: string = ''; // localStorage.getItem('maxTraceDuration') || '';
+    private minTraceDuration: string = ''; // localStorage.getItem('minTraceDuration') || '';
     private instance: Option = { label: 'All', key: '' };
-    private endpointName: string = localStorage.getItem('endpointName') || '';
-    private traceId: string = localStorage.getItem('traceId') || '';
+    private endpointName: string = ''; // localStorage.getItem('endpointName') || '';
+    private traceId: string = ''; // localStorage.getItem('traceId') || '';
     private traceState: Option = { label: 'All', key: 'ALL' };
     private tags: string = '';
     private tagsList: string[] = [];
 
     private created() {
-      this.endpointName = this.$route.query.endpointname
-        ? this.$route.query.endpointname.toString()
-        : this.endpointName;
+      // tslint:disable-next-line:max-line-length
+      const { min, max, start, end, project, projectKey, service, serviceKey, traceState, endpointName } = this.$route.query;
+      // this.endpointName = this.$route.query.endpointname
+      //   ? this.$route.query.endpointname.toString()
+      //   : this.endpointName;
+      if (endpointName !== undefined) {
+        this.endpointName = endpointName.toString().trim();
+      }
       this.traceId = this.$route.query.traceid ? this.$route.query.traceid.toString() : this.traceId;
       this.time = [this.rocketbotGlobal.durationRow.start, this.rocketbotGlobal.durationRow.end];
+      if (start && end) {
+        this.start = start;
+        this.end = end;
+        this.time = [new Date(this.start), new Date(this.end)];
+      }
       this.tagsList = localStorage.getItem('traceTags') ? JSON.parse(localStorage.getItem('traceTags') || '') : [];
+
+      if (project !== undefined && projectKey !== undefined) {
+        this.project = {label: project.toString(), key: projectKey.toString()};
+      }
+      if (service !== undefined && serviceKey !== undefined) {
+        this.service = {label: service.toString(), key: serviceKey.toString()};
+      }
+      // gloabl heatmap 跳转
+      if ( min !== undefined) { this.minTraceDuration = min + ''; }
+      if ( max !== undefined) { this.maxTraceDuration = max + ''; }
+      if ( start !== undefined) { this.start = start; }
+      if ( end !== undefined) { this.end = end; }
+      if (traceState !== undefined) {
+        switch (traceState) {
+          case 'SUCCESS':
+            this.traceState = {label: 'Success', key: 'SUCCESS'};
+            break;
+          case 'ERROR':
+            this.traceState = {label: 'Error', key: 'ERROR'};
+            break;
+          case 'ALL':
+            this.traceState = {label: 'All', key: 'ALL'};
+            break;
+          default:
+            break;
+        }
+      }
     }
     private mounted() {
       this.GET_PROJECTS({ duration: this.durationTime });
-      if (this.service && this.service.key) {
-        this.GET_INSTANCES({
-          duration: this.durationTime,
-          serviceId: this.service.key,
-        });
+      if (this.project && this.project.key) {
+        this.GET_SERVICES({ duration: this.durationTime, projectId: this.project.key});
       }
+      if (this.service && this.service.key) {
+        this.GET_INSTANCES({ duration: this.durationTime, serviceId: this.service.key});
+      }
+      setTimeout(() => {
+        this.getTraceList();
+      }, 500);
     }
     private dateFormat(date: Date, step: string) {
       const year = date.getFullYear();
@@ -350,7 +393,13 @@ limitations under the License. -->
     private removeTags(index: number) {
       this.tagsList.splice(index, 1);
     }
-
+    // 销毁实例,清空缓存数据
+    private destroyed() {
+      this.rocketTrace.traceList = [];
+      this.rocketTrace.traceSpans = [];
+      this.rocketTrace.currentTrace = {};
+      this.rocketTrace.traceTotal = 0;
+    }
     @Watch('rocketbotGlobal.durationRow')
     private durationRowWatch(value: Duration) {
       this.time = [value.start, value.end];

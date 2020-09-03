@@ -26,7 +26,7 @@ limitations under the License. -->
         </svg>
       </span>
     </div>
-    <div class="rk-dashboard-bar-btn">
+    <div class="rk-dashboard-bar-btn" v-if="rocketGlobal.userAuth">
       <span v-tooltip:bottom="{ content: 'import' }">
         <input id="tool-bar-file" type="file" name="file" title="" accept=".json" @change="importData" />
         <label class="rk-btn ghost input-label" for="tool-bar-file">
@@ -36,7 +36,7 @@ limitations under the License. -->
         </label>
       </span>
     </div>
-    <div class="rk-dashboard-bar-btn">
+    <div class="rk-dashboard-bar-btn" v-if="rocketGlobal.userAuth">
       <span v-tooltip:bottom="{ content: 'export' }">
         <svg class="icon lg vm cp rk-btn ghost" @click="exportData">
           <use :xlink:href="'#save_alt'"></use>
@@ -44,7 +44,7 @@ limitations under the License. -->
       </span>
     </div>
 
-    <div class="rk-dashboard-bar-btn">
+    <div class="rk-dashboard-bar-btn" v-if="rocketGlobal.userAuth">
       <svg class="icon lg vm cp rk-btn ghost" @click="handleOption">
         <use xlink:href="#retry"></use>
       </svg>

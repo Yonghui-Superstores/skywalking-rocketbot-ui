@@ -19,6 +19,7 @@ import { Commit, ActionTree, Dispatch } from 'vuex';
 import axios, { AxiosPromise, AxiosResponse } from 'axios';
 import { cancelToken } from '@/utils/cancelToken';
 import { State } from './dashboard-data';
+import scatterData from './dashboard-data-scatter';
 import fragmentAll from './constant-metrics-query';
 
 export enum TopologyType {
@@ -64,6 +65,7 @@ const actions: ActionTree<State, any> = {
     // remove the space at the beginning and end of the string
     const metricNames = config.metricName.split(',').map((item: string) => item.replace(/^\s*|\s*$/g, ''));
     const labelsIndex = (config.labelsIndex || '').split(',').map((item: string) => item.replace(/^\s*|\s*$/g, ''));
+    // const currentServiceKey = currentService.key || '';
     const currentProjectId = config.independentSelector ? config.currentProject : currentProject.label;
     const currentServiceId = config.independentSelector ? config.currentService : currentService.label;
     const currentInstanceId = config.independentSelector ? config.currentInstance : currentInstance.label;
@@ -153,7 +155,25 @@ const actions: ActionTree<State, any> = {
           if (config.entityType === 'Endpoint' && !currentEndpointId) {
             return null;
           }
-          variables = {
+          variables = config.queryMetricType === 'readScatterDots'
+          ? {
+            duration: {
+              start: params.duration.start,
+              end: params.duration.end,
+              step: params.duration.step,
+              gap: scatterData.state.step,
+            },
+            // $failureCondition: MetricsCondition!,
+            condition: {
+              name: 'service_success_dot_heatmap',
+              entity: {
+                scope: normal ? config.entityType : 'Service',
+                serviceName: currentServiceId || '',
+                normal,
+              },
+            },
+          }
+          : {
             duration: params.duration,
             condition: {
               name,
@@ -187,14 +207,38 @@ const actions: ActionTree<State, any> = {
 
     return Promise.all(
       variablesList.map((variable: any) => {
+        scatterData.state.cancelToken = axios.CancelToken;
+        const source = scatterData.state.cancelToken.source();
+        scatterData.state.axiosCancel.push(source);
         if (variable) {
-          return axios
-            .post('/graphql', { query, variables: variable }, { cancelToken: cancelToken() })
+          if (config.queryMetricType !== 'readScatterDots') {
+            return axios
+            .post('/graphql', { query, variables: variable }, { cancelToken: source.token /*cancelToken()*/ })
             .then((res: AxiosResponse<any>) => {
               const resData = res.data.data;
-
               return { ...resData, config, metricName: variable.condition.name };
             });
+          } else {
+            // tslint:disable-next-line:no-shadowed-variable
+            const query = globalArr[config.queryMetricType].fragment;
+            return axios
+            .post('/graphql', { query
+              , variables: {
+            duration: {
+              start: params.duration.start,
+              end: params.duration.end,
+              step: params.duration.step,
+              gap: scatterData.state.step,
+            },
+            scope: normal ? config.entityType : 'Service',
+            serviceName: currentServiceId || '',
+            normal: true,
+          } }, { cancelToken: source.token /*cancelToken()*/ })
+            .then((res: AxiosResponse<any>) => {
+              const resData = res.data.data;
+              return { ...resData, config, metricName: variable.condition.name };
+            });
+          }
         } else {
           return { config };
         }

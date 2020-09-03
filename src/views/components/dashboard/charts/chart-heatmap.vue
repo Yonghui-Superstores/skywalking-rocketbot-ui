@@ -20,7 +20,10 @@ limitations under the License. -->
 <script lang="ts">
   import Vue from 'vue';
   import { Component, Prop } from 'vue-property-decorator';
+  import { State } from 'vuex-class';
   import 'echarts/lib/component/visualMap';
+  import moment from 'dayjs';
+
   @Component
   export default class ChartHeatmap extends Vue {
     @Prop() private title!: string;
@@ -28,6 +31,8 @@ limitations under the License. -->
     @Prop() private data!: any;
     @Prop() private intervalTime!: any;
     @Prop() private item!: any;
+    @State('rocketbot') private rocketGlobal: any;
+
     public resize() {
       const chart: any = this.$refs.chart;
       chart.myChart.resize();
@@ -116,6 +121,30 @@ limitations under the License. -->
         ],
       };
     }
+    private mounted() {
+      const chart: any = this.$refs.chart;
+      chart.myChart.on('click', (params: any) => {
+        const data = params.data;
+        if (data[2] > 0) {
+          const yIndex = data[1];
+          const min = (yIndex * 100) + '';
+          const max = (Number(min) + 100) + '';
+          const step = this.rocketGlobal.durationRow.step;
+          const [start, end] = this.getTimeRange(step, params);
+
+          const query: any = {
+            min,
+            start,
+            end,
+          };
+          if (max !== '2100') {
+            query.max = max;
+          }
+          const routeUrl = this.$router.resolve({path: '/trace', query});
+          window.open(routeUrl.href, '_blank');
+        }
+      });
+    }
     private generatePieces(maxValue: number, colorBox: string[], minItem: number) {
       const pieces = [];
       let quotient = 1;
@@ -144,6 +173,39 @@ limitations under the License. -->
         item.max = maxValue;
       }
       return pieces;
+    }
+    private getTimeRange(step: any, params: any) {
+      const str = params.name;
+      // 处理4种数据格式
+      // 14:54
+      // 11-27 ----- MINUTE
+
+      // 11-27 09 ----- HOUR
+      // 11-25 ----- DAY
+      // 2019-11 ----- MONTH
+      const year = new Date().getFullYear();
+      let startDateObj = null;
+      let endDateObj = null;
+      if (step === 'MINUTE') {
+        const timeArr = str.split(/\n/);
+        startDateObj = moment(year + '-' + timeArr[1] + ' ' + timeArr[0] + ':00');
+        endDateObj = startDateObj.add(59, 'second');
+      }  else if (step === 'HOUR') {
+        const timeArr = str.split(/\s/);
+        startDateObj = moment(year + '-' + timeArr[0] + ' ' + timeArr[1] + ':00:00');
+        endDateObj = startDateObj.add(1, 'hour').subtract(1, 'second');
+      } else if (step === 'DAY') {
+        startDateObj = moment(year + '-' + str + ' ' + '00:00:00');
+        endDateObj = startDateObj.add(1, 'day').subtract(1, 'second');
+      } else if ( step === 'MONTH') {
+        startDateObj = moment(str + '-01' + ' ' + '00:00:00');
+        endDateObj = startDateObj.add(1, 'month').subtract(1, 'second');
+      }
+      return [this.dateToString(startDateObj), this.dateToString(endDateObj)];
+    }
+    // 兼容Safari时间格式为YYYY/MM/DD HH:mm:ss,之前为YYYY-MM-DD HH:mm:ss
+    private dateToString(obj: any) {
+      return obj.format('YYYY/MM/DD HH:mm:ss');
     }
   }
 </script>

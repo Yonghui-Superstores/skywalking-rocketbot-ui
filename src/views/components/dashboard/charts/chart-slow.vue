@@ -22,7 +22,7 @@ limitations under the License. -->
         </svg>
         <div class="mb-5 ell" v-tooltip:top.ellipsis="i.name || ''">
           <span class="calls sm mr-10">{{ i.value }}</span>
-          <span class="cp link-hover">{{ i.name + getTraceId(i) }}</span>
+          <span :class="checkName() ?'cp link-hover' : 'cp'" @click="appChange(i)">{{ i.name + getTraceId(i) }}</span>
         </div>
         <RkProgress :precent="(i.value / maxValue) * 100" color="#bf99f8" />
       </div>
@@ -33,13 +33,43 @@ limitations under the License. -->
 <script lang="ts">
   import Vue from 'vue';
   import { Component, Prop } from 'vue-property-decorator';
+  import { State } from 'vuex-class';
+
   import copy from '@/utils/copy';
 
   @Component({})
   export default class ChartSlow extends Vue {
     @Prop() private data!: any;
     @Prop() private item!: any;
+    @Prop() private name!: any;
     @Prop() private intervalTime!: any;
+    @State('rocketOption') private stateDashboardOption!: any;
+    private names: any[] = ['Slow Services', 'Slow Endpoints'];
+    private checkName() {
+      return this.names.map((item: any) => item).indexOf(this.name) >= 0 ? true : false;
+    }
+    private appChange(i: any) {
+      const { currentProject, currentService } = this.stateDashboardOption;
+      switch (this.name) {
+        case 'Slow Services':
+          this.jump({
+              project: currentProject.label,
+              projectKey: currentProject.key,
+              service: i.name,
+              serviceKey: i.id,
+            });
+          break;
+        case 'Slow Endpoints':
+          const index = i.name.lastIndexOf(' ');
+          const str = i.name.substring(index + 1, i.name.length);
+          this.jump({ endpointName: str });
+          break;
+      }
+    }
+    private jump(query: any) {
+      const routeUrl = this.$router.resolve({path: '/trace', query});
+      window.open(routeUrl.href, '_blank');
+    }
     get maxValue() {
       if (!this.data.length) {
         return null;

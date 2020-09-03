@@ -19,6 +19,7 @@ import { Commit, ActionTree, MutationTree, Dispatch } from 'vuex';
 import * as types from './mutation-types';
 import { AxiosResponse } from 'axios';
 import graph from '@/graph';
+import global from '../global';
 
 export interface State {
   projects: any[];
@@ -55,8 +56,14 @@ const getters = {};
 const mutations: MutationTree<State> = {
   [types.SET_PROJECTS](state: State, data: any) {
     state.projects = data;
-    state.currentProject = data[0] || {};
-    state.updateDashboard = data[0];
+    const defaultProjectId = window.localStorage.getItem('defaultProjectId');
+    let index = 0;
+    if (defaultProjectId !== null) {
+      index = data.map((item: any) => item.label).indexOf(defaultProjectId);
+      index = index >= 0 ? index : 0;
+    }
+    state.currentProject = data[index] || {};
+    state.updateDashboard = data[index];
   },
   [types.SET_CURRENT_PROJECT](state: State, project: any) {
     state.currentProject = project;
@@ -129,6 +136,9 @@ const actions: ActionTree<State, any> = {
     }
     if (!params.projectNames) {
       params.projectNames = projectIds;
+    }
+    if (global.state.userAuth) {
+      params.projectNames = [];
     }
     return graph
       .query('queryProjects')

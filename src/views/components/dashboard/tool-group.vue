@@ -15,22 +15,24 @@ limitations under the License. -->
 <template>
   <nav class="rk-dashboard-group">
     <span v-for="(i, index) in rocketComps.tree || []" :key="index" class="mr-15">
-      <a
-        class="rk-dashboard-group-i mb-10"
-        @click="handleOption(index, i.serviceFilter)"
-        :class="{
-          active: rocketComps.group == index,
-          grey: rocketComps.group != index,
-        }"
-        >{{ i.name }}</a
-      >
-      <svg
-        v-if="rocketGlobal.edit && rocketComps.group !== index"
-        class="ml-5 icon cp red vm"
-        @click="DELETE_COMPS_GROUP(index)"
-      >
-        <use xlink:href="#file-deletion"></use>
-      </svg>
+    <span v-if="i.name !== 'SelfObservability'||rocketGlobal.userAuth">
+        <a
+          class="rk-dashboard-group-i mb-10"
+          @click="handleOption(index, i.serviceFilter)"
+          :class="{
+            active: rocketComps.group == index,
+            grey: rocketComps.group != index,
+          }"
+          >{{ i.name }}</a
+        >
+        <svg
+          v-if="rocketGlobal.edit && rocketComps.group !== index"
+          class="ml-5 icon cp red vm"
+          @click="DELETE_COMPS_GROUP(index)"
+        >
+          <use xlink:href="#file-deletion"></use>
+        </svg>
+      </span>
     </span>
     <a class="rk-dashboard-group-add" v-clickout="handleHide" v-if="rocketGlobal.edit">
       <svg class="icon vm" @click="show = !show">

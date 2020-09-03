@@ -77,7 +77,10 @@ router.beforeEach((to, from, next) => {
   }
   Axios.get('/user/admin').then( (res) => {
     // tslint:disable-next-line:no-empty
-    if ( res.data.code === 200 ) {
+    const { headers: {invalid, url} } = res;
+    if (invalid === 'true') {
+      window.location.href = url;
+    } else {
       global.state.userAuth = res.data.data.admin;
     }
   });

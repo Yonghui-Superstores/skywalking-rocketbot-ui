@@ -56,7 +56,7 @@ limitations under the License. -->
       </a>
       <div class="auto-time">
         <span class="rk-auto-select">
-          <input v-model="autoTime" type="number" @change="changeAutoTime" min="1" />
+          <input v-model="autoTime" readonly type="number" @change="changeAutoTime" min="1" />
         </span>
         {{ this.$t('second') }}
       </div>
@@ -71,13 +71,17 @@ limitations under the License. -->
 </template>
 
 <script lang="ts">
-  import { Vue, Component } from 'vue-property-decorator';
-  import { Action, State, Getter } from 'vuex-class';
+  import { Vue, Component, Watch } from 'vue-property-decorator';
+  import { Action, State, Getter, Mutation } from 'vuex-class';
   import timeFormat from '@/utils/timeFormat';
 
   @Component
   export default class Header extends Vue {
     @Getter('duration') private duration: any;
+    @Getter('stopRealTime') private stopRealTime: any;
+    @Mutation('STOP_REAL_TIME') private STOP_REAL_TIME: any;
+    @State('rocketbot') private rocketGlobal: any;
+    @State('scatterData') private scatterData: any;
     @Action('SET_DURATION') private SET_DURATION: any;
     private show: boolean = false;
     private auto: boolean = false;
@@ -85,17 +89,41 @@ limitations under the License. -->
     private timer: any = null;
     private handleReload() {
       const gap = this.duration.end.getTime() - this.duration.start.getTime();
-      const utcCopy: any = -(new Date().getTimezoneOffset() / 60);
-      const time: Date[] = [new Date(new Date().getTime() - gap), new Date()];
-      this.SET_DURATION(timeFormat(time));
+      if (this.auto) {
+        this.SET_DURATION(timeFormat([new Date(new Date().getTime() - 900000), new Date()]));
+      } else {
+        const utcCopy: any = -(new Date().getTimezoneOffset() / 60);
+        const time: Date[] = [new Date(new Date().getTime() - gap), new Date()];
+        this.SET_DURATION(timeFormat(time));
+      }
     }
     private handleAuto() {
       this.auto = !this.auto;
       if (this.auto) {
         this.handleReload();
+        this.STOP_REAL_TIME(false);
         this.timer = setInterval(this.handleReload, this.autoTime * 1000);
       } else {
         clearInterval(this.timer);
+      }
+    }
+    @Watch('auto')
+    private watchAutoStatu(newVal: any, oldVal: any): void {
+      this.rocketGlobal.handleAutoStatue = newVal;
+    }
+    @Watch('duration')
+    private watchRealTime(newVal: any, oldVal: any): void {
+      if (this.auto) {
+        const gap = newVal.end.getTime() - newVal.start.getTime();
+        if (gap > 900000) {
+            this.handleAuto();
+        }
+      }
+    }
+    @Watch('stopRealTime')
+    private StopRealTime(newVal: any, oldVal: any): void {
+      if (newVal && this.auto) {
+        this.handleAuto();
       }
     }
     private handleHide() {

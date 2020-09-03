@@ -66,7 +66,7 @@ limitations under the License. -->
         <a class="rk-btn r vm long tc confirm" @click="handleCreate">{{ $t('confirm') }}</a>
       </div>
     </a>
-    <a class="rk-dashboard-import mr-10">
+    <a class="rk-dashboard-import mr-10" v-if="rocketGlobal.userAuth">
       <input id="tool-nav-file" class="ipt" type="file" name="file" title="" accept=".json" @change="importData" />
       <label for="tool-nav-file" class="input-label">
         <svg class="icon open vm">
@@ -74,7 +74,7 @@ limitations under the License. -->
         </svg>
       </label>
     </a>
-    <a>
+    <a v-if="rocketGlobal.userAuth">
       <svg class="icon vm" @click="exportData">
         <use xlink:href="#save_alt"></use>
       </svg>
