@@ -75,18 +75,23 @@ router.beforeEach((to, from, next) => {
     const defaultProjectId: string = to.query.projectId as string;
     window.localStorage.setItem('defaultProjectId', defaultProjectId);
   }
+  Axios.get('/user/projects').then( (res) => {
+    projectIds = res.data.data.projects;
+    window.localStorage.setItem('projectIds', JSON.stringify(projectIds));
+  });
   Axios.get('/user/admin').then( (res) => {
     // tslint:disable-next-line:no-empty
     const { headers: {invalid, url} } = res;
     if (invalid === 'true') {
       window.location.href = url;
     } else {
-      global.state.userAuth = res.data.data.admin;
+      if (res.status === 200) {
+        global.state.userAuth = res.data.data.admin;
+        if (global.state.userAuth) {
+          window.localStorage.setItem('projectIds', JSON.stringify([]));
+        }
+      }
     }
-  });
-  Axios.get('/user/projects').then( (res) => {
-    projectIds = res.data.data.projects;
-    window.localStorage.setItem('projectIds', JSON.stringify(projectIds));
   });
   const token = window.localStorage.getItem('skywalking-authority');
   if (window.axiosCancel.length !== 0) {

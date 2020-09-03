@@ -131,19 +131,6 @@ const actions: ActionTree<State, any> = {
     if (!params.projectNames) {
       params.projectNames = projectIds;
     }
-    Axios.get('/user/admin').then( (res) => {
-      // tslint:disable-next-line:no-empty
-      const { headers: {invalid, url} } = res;
-      if (invalid === 'true') {
-        window.location.href = url;
-      } else {
-        global.state.userAuth = res.data.data.admin;
-        if (global.state.userAuth) {
-          params.projectNames = [];
-        }
-      }
-    });
-
     return graph
       .query('queryProjects')
       .params(params)

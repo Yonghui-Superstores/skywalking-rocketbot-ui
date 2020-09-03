@@ -32,6 +32,7 @@ limitations under the License. -->
     @Prop() private intervalTime!: any;
     @Prop() private item!: any;
     @State('rocketbot') private rocketGlobal: any;
+    @State('rocketOption') private stateDashboardOption!: any;
 
     public resize() {
       const chart: any = this.$refs.chart;
@@ -126,6 +127,7 @@ limitations under the License. -->
       chart.myChart.on('click', (params: any) => {
         const data = params.data;
         if (data[2] > 0) {
+          const { currentProject } = this.stateDashboardOption;
           const yIndex = data[1];
           const min = (yIndex * 100) + '';
           const max = (Number(min) + 100) + '';
@@ -133,6 +135,8 @@ limitations under the License. -->
           const [start, end] = this.getTimeRange(step, params);
 
           const query: any = {
+            project: currentProject.label,
+            projectKey: currentProject.key,
             min,
             start,
             end,
