@@ -213,7 +213,7 @@ const actions: ActionTree<State, any> = {
         if (variable) {
           if (config.queryMetricType !== 'readScatterDots') {
             return axios
-            .post('/graphql', { query, variables: variable }, { cancelToken: source.token /*cancelToken()*/ })
+            .post('/graphql', { query, variables: variable }, { cancelToken: cancelToken() })
             .then((res: AxiosResponse<any>) => {
               const resData = res.data.data;
               return { ...resData, config, metricName: variable.condition.name };
