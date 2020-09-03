@@ -20,6 +20,7 @@ import { Duration, DurationTime } from '@/types/global';
 import getDurationRow from '@/utils/datetime';
 import getLocalTime from '@/utils/localtime';
 import { ActionTree, Commit, MutationTree } from 'vuex';
+import Axios from 'axios';
 
 let timer: any = null;
 
@@ -207,7 +208,7 @@ const mutations: MutationTree<State> = {
   [types.SET_UTC](state: State, data: number): void {
     state.utc = data;
   },
-  [types.SET_USERAUTH](state: State, data: boolean): void {
+  [types.SET_USER_AUTH](state: State, data: boolean): void {
     state.userAuth = data;
   },
   [types.SET_EVENTS](state: State, data: any[]): void {
@@ -274,6 +275,17 @@ const actions: ActionTree<State, any> = {
   },
   SET_LOCK(context: { commit: Commit }, status: boolean): void {
     context.commit(types.SET_LOCK, status);
+  },
+  GET_USER_AUTH(context: { commit: Commit }, status: boolean): void {
+    Axios.get('/user/admin').then( (res) => {
+      // tslint:disable-next-line:no-empty
+      const { headers: {invalid, url} } = res;
+      if (invalid === 'true') {
+        window.location.href = url;
+      } else {
+        context.commit(types.SET_USER_AUTH, status);
+      }
+    });
   },
 };
 

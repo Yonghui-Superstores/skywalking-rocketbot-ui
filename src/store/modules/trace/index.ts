@@ -22,6 +22,7 @@ import { Span, Trace } from '@/types/topo';
 import { AxiosResponse } from 'axios';
 import { ActionTree, Commit, Dispatch, MutationTree } from 'vuex';
 import global from '../global';
+import Axios from 'axios';
 
 export interface State {
   project: any;
@@ -130,9 +131,19 @@ const actions: ActionTree<State, any> = {
     if (!params.projectNames) {
       params.projectNames = projectIds;
     }
-    if (global.state.userAuth) {
-      params.projectNames = [];
-    }
+    Axios.get('/user/admin').then( (res) => {
+      // tslint:disable-next-line:no-empty
+      const { headers: {invalid, url} } = res;
+      if (invalid === 'true') {
+        window.location.href = url;
+      } else {
+        global.state.userAuth = res.data.data.admin;
+        if (global.state.userAuth) {
+          params.projectNames = [];
+        }
+      }
+    });
+
     return graph
       .query('queryProjects')
       .params(params)

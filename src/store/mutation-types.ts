@@ -39,7 +39,7 @@ export const CLEAR_CHARTS = 'CLEAR_CHARTS';
 export const SET_LOCK = 'SET_LOCK';
 export const SET_EDIT = 'SET_EDIT';
 export const SET_UTC = 'SET_UTC';
-export const SET_USERAUTH = 'SET_USERAUTH';
+export const SET_USER_AUTH = 'SET_USER_AUTH';
 export const STOP_REAL_TIME = 'STOP_REAL_TIME';
 
 // dashboard
