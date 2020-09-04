@@ -130,15 +130,16 @@ const mutations: MutationTree<State> = {
 const actions: ActionTree<State, any> = {
   GET_PROJECTS(context: { commit: Commit }, params: { duration: any; projectNames: any }) {
     let projectIds: any[] = [];
-    setTimeout(() => {
-      const projects = window.localStorage.getItem('projectIds');
-      if ( projects !== null) {
-        projectIds = JSON.parse(projects);
-      }
-      if (!params.projectNames) {
-        params.projectNames = projectIds;
-      }
-    }, 500);
+    const projects = window.localStorage.getItem('projectIds');
+    if ( projects !== null) {
+      projectIds = JSON.parse(projects);
+    }
+    if (!params.projectNames) {
+      params.projectNames = projectIds;
+    }
+    if (global.state.userAuth) {
+      params.projectNames = [];
+    }
     return graph
       .query('queryProjects')
       .params(params)
@@ -257,19 +258,21 @@ const actions: ActionTree<State, any> = {
     context.commit(types.SET_CURRENT_INSTANCE, params.instance ? params.instance : {});
   },
   MIXHANDLE_GET_OPTION(context: { commit: Commit; dispatch: Dispatch; state: State; getters: any }, params: any) {
-    switch (params.compType) {
-      case 'service':
-        return context
-          .dispatch('GET_PROJECTS', { duration: params.duration, projectNames: params.projectNames })
-          // tslint:disable-next-line:max-line-length
-          .then(() => context.dispatch('GET_SERVICES', { duration: params.duration, keyword: params.keywordServiceName, projectId: params.projectId }))
-          .then(() => context.dispatch('GET_SERVICE_ENDPOINTS', {}))
-          .then(() => context.dispatch('GET_SERVICE_INSTANCES', { duration: params.duration }));
-      case 'database':
-        return context.dispatch('GET_DATABASES', { duration: params.duration });
-      default:
-        break;
-    }
+    setTimeout(() => {
+      switch (params.compType) {
+        case 'service':
+          return context
+            .dispatch('GET_PROJECTS', { duration: params.duration, projectNames: params.projectNames })
+            // tslint:disable-next-line:max-line-length
+            .then(() => context.dispatch('GET_SERVICES', { duration: params.duration, keyword: params.keywordServiceName, projectId: params.projectId }))
+            .then(() => context.dispatch('GET_SERVICE_ENDPOINTS', {}))
+            .then(() => context.dispatch('GET_SERVICE_INSTANCES', { duration: params.duration }));
+        case 'database':
+          return context.dispatch('GET_DATABASES', { duration: params.duration });
+        default:
+          break;
+      }
+    }, 400);
   },
   GET_ITEM_ENDPOINTS(context, params) {
     return graph
