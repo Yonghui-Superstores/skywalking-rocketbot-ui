@@ -130,16 +130,15 @@ const mutations: MutationTree<State> = {
 const actions: ActionTree<State, any> = {
   GET_PROJECTS(context: { commit: Commit }, params: { duration: any; projectNames: any }) {
     let projectIds: any[] = [];
-    const projects = window.localStorage.getItem('projectIds');
-    if ( projects !== null) {
-      projectIds = JSON.parse(projects);
-    }
-    if (!params.projectNames) {
-      params.projectNames = projectIds;
-    }
-    if (global.state.userAuth) {
-      params.projectNames = [];
-    }
+    setTimeout(() => {
+      const projects = window.localStorage.getItem('projectIds');
+      if ( projects !== null) {
+        projectIds = JSON.parse(projects);
+      }
+      if (!params.projectNames) {
+        params.projectNames = projectIds;
+      }
+    }, 500);
     return graph
       .query('queryProjects')
       .params(params)
