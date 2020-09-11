@@ -107,6 +107,11 @@ limitations under the License. -->
     watch: {
       data() {
         if (!this.data.length) { return; }
+        this.data.forEach((element) => {
+          if (element.layer === 'Unknown' && element.type === 'Local') {
+              element.layer = element.type;
+          }
+        });
         this.loading = true;
         this.changeTree();
         this.tree.init({label: 'TRACE_ROOT', children: this.segmentId}, this.data, this.fixSpansSize);

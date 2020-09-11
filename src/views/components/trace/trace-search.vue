@@ -60,9 +60,22 @@ limitations under the License. -->
             { label: 'Error', key: 'ERROR' },
           ]"
         />
-        <div class="mr-10" style="padding: 3px 15px 0">
+        <div class="mr-10 input-sel">
           <div class="sm grey">{{ this.$t('endpointName') }}</div>
-          <input type="text" v-model="endpointName" class="rk-trace-search-input" />
+          <div style="width: 127px">
+            <input type="text" v-model="endpointName" class="rk-trace-search-input" v-on:focus="focusCustomer()" v-on:change="clearCustomer()"/>
+            <div class="sel-customer rk-trace-sel" v-if="showCustomer && customerList.length">
+              <div
+                class="rk-trace-opt ell"
+                @click="handleSelect(i)"
+                v-for="(i,index) in customerList"
+                v-tooltip:right.ellipsis="i || ''"
+                :key="index"
+              >
+                {{ i }}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -123,6 +136,7 @@ limitations under the License. -->
   import { Component, Vue, Watch } from 'vue-property-decorator';
   import { Action, Getter, Mutation, State } from 'vuex-class';
   import TraceSelect from '../common/trace-select.vue';
+  import Axios from 'axios';
 
   @Component({ components: { TraceSelect } })
   export default class TraceSearch extends Vue {
@@ -137,10 +151,9 @@ limitations under the License. -->
     @Action('rocketTrace/GET_TRACELIST') private GET_TRACELIST: any;
     @Action('rocketTrace/SET_TRACE_FORM') private SET_TRACE_FORM: any;
     @Mutation('rocketTrace/SET_TRACE_FORM_ITEM')
-
+    private SET_TRACE_FORM_ITEM: any;
     private start: any; // 首页heatmap传递过来的参数
     private end: any; // 首页heatmap传递过来的参数
-    private SET_TRACE_FORM_ITEM: any;
     private project: Option = { label: 'All', key: '' };
     private service: Option = { label: 'All', key: '' };
     private time!: Date[];
@@ -153,6 +166,9 @@ limitations under the License. -->
     private traceState: Option = { label: 'All', key: 'ALL' };
     private tags: string = '';
     private tagsList: string[] = [];
+    private showCustomer: boolean = false;
+    private customerList: string[] = [];
+    private timer: any = '';
 
     private created() {
       // tslint:disable-next-line:max-line-length
@@ -210,6 +226,42 @@ limitations under the License. -->
       setTimeout(() => {
         this.getTraceList();
       }, 500);
+    }
+    private focusCustomer() {
+      // this._debounce(500);
+      this.showCustomer = true;
+    }
+    private _debounce(wait: number) {
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        this.getSelectData();
+      }, wait);
+    }
+    private getSelectData() {
+      const projectIds: string[] = [];
+      if (this.project.key === '') {
+        this.rocketTrace.projects.forEach((element: any) => {
+          if ( element.key !== '' ) {
+            projectIds.push(element.key);
+          }
+        });
+      } else {
+        projectIds.push(this.project.key);
+      }
+      const query = {
+        endpointName: this.endpointName,
+        projectIds,
+      };
+      Axios.post('/project/getSelectData', query).then( (response) => {
+        this.customerList = response.data.data.customerList;
+      });
+    }
+    private clearCustomer() {
+      this.showCustomer = false;
+    }
+    private handleSelect(i: any) {
+      this.endpointName = i;
+      this.showCustomer = false;
     }
     private dateFormat(date: Date, step: string) {
       const year = date.getFullYear();
@@ -407,7 +459,7 @@ limitations under the License. -->
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .rk-trace-search {
     flex-shrink: 0;
     background-color: #333840;
@@ -512,5 +564,39 @@ limitations under the License. -->
       border-width: 8px;
       margin-right: 0px;
     }
+  }
+  // .rk-trace-opt {
+  //   padding: 7px 15px;
+  //   background-color: #252a2f;
+  // }
+  .rk-trace-opt {
+    padding: 7px 15px;
+    &:hover {
+      background-color: #40454e;
+    }
+  }
+  .rk-trace-sel {
+    top: 44px;
+    box-shadow: 0 1px 6px rgba(99, 99, 99, 0.2);
+    background-color: #252a2f;
+    width: 100%;
+    border-radius: 3px;
+    overflow: hidden;
+    .close {
+      right: 10px;
+      top: 12px;
+      opacity: 0.6;
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+  .sel-customer {
+    position: absolute;
+  }
+  .input-sel {
+    padding: 3px 15px 0;
+    position: relative;
+    z-index: 2;
   }
 </style>

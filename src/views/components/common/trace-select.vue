@@ -41,7 +41,7 @@ limitations under the License. -->
           <use xlink:href="#clear"></use>
         </svg>
       </div>
-      <div class="rk-trace-opt-wrapper scroll_hide">
+      <!-- <div class="rk-trace-opt-wrapper scroll_hide">
         <div
           class="rk-trace-opt ell"
           @click="handleSelect(i)"
@@ -51,7 +51,17 @@ limitations under the License. -->
         >
           {{ i.label }}
         </div>
-      </div>
+      </div> -->
+      <div
+          class="rk-trace-opt ell"
+          @click="handleSelect(i)"
+          :class="{ active: i.key === value.key }"
+          v-for="i in filterData"
+          v-tooltip:right.ellipsis="i.label || ''"
+          :key="i.key"
+        >
+          {{ i.label }}
+        </div>
     </div>
   </div>
 </template>

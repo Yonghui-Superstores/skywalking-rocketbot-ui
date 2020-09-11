@@ -124,9 +124,15 @@ limitations under the License. -->
           this.SET_COMPS_TREE(templatesConfiguration || []);
           window.localStorage.setItem('version', '8.0');
           window.localStorage.setItem('dashboard', JSON.stringify(templatesConfiguration));
+          window.localStorage.setItem('expires', (new Date().getTime() + 86400000 ) + '');
           this.handleOption();
         } else {
           const data: string = `${window.localStorage.getItem('dashboard')}`;
+          const expires: number = parseInt(`${window.localStorage.getItem('expires')}`, 0);
+          if (data === 'null' || expires < new Date().getTime()) {
+            window.localStorage.setItem('expires', (new Date().getTime() + 86400000 ) + '');
+            this.setDashboardTemplates(allTemplate);
+          }
           this.SET_COMPS_TREE(JSON.parse(data));
           this.handleOption();
         }
