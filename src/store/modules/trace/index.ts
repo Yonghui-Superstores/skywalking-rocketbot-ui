@@ -29,6 +29,7 @@ export interface State {
   projects: Option[];
   services: Option[];
   instances: Option[];
+  endpoints: string[];
   traceForm: any;
   traceList: Trace[];
   traceTotal: number;
@@ -41,6 +42,7 @@ const initState: State = {
   projects: [],
   services: [],
   instances: [],
+  endpoints: [],
   traceForm: {
     paging: { pageNum: 1, pageSize: 15, needTotal: true },
     queryOrder: localStorage.getItem('traceQueryOrder') || 'BY_DURATION',
@@ -117,6 +119,9 @@ const mutations: MutationTree<State> = {
       traceIds: [],
     };
   },
+  [types.SET_SEARCH_ENDPOINTS](state: State, data: string[]): void {
+    state.endpoints = data;
+  },
 };
 
 // actions
@@ -178,6 +183,15 @@ const actions: ActionTree<State, any> = {
       .params(params)
       .then((res: AxiosResponse) => {
         context.commit(types.SET_TRACE_SPANS, res.data.data.trace.spans);
+      });
+  },
+  SEARCH_ENDPOINTS(context: { commit: Commit }, params: any): Promise<void> {
+    context.commit(types.SET_SEARCH_ENDPOINTS, []);
+    return graph
+      .query('searchEndpoints')
+      .params(params)
+      .then((res: AxiosResponse) => {
+        context.commit(types.SET_SEARCH_ENDPOINTS, res.data.data.getEndpoints);
       });
   },
 };

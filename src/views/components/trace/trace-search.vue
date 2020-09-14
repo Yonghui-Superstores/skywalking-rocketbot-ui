@@ -63,12 +63,12 @@ limitations under the License. -->
         <div class="mr-10 input-sel">
           <div class="sm grey">{{ this.$t('endpointName') }}</div>
           <div style="width: 127px">
-            <input type="text" v-model="endpointName" class="rk-trace-search-input" v-on:focus="focusCustomer()" v-on:change="clearCustomer()"/>
-            <div class="sel-customer rk-trace-sel" v-if="showCustomer && customerList.length">
+            <input type="text" v-model="endpointName" class="rk-trace-search-input" v-on:focus="focusCustomer()" v-on:blur="clearCustomer()"/>
+            <div class="sel-customer rk-trace-sel" v-if="showCustomer">
               <div
                 class="rk-trace-opt ell"
-                @click="handleSelect(i)"
-                v-for="(i,index) in customerList"
+                @mousedown="handleSelect(i)"
+                v-for="(i,index) in rocketTrace.endpoints"
                 v-tooltip:right.ellipsis="i || ''"
                 :key="index"
               >
@@ -145,6 +145,7 @@ limitations under the License. -->
     @Getter('durationTime') private durationTime: any;
     @Getter('duration') private duration: any;
     @Action('RESET_DURATION') private RESET_DURATION: any;
+    @Action('rocketTrace/SEARCH_ENDPOINTS') private SEARCH_ENDPOINTS: any;
     @Action('rocketTrace/GET_PROJECTS') private GET_PROJECTS: any;
     @Action('rocketTrace/GET_SERVICES') private GET_SERVICES: any;
     @Action('rocketTrace/GET_INSTANCES') private GET_INSTANCES: any;
@@ -167,7 +168,6 @@ limitations under the License. -->
     private tags: string = '';
     private tagsList: string[] = [];
     private showCustomer: boolean = false;
-    private customerList: string[] = [];
     private timer: any = '';
 
     private created() {
@@ -228,36 +228,14 @@ limitations under the License. -->
       }, 500);
     }
     private focusCustomer() {
-      // this._debounce(500);
-      this.showCustomer = true;
-    }
-    private _debounce(wait: number) {
-      clearTimeout(this.timer);
-      this.timer = setTimeout(() => {
-        this.getSelectData();
-      }, wait);
-    }
-    private getSelectData() {
-      const projectIds: string[] = [];
-      if (this.project.key === '') {
-        this.rocketTrace.projects.forEach((element: any) => {
-          if ( element.key !== '' ) {
-            projectIds.push(element.key);
-          }
-        });
-      } else {
-        projectIds.push(this.project.key);
+      if (this.endpointName !== '') {
+        this._debounce(0);
       }
-      const query = {
-        endpointName: this.endpointName,
-        projectIds,
-      };
-      Axios.post('/project/getSelectData', query).then( (response) => {
-        this.customerList = response.data.data.customerList;
-      });
+      this.showCustomer = true;
     }
     private clearCustomer() {
       this.showCustomer = false;
+      this.rocketTrace.endpoints = [];
     }
     private handleSelect(i: any) {
       this.endpointName = i;
@@ -320,6 +298,8 @@ limitations under the License. -->
       }
       this.service = { label: 'All', key: '' };
       this.instance = { label: 'All', key: '' };
+      this.rocketTrace.services = [];
+      this.rocketTrace.instances = [];
       this.project = i;
       if (i.key === '') {
         return;
@@ -452,9 +432,46 @@ limitations under the License. -->
       this.rocketTrace.currentTrace = {};
       this.rocketTrace.traceTotal = 0;
     }
+    private _debounce(wait: number) {
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        const projectIds: string[] = [];
+        const serviceIds: string[] = [];
+        if (this.project.key === '') {
+          this.rocketTrace.projects.forEach((element: any) => {
+            if ( element.key !== '' ) {
+              projectIds.push(element.key);
+            }
+          });
+        } else {
+          projectIds.push(this.project.key);
+          if (this.service.key === '') {
+            this.rocketTrace.services.forEach((element: any) => {
+              if ( element.key !== '' ) {
+                serviceIds.push(element.key);
+              }
+            });
+          } else {
+            serviceIds.push(this.service.key);
+          }
+        }
+        const variables = {
+          projectId: projectIds,
+          serviceId: serviceIds,
+          endpointName: this.endpointName,
+        };
+        this.SEARCH_ENDPOINTS(variables);
+      }, wait);
+    }
     @Watch('rocketbotGlobal.durationRow')
     private durationRowWatch(value: Duration) {
       this.time = [value.start, value.end];
+    }
+    @Watch('endpointName')
+    private endpointNameWatch(value: string) {
+      if (value !== null && value !== '') {
+        this._debounce(300);
+      }
     }
   }
 </script>
