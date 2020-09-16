@@ -32,9 +32,12 @@ export const Traces = {
 };
 
 export const searchEndpointTrace = {
-  variable: '$projectId:[ID!]!, $serviceId: [ID!]!, $endpointName:String!',
+  variable: '$serviceId: ID!, $endpointName:String!',
   query: `
-  getEndpoints: searchEndpointTrace(projectId:$projectId, serviceId: $serviceId, endpointName:$endpointName, keyword: "", limit: 100)
+  getEndpoints: searchEndpointTrace(serviceId: $serviceId, endpointName:$endpointName, keyword: "", limit: 100){
+    key: id
+    label: name
+  }
   `,
 };
 

@@ -228,7 +228,7 @@ limitations under the License. -->
       }, 500);
     }
     private focusCustomer() {
-      if (this.endpointName !== '') {
+      if (this.endpointName !== '' && this.endpointName !== null) {
         this._debounce(0);
       }
       this.showCustomer = true;
@@ -435,32 +435,14 @@ limitations under the License. -->
     private _debounce(wait: number) {
       clearTimeout(this.timer);
       this.timer = setTimeout(() => {
-        const projectIds: string[] = [];
-        const serviceIds: string[] = [];
-        if (this.project.key === '') {
-          this.rocketTrace.projects.forEach((element: any) => {
-            if ( element.key !== '' ) {
-              projectIds.push(element.key);
-            }
-          });
-        } else {
-          projectIds.push(this.project.key);
-          if (this.service.key === '') {
-            this.rocketTrace.services.forEach((element: any) => {
-              if ( element.key !== '' ) {
-                serviceIds.push(element.key);
-              }
-            });
-          } else {
-            serviceIds.push(this.service.key);
-          }
-        }
         const variables = {
-          projectId: projectIds,
-          serviceId: serviceIds,
+          serviceId: this.service.key,
           endpointName: this.endpointName,
         };
-        this.SEARCH_ENDPOINTS(variables);
+        if (variables.serviceId !== null && variables.serviceId !== ''
+            && variables.endpointName !== null && variables.endpointName !== '') {
+          this.SEARCH_ENDPOINTS(variables);
+        }
       }, wait);
     }
     @Watch('rocketbotGlobal.durationRow')
@@ -471,6 +453,10 @@ limitations under the License. -->
     private endpointNameWatch(value: string) {
       if (value !== null && value !== '') {
         this._debounce(300);
+        this.showCustomer = true;
+      } else {
+        this.rocketTrace.endpoints = [];
+        this.showCustomer = false;
       }
     }
   }
