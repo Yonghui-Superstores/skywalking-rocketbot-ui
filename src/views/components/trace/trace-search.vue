@@ -435,12 +435,23 @@ limitations under the License. -->
     private _debounce(wait: number) {
       clearTimeout(this.timer);
       this.timer = setTimeout(() => {
+        const projectIds: string[] = [];
+        if (this.project.key === '' || this.project.key === 'ALL') {
+          this.rocketTrace.projects.forEach((v: any) => {
+            if (v.key !== '') {
+              projectIds.push(v.key);
+            }
+          });
+        } else {
+          projectIds.push(this.project.key);
+        }
         const variables = {
+          projectIds,
           serviceId: this.service.key,
-          endpointName: this.endpointName,
+          keyword: this.endpointName,
         };
-        if (variables.serviceId !== null && variables.serviceId !== ''
-            && variables.endpointName !== null && variables.endpointName !== '') {
+        if (variables.projectIds.length > 0
+            && variables.keyword !== null && variables.keyword !== '') {
           this.SEARCH_ENDPOINTS(variables);
         }
       }, wait);
