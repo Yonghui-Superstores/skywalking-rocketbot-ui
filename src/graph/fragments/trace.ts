@@ -31,7 +31,7 @@ export const Traces = {
   }`,
 };
 
-export const searchEndpointTrace = {
+export const searchEndpoints = {
   variable: '$projectIds: [ID!]!, $serviceId: ID!, $keyword: String!',
   query: `
   getEndpoints: searchEndpoint(projectIds: $projectIds, serviceId: $serviceId, keyword: $keyword, limit: 100){

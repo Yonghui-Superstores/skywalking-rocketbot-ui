@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Traces, Trace, ServiceInstanceOption, searchEndpointTrace } from '../fragments/trace';
+import { Traces, Trace, ServiceInstanceOption, searchEndpoints } from '../fragments/trace';
 
 export const queryTraces = `query queryTraces(${Traces.variable}) {${Traces.query}}`;
 
@@ -24,4 +24,4 @@ export const queryTrace = `query queryTrace(${Trace.variable}) {${Trace.query}}`
 export const queryServiceInstance = `query queryServiceInstance(${ServiceInstanceOption.variable})
 {${ServiceInstanceOption.query}}`;
 
-export const queryEndpoints = `query queryEndpoints(${searchEndpointTrace.variable}) {${searchEndpointTrace.query}}`;
+export const serchEndpoints = `query queryEndpoints(${searchEndpoints.variable}) {${searchEndpoints.query}}`;

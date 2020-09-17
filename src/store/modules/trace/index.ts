@@ -188,7 +188,7 @@ const actions: ActionTree<State, any> = {
   SEARCH_ENDPOINTS(context: { commit: Commit }, params: any): Promise<void> {
     context.commit(types.SET_SEARCH_ENDPOINTS, []);
     return graph
-      .query('queryEndpoints')
+      .query('serchEndpoints')
       .params(params)
       .then((res: AxiosResponse) => {
         const endpoints: string[] = [];
