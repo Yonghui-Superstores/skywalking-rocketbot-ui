@@ -41,27 +41,19 @@ limitations under the License. -->
           <use xlink:href="#clear"></use>
         </svg>
       </div>
-      <!-- <div class="rk-trace-opt-wrapper scroll_hide">
+      <div class="rk-trace-opt-wrapper scroll_hide"
+          v-tooltip:right="this.label">
         <div
           class="rk-trace-opt ell"
           @click="handleSelect(i)"
+          @mouseover.prevent="tooltip(i)"
           :class="{ active: i.key === value.key }"
           v-for="i in filterData"
           :key="i.key"
         >
           {{ i.label }}
         </div>
-      </div> -->
-      <div
-          class="rk-trace-opt ell"
-          @click="handleSelect(i)"
-          :class="{ active: i.key === value.key }"
-          v-for="i in filterData"
-          v-tooltip:right.ellipsis="i.label || ''"
-          :key="i.key"
-        >
-          {{ i.label }}
-        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -76,6 +68,7 @@ limitations under the License. -->
     @Prop({ default: false }) public hasSearch!: boolean;
     @Prop({ default: false })
     public readonly!: boolean;
+    public label: string = '';
     public search: string = '';
     public visible: boolean = false;
     get filterData() {
@@ -84,6 +77,9 @@ limitations under the License. -->
     public handleSelect(i: any) {
       this.$emit('input', i);
       this.visible = false;
+    }
+    public tooltip(i: any) {
+      this.label = i.label;
     }
   }
 </script>

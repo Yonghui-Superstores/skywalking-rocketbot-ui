@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. -->
 <template>
-  <div class="rk-dashboard-opt ell" @click="$emit('handleSelect', data)">
+  <div class="rk-dashboard-opt ell" @click="$emit('handleSelect', data)" @mouseover.prevent="$emit('tooltip', data)">
     {{ data.label }}
     <svg style="margin-top: 3px;" class="icon sm r" @click.stop="show = !show">
       <use xlink:href="#code"></use>

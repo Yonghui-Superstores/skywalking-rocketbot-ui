@@ -44,27 +44,19 @@ limitations under the License. -->
           <use xlink:href="#clear"></use>
         </svg>
       </div>
-      <!-- <div class="rk-dashboard-opt-wrapper scroll_hide">
+      <div class="rk-dashboard-opt-wrapper scroll_hide"
+           v-tooltip:right="this.label">
         <div
           class="rk-dashboard-opt ell"
           @click="handleSelect(i)"
+          @mouseover.prevent="tooltip(i)"
           :class="{ active: i.key === current.key }"
           v-for="i in filterData"
           :key="i.key"
         >
           {{ i.label }}
         </div>
-      </div> -->
-      <div
-          class="rk-dashboard-opt ell"
-          @click="handleSelect(i)"
-          :class="{ active: i.key === current.key }"
-          v-for="i in filterData"
-          v-tooltip:right.ellipsis="i.label || ''"
-          :key="i.key"
-        >
-          {{ i.label }}
-        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -78,6 +70,7 @@ limitations under the License. -->
     @Prop() public title!: string;
     @Prop() public icon!: string;
     @Prop({ type: Boolean, default: true }) public selectable!: boolean;
+    public label: string = '';
     public search: string = '';
     public visible: boolean = false;
     get filterData() {
@@ -89,6 +82,9 @@ limitations under the License. -->
     public handleSelect(i: any) {
       this.$emit('onChoose', i);
       this.visible = false;
+    }
+    public tooltip(i: any) {
+      this.label = i.label;
     }
   }
 </script>
