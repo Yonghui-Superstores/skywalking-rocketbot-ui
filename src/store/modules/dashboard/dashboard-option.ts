@@ -116,8 +116,9 @@ const mutations: MutationTree<State> = {
     if (!data.length) {
       return;
     }
-    if (!state.currentDatabase.key && data.length) {
+    if (!state.currentDatabase.key && data.length || !state.databases.includes(state.currentDatabase)) {
       state.currentDatabase = data[0];
+      state.updateDashboard = data[0];
     }
   },
   [types.SET_CURRENT_DATABASE](state: State, service: any) {

@@ -38,7 +38,7 @@ export const Services = {
 export const Database = {
   variable: '$duration: Duration!',
   query: `
-    services: getAllDatabases(duration: $duration) {
+    services: getAllDatabases(duration: $duration,projectId: "") {
       key: id
       label: name
     }
