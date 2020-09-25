@@ -19,6 +19,7 @@ import { Commit, Dispatch } from 'vuex';
 import { AxiosResponse } from 'axios';
 
 import graph from '@/graph';
+import global from '../global';
 import * as types from '../../mutation-types';
 import {
   IOption,
@@ -44,6 +45,8 @@ export interface State {
 }
 const initState: State = {
   headerSource: {
+    projectSource: [],
+    currentProject: { key: '', label: 'None' },
     serviceSource: [{ key: '', label: 'None' }],
     currentService: { key: '', label: 'None' },
     endpointName: '',
@@ -74,6 +77,16 @@ const getters = {
 
 // mutations
 const mutations = {
+  [types.SET_PROJECTS](state: State, data: any[]) {
+    const defaultProjectId = window.localStorage.getItem('defaultProjectId');
+    let index = 0;
+    if (defaultProjectId !== null) {
+      index = data.map((item: any) => item.label).indexOf(defaultProjectId);
+      index = index >= 0 ? index : 0;
+    }
+    state.headerSource.projectSource = data;
+    state.headerSource.currentProject = state.headerSource.projectSource[index];
+  },
   [types.SET_SERVICES](state: State, data: any[]) {
     state.headerSource.serviceSource = [{ key: 'all', label: 'All' }, ...data];
     state.headerSource.currentService = state.headerSource.serviceSource[0];
@@ -118,7 +131,33 @@ const mutations = {
 
 // actions
 const actions = {
-  GET_SERVICES(context: { commit: Commit; dispatch: Dispatch }, params: { duration: any; keyword: string }) {
+  GET_PROJECTS_SERVICES(context: { state: State; dispatch: Dispatch }, params: { duration: any; projectNames: any }) {
+    context.dispatch('GET_PROJECTS', params).then(() =>
+    context.dispatch('GET_SERVICES', { duration: params.duration,
+      keyword: '', projectId: context.state.headerSource.currentProject.key }));
+  },
+  GET_PROJECTS(context: { state: State; commit: Commit; dispatch: Dispatch }, params:
+    { duration: any; projectNames: any }) {
+    let projectIds: any[] = [];
+    const projects = window.localStorage.getItem('projectIds');
+    if ( projects !== null) {
+      projectIds = JSON.parse(projects);
+    }
+    if (!params.projectNames) {
+      params.projectNames = projectIds;
+    }
+    if (global.state.userAuth) {
+      params.projectNames = [];
+    }
+    return graph
+      .query('queryProjects')
+      .params(params)
+      .then((res: AxiosResponse) => {
+        context.commit(types.SET_PROJECTS, res.data.data.projects);
+      });
+  },
+  GET_SERVICES(context: { commit: Commit; dispatch: Dispatch }, params:
+    { duration: any; keyword: string; projectId: string; }) {
     if (!params.keyword) {
       params.keyword = '';
     }

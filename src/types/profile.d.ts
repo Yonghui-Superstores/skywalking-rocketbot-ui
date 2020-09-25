@@ -51,6 +51,8 @@ export interface TracesSourceType {
 }
 
 export interface IHeaderSource {
+  projectSource: IOption[];
+  currentProject: IOption;
   serviceSource: IOption[];
   currentService: IOption;
   endpointName: string;

@@ -264,8 +264,8 @@ const actions: ActionTree<State, any> = {
         case 'service':
           return context
             .dispatch('GET_PROJECTS', { duration: params.duration, projectNames: params.projectNames })
-            // tslint:disable-next-line:max-line-length
-            .then(() => context.dispatch('GET_SERVICES', { duration: params.duration, keyword: params.keywordServiceName, projectId: params.projectId }))
+            .then(() => context.dispatch('GET_SERVICES',
+            { duration: params.duration, keyword: params.keywordServiceName, projectId: params.projectId }))
             .then(() => context.dispatch('GET_SERVICE_ENDPOINTS', {}))
             .then(() => context.dispatch('GET_SERVICE_INSTANCES', { duration: params.duration }));
         case 'database':

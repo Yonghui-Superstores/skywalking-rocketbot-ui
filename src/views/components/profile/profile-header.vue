@@ -28,6 +28,13 @@ limitations under the License. -->
       <div class="flex-h">
         <TraceSelect
           :hasSearch="true"
+          :title="this.$t('project')"
+          :value="headerSource.currentProject"
+          @input="chooseProject"
+          :data="headerSource.projectSource"
+        />
+        <TraceSelect
+          :hasSearch="true"
           :title="this.$t('service')"
           :value="headerSource.currentService"
           @input="chooseService"
@@ -48,7 +55,7 @@ limitations under the License. -->
 <script lang="ts">
   import { Duration, Option } from '@/types/global';
   import { Component, Prop, Vue } from 'vue-property-decorator';
-  import { Mutation } from 'vuex-class';
+  import { Mutation, Getter } from 'vuex-class';
   import TraceSelect from '../common/trace-select.vue';
   import ProfileTask from './profile-task.vue';
 
@@ -58,6 +65,7 @@ limitations under the License. -->
     @Prop() private newTaskFields: any;
     @Prop() private taskFieldSource: any;
     @Mutation('profileStore/SET_HEADER_SOURCE') private SET_HEADER_SOURCE: any;
+    @Getter('durationTime') private durationTime: any;
 
     private endpointName: string = '';
     private dialogVisible = false;
@@ -104,6 +112,14 @@ limitations under the License. -->
         start: time[0].getTime(),
         end: time[1].getTime(),
       };
+    }
+
+    private chooseProject(item: { key: string; label: string }) {
+      this.headerSource.currentProject = item;
+      this.$store.dispatch('profileStore/GET_SERVICES', {
+        duration: this.durationTime,
+        projectId: item.key,
+      });
     }
 
     private chooseService(item: { key: string; label: string }) {

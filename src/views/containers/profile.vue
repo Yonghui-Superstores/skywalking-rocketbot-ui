@@ -53,7 +53,7 @@ limitations under the License. -->
     @Getter('durationTime') private durationTime: any;
 
     private beforeMount() {
-      this.$store.dispatch('profileStore/GET_SERVICES', {
+      this.$store.dispatch('profileStore/GET_PROJECTS_SERVICES', {
         duration: this.durationTime,
       });
     }
