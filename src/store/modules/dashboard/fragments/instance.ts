@@ -61,7 +61,7 @@ export const instanceCPU =  {
     name: "instance_jvm_cpu"
     id: $instanceId
   }, duration: $duration) {
-    values {
+    values: valuesDouble {
       value
     }
   }`,
