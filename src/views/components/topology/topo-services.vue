@@ -29,9 +29,7 @@ import { State, Getter, Action } from 'vuex-class';
 import Axios, { AxiosResponse } from 'axios';
 import TopoSelect from './topo-select.vue';
 import { getPrefixes, getFilterProjectList } from '@/utils/serviceFilter';
-import getProjectIdFromCookie from '@/utils/cookie.js'
-
-
+import getProjectIdFromCookie from '@/utils/cookie.js';
 
 @Component({components: {TopoSelect}})
 export default class TopologyServices extends Vue {
@@ -40,14 +38,13 @@ export default class TopologyServices extends Vue {
   private services = [{key: 0, label: 'All services'}];
   private service = {key: 0, label: 'All services'};
   private fetchData() {
-    Axios.get('/user/projects').then(res=>{
+    Axios.get('/user/projects').then((res: any) => {
       // console.log('res', res);
-      let response = res as any
-      let validProjects = response.data.projects || []
-      const prefixes = getPrefixes(validProjects)
+      const response = res as any;
+      const validProjects = response.data.projects || [];
+      const prefixes = getPrefixes(validProjects);
       // TODO getAllServices(duration: Duration!,externalProjectId: String): [Service!]!
-      let projectId = getProjectIdFromCookie()
-
+      const projectId = getProjectIdFromCookie();
       Axios.post('/graphql', {
         query: `
         query queryServices($duration: Duration!, $externalProjectId: String!) {
@@ -58,17 +55,17 @@ export default class TopologyServices extends Vue {
         }`,
         variables: {
           duration: this.durationTime,
-          externalProjectId: projectId
+          externalProjectId: projectId,
         }}).then((res: AxiosResponse) => {
           // this.services = res.data.data.services
-          let resultServices = getFilterProjectList(prefixes, res.data.data.services)
+          const resultServices = getFilterProjectList(prefixes, res.data.data.services);
           this.services = resultServices
           ?
           [{key: 0, label: 'All services'}, ...resultServices]
           :
           [{key: 0, label: 'All services'}];
-        });          
-    })
+        });
+    });
   }
   private handleChange(i: any) {
     this.service = i;

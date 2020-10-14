@@ -35,5 +35,5 @@ export default [
   {
     name: 'Endpoint',
     children: endpointTemp,
-  },  
+  },
 ];

@@ -67,7 +67,7 @@ export default class ToolBarSelect extends Vue {
   }
   public clickEvent() {
     if (this.disabled) {
-      return false
+      return false;
     }
     this.visible = !this.visible;
   }

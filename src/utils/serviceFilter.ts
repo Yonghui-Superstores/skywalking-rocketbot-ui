@@ -1,21 +1,20 @@
 export const getPrefixes = (projects: any[]) => {
-  const prefixes:any = []
-  projects.forEach(item => {
+  const prefixes: any = [];
+  projects.forEach((item: any) => {
     prefixes.push(`${item}#`);
   });
-  return prefixes
-}
+  return prefixes;
+};
 
-export const  getFilterProjectList = (prefixes: string[], serviceList: any[], key = "label") => {
-  const list = serviceList || []
+export const  getFilterProjectList = (prefixes: string[], serviceList: any[], key = 'label') => {
+  const list = serviceList || [];
   if (prefixes.length === 0) {
-    return serviceList
+    return serviceList;
   }
   // console.log('getFilterProjectList method', prefixes, serviceList)
-  const result = list.filter(item => {
-     return prefixes.some(prefix => item[key].indexOf(prefix) === 0)
-  })
+  const result = list.filter((item: any) => {
+     return prefixes.some((prefix: any) => item[key].indexOf(prefix) === 0);
+  });
   // console.log(result, 'getFilterProjectList return', result)
-  return result
-}
-
+  return result;
+};

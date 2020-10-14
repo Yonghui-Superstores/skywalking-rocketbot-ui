@@ -40,14 +40,14 @@ import Vue from 'vue';
 import { Component, Prop, Model } from 'vue-property-decorator';
 import AlarmSelect from './alarm-select.vue';
 import { Action, Mutation } from 'vuex-class';
-import Loading from '@/components/loading.vue'
+import Loading from '@/components/loading.vue';
 
 import RkFooter from '@/components/rk-footer.vue';
 
 @Component({components: {
   AlarmSelect,
   RkFooter,
-  Loading
+  Loading,
 }})
 export default class AlarmTool extends Vue {
   @Mutation('SET_EVENTS') private SET_EVENTS: any;
@@ -73,7 +73,7 @@ export default class AlarmTool extends Vue {
     this.handleRefresh(1);
   }
   private handleRefresh(pageNum: number) {
-    this.loading = true
+    this.loading = true;
     this.pageNum = pageNum;
     const params: any = {
       duration: this.durationTime,
@@ -85,8 +85,8 @@ export default class AlarmTool extends Vue {
     };
     if (this.alarmScope.key) { params.scope = this.alarmScope.key; }
     if (this.keyword) { params.keyword = this.keyword; }
-    this.GET_ALARM(params).then(()=>{
-      this.loading = false
+    this.GET_ALARM(params).then(() => {
+      this.loading = false;
     });
   }
   private beforeMount() {
@@ -95,15 +95,15 @@ export default class AlarmTool extends Vue {
   }
   // 给input输入框添加节流操作
   get debounceSearch() {
-    let timer: any = null
+    let timer: any = null;
     return (e: any, duration: any = 1000) => {
-      if (timer)
-        clearTimeout(timer)
-      timer = setTimeout(()=>{
-        this.handleRefresh(1);        
-      }, duration)
-    }
-
+      if (timer) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
+        this.handleRefresh(1);
+      }, duration);
+    };
   }
 }
 </script>

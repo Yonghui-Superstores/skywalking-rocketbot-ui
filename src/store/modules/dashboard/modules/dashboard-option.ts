@@ -21,7 +21,7 @@ import * as types from '../mutation-types';
 import Axios, { AxiosResponse } from 'axios';
 import { getPrefixes, getFilterProjectList } from '@/utils/serviceFilter';
 import graph from '@/graph';
-import getProjectIdFromCookie from '@/utils/cookie.js'
+import getProjectIdFromCookie from '@/utils/cookie.js';
 
 export interface State {
   services: any;
@@ -118,31 +118,29 @@ const mutations: MutationTree<State> = {
 // actions
 const actions: ActionTree<State, any> = {
   GET_SERVICES(context: { commit: Commit, rootState: any  }, params: any) {
-    return Axios.get('/user/projects').then(res=>{
-      let response = res as any
-      let validProjects = response.data.projects || []
+    return Axios.get('/user/projects').then((res: any) => {
+      const response = res as any;
+      const validProjects = response.data.projects || [];
       // console.log('dashboard 返回的projects列表:', response, response.data, response.projects)
-      const prefixes = getPrefixes(validProjects)
+      const prefixes = getPrefixes(validProjects);
       // console.log('dashboard 返回的前缀:', prefixes)
-      let projectId = getProjectIdFromCookie()
-      params.externalProjectId = projectId
+      const projectId = getProjectIdFromCookie();
+      params.externalProjectId = projectId;
       return graph.query('queryServices').params(params)
-      .then((res: AxiosResponse) => {
-        let resultServices = getFilterProjectList(prefixes, res.data.data.services)
-        context.commit(types.SET_SERVICES, resultServices);        
+      .then((res2: AxiosResponse) => {
+        const resultServices = getFilterProjectList(prefixes, res2.data.data.services);
+        context.commit(types.SET_SERVICES, resultServices);
         // context.commit(types.SET_SERVICES, res.data.data.services);
       });
-    })
-
-
+    });
   },
   GET_SERVICE_ENDPOINTS(context: { commit: Commit, state: any }) {
     if (!context.state.currentService.key) {
       return new Promise((resolve) => resolve());
     }
-    let projectId = getProjectIdFromCookie()
-    let params:any = {serviceId: context.state.currentService.key, keyword: ''}
-    params.externalProjectId = projectId   
+    const projectId = getProjectIdFromCookie();
+    const params: any = {serviceId: context.state.currentService.key, keyword: ''};
+    params.externalProjectId = projectId;
     return graph
       .query('queryEndpoints')
       .params(params)
@@ -151,15 +149,15 @@ const actions: ActionTree<State, any> = {
       });
   },
   GET_ENDPOINTS(context: { commit: Commit }, params: any) {
-    let projectId = getProjectIdFromCookie()
-    params.externalProjectId = projectId    
+    const projectId = getProjectIdFromCookie();
+    params.externalProjectId = projectId;
     return graph.query('queryEndpoints').params(params)
     .then((res: AxiosResponse) => {
       context.commit(types.SET_ENDPOINTS, res.data.data.endpoints);
     });
   },
   SEARCH_ENDPOINTS(context: { commit: Commit, state: any }, params: any) {
-    let projectId = getProjectIdFromCookie()
+    const projectId = getProjectIdFromCookie();
     return graph
       .query('queryEndpoints')
       .params({serviceId: context.state.currentService.key, keyword: params, externalProjectId: projectId})
@@ -171,21 +169,21 @@ const actions: ActionTree<State, any> = {
     if (!context.state.currentService.key) {
       return new Promise((resolve) => resolve());
     }
-    let projectId = getProjectIdFromCookie()
-    params.externalProjectId = projectId  
+    const projectId = getProjectIdFromCookie();
+    params.externalProjectId = projectId;
     return graph
       .query('queryInstances')
       .params({serviceId: context.state.currentService.key, ...params})
       .then((res: AxiosResponse) => {
-        if(res.data.data.getServiceInstances.length > 0){
+        if (res.data.data.getServiceInstances.length > 0) {
           context.commit('SET_CURRENT_INSTANCE', res.data.data.getServiceInstances[0].key);
         }
         context.commit(types.SET_INSTANCES, res.data.data.getServiceInstances);
       });
   },
   GET_INSTANCES(context: { commit: Commit }, params: any) {
-    let projectId = getProjectIdFromCookie()
-    params.externalProjectId = projectId  
+    const projectId = getProjectIdFromCookie();
+    params.externalProjectId = projectId;
     return graph
     .query('queryInstances')
     .params(params)
@@ -194,8 +192,8 @@ const actions: ActionTree<State, any> = {
     });
   },
   GET_DATABASES(context: { commit: Commit, rootState: any  }, params: any) {
-    let projectId = getProjectIdFromCookie()
-    params.externalProjectId = projectId
+    const projectId = getProjectIdFromCookie();
+    params.externalProjectId = projectId;
     return graph
       .query('queryDatabases')
       .params(params)

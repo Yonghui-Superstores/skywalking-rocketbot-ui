@@ -70,7 +70,7 @@ export default class ToolBarSelect extends Vue {
   }
   public clickEvent() {
     if (this.disabled) {
-      return 
+      return;
     }
     this.visible = !this.visible;
     this.SEARCH_ENDPOINTS('');

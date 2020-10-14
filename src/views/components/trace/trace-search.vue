@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component,Watch } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
 import { Action, Getter, State } from 'vuex-class';
 import { Trace } from '@/types/trace';
 import { DurationTime, Option } from '@/types/global';
@@ -78,7 +78,7 @@ import timeFormat from '@/utils/timeFormat';
 export default class TraceTool extends Vue {
   @State('rocketbot') private rocketbotGlobal: any;
   @State('rocketTrace') private rocketTrace: any;
-	@State('rocketOption') private stateDashboardOption!: any;
+  @State('rocketOption') private stateDashboardOption!: any;
   @Getter('durationTime') private durationTime: any;
   @Getter('duration') private duration: any;
   @Action('SET_DURATION') private SET_DURATION: any;
@@ -86,9 +86,7 @@ export default class TraceTool extends Vue {
   @Action('rocketTrace/GET_INSTANCES') private GET_INSTANCES: any;
   @Action('rocketTrace/GET_TRACELIST') private GET_TRACELIST: any;
   @Action('rocketTrace/SET_TRACE_FORM') private SET_TRACE_FORM: any;
-  @Action('Trace_Date_SHOW') private Trace_Date_SHOW: any;
-  
-
+  @Action('TRACE_DATE_SHOW') private TRACE_DATE_SHOW: any;
   private start: any; // 首页heatmap传递过来的参数
   private end: any; // 首页heatmap传递过来的参数
   private time: Date[] = [new Date() , new Date()];
@@ -99,6 +97,7 @@ export default class TraceTool extends Vue {
   private instance: Option  = {label: 'All', key: ''};
   private endpointName: string = '';
   private traceId: string = '';
+  private project: string = '';
   private traceState: Option  = {label: 'All', key: 'ALL'};
   private dateFormate = (date: Date, step: string) => {
     const year = date.getFullYear();
@@ -155,7 +154,6 @@ export default class TraceTool extends Vue {
     this.traceState = i;
   }
   private getTraceList() {
-    
     this.GET_SERVICES({duration: this.durationTime});
     const temp: any = {
         queryDuration: this.globalTimeFormate([
@@ -174,9 +172,12 @@ export default class TraceTool extends Vue {
     if (this.minTraceDuration) { temp.minTraceDuration = this.minTraceDuration; }
     if (this.endpointName) { temp.endpointName = this.endpointName; }
     if (this.traceId) { temp.traceId = this.traceId; }
-    let externalProjectId = getProjectIdFromCookie()
+    const externalProjectId = getProjectIdFromCookie();
     if (externalProjectId) {
-      temp.externalProjectId = externalProjectId
+      temp.externalProjectId = externalProjectId;
+    }
+    if(this.project !== ''){
+      temp.externalProjectId = this.project;
     }
     this.SET_TRACE_FORM(temp);
     this.eventHub.$emit('SET_LOADING_TRUE', () => {
@@ -187,53 +188,61 @@ export default class TraceTool extends Vue {
     // this.GET_TRACELIST();
   }
   private created() {
-    const {endpoint, service, serviceKey, instance, instanceKey, min, max, start, end, tId, traceState} = this.$route.query;
+    const {endpoint, service, serviceKey, instance, instanceKey, min, max, start, end, tId, traceState,
+    project, traceId}    
+    = this.$route.query;
     if (endpoint !== undefined) {
       this.endpointName = endpoint.toString().trim();
     }
     if (service !== undefined && serviceKey !== undefined) {
       this.service = {label: service.toString(), key: serviceKey.toString()};
     }
+    if (project !== undefined) {
+      this.project = project.toString().trim();
+    }
+    if (traceId !== undefined) {
+      this.traceId = traceId.toString().trim();
+    }
     // gloabl heatmap 跳转
-    if (min != undefined) {
-      this.minTraceDuration = min + ''
+    if (min !== undefined) {
+      this.minTraceDuration = min + '';
     }
-    if (max != undefined) {
-      this.maxTraceDuration = max + ''
+    if (max !== undefined) {
+      this.maxTraceDuration = max + '';
     }
-    if (start != undefined) {
-      this.start = start
-    } 
-    if (end != undefined) {
-      this.end = end
+    if (start !== undefined) {
+      this.start = start;
     }
-    if (traceState != undefined) {
+    if (end !== undefined) {
+      this.end = end;
+    }
+    if (traceState !== undefined) {
         switch (traceState) {
           case 'SUCCESS':
-            this.traceState = {label:'Success',key:'SUCCESS'}
+            this.traceState = {label: 'Success', key: 'SUCCESS'};
             break;
           case 'ERROR':
-            this.traceState = {label:'Error',key:'ERROR'}
+            this.traceState = {label: 'Error', key: 'ERROR'};
             break;
           case 'ALL':
-            this.traceState = {label:'All',key:'ALL'}
+            this.traceState = {label: 'All', key: 'ALL'};
             break;
           default:
             break;
         }
     }
     // 端点 slow endpoint跳转
-    if (tId != undefined) {
-      this.traceId = <string>tId
+    if (tId !== undefined) {
+      this.traceId = <string> tId;
     }
   }
 
   @Watch('time')
   private onTimeUpdate() {
-    if(this.time[0] > this.time[1]){
-      let transit = this.time[1]
-      this.time[1] = this.time[0]
-      this.time[0] = transit
+    if (this.time[0] > this.time[1]) {
+      const transit = this.time[1];
+      this.time[1] = this.time[0];
+      this.time[0] = transit;
       this.SET_DURATION(timeFormat(this.time));
       this.getTraceList();
     }
@@ -242,14 +251,14 @@ export default class TraceTool extends Vue {
     // 这里的this.time 如果有数据来自于url，就从url里面获取否则来自于全局的这个
     this.time = [this.rocketbotGlobal.durationRow.start, this.rocketbotGlobal.durationRow.end];
     if (this.start && this.end) {
-      this.time = [new Date(this.start), new Date(this.end)]
+      this.time = [new Date(this.start), new Date(this.end)];
     }
-    this.Trace_Date_SHOW(false)
+    this.TRACE_DATE_SHOW(false);
     this.getTraceList();
   }
-  private destroyed () {
+  private destroyed() {
     // alert('实例已销毁')
-    this.Trace_Date_SHOW(true)
+    this.TRACE_DATE_SHOW(true);
   }
 }
 </script>

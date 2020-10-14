@@ -56,8 +56,6 @@ export default [
     w: 4,
     h: '270',
   },
-
-
   {
     o: 'ServiceInstance',
     d: 'instanceHeap',
@@ -81,7 +79,7 @@ export default [
     t: 'Instance Avg SLA',
     w: 4,
     h: 80,
-  },  
+  },
   {
     o: 'ServiceInstance',
     d: 'instanceSLA',
@@ -89,7 +87,7 @@ export default [
     t: 'Instance SLA',
     w: 4,
     h: '270',
-  },  
+  },
   {
     o: 'ServiceInstance',
     d: 'instanceGC',
@@ -114,7 +112,7 @@ export default [
     t: 'JVM GC Count',
     w: 4,
     h: 350,
-  },  
+  },
   // {
   //   o: 'ServiceInstance',
   //   d: 'instanceClrCPU',

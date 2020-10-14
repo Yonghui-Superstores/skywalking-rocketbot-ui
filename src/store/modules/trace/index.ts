@@ -23,8 +23,7 @@ import * as types from '@/store/mutation-types';
 import { Option } from '@/types/global';
 import { Trace, Span } from '@/types/topo';
 import { getPrefixes, getFilterProjectList } from '@/utils/serviceFilter';
-import getProjectIdFromCookie from '@/utils/cookie.js'
-
+import getProjectIdFromCookie from '@/utils/cookie.js';
 
 export interface State {
   services: Option[];
@@ -100,29 +99,29 @@ const mutations: MutationTree<State> = {
 // actions
 const actions: ActionTree<State, any> = {
   GET_SERVICES(context: { commit: Commit }, params: any): Promise<void> {
-    return Axios.get('/user/projects').then(res=>{
-      let response = res as any
-      let validProjects = response.data.projects || []
-      const prefixes = getPrefixes(validProjects)
+    return Axios.get('/user/projects').then((res: any) => {
+      const response = res as any;
+      const validProjects = response.data.projects || [];
+      const prefixes = getPrefixes(validProjects);
       // const prefixes = ['p2a#'] // test code
 
-      let projectId = getProjectIdFromCookie()
-      params.externalProjectId = projectId 
+      const projectId = getProjectIdFromCookie();
+      params.externalProjectId = projectId;
 
       return graph
       .query('queryServices')
       .params(params)
-      .then((res: AxiosResponse) => {
-        let resultServices = getFilterProjectList(prefixes, res.data.data.services)
+      .then((res2: AxiosResponse) => {
+        const resultServices = getFilterProjectList(prefixes, res2.data.data.services);
         context.commit(types.SET_SERVICES, resultServices);
         // context.commit(types.SET_SERVICES, res.data.data.services);
       });
-    })
+    });
   },
   GET_INSTANCES(context: { commit: Commit }, params: any): Promise<void> {
 
-    let projectId = getProjectIdFromCookie()
-    params.externalProjectId = projectId 
+    const projectId = getProjectIdFromCookie();
+    params.externalProjectId = projectId;
     return graph
     .query('queryServiceInstance')
     .params(params)

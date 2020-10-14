@@ -89,38 +89,38 @@ export default class Header extends Vue {
   @Action('rocketTrace/GET_TRACE_SPANS') private GET_TRACE_SPANS: any;
   @Prop() private spans!: Span[];
   @Prop() private current!: Trace;
-  private isAlteringDisplayMode:boolean = false; // 这个标记给子组件，data没有变化的情况，在mounted里面判断这个标记，如果有，则隐藏loading
+  private isAlteringDisplayMode: boolean = false; // 这个标记给子组件，data没有变化的情况，在mounted里面判断这个标记，如果有，则隐藏loading
   private mode: boolean = true;
   private displayMode: string = 'list';
   private loadingDisplay: boolean = true; // 监听数据变化需要控制的loading, 外层切换或者第一次加载traceData，显示loading
   @Watch('spans')
   private spansChange() {
-    this.loadingDisplay = true
+    this.loadingDisplay = true;
   }
   // 切换显示方式
   @Watch('displayMode')
   private displayModeChange() {
-    this.loadingDisplay = true
+    this.loadingDisplay = true;
     setTimeout(() => {
-      this.isAlteringDisplayMode = true      
+      this.isAlteringDisplayMode = true;
     }, 500);
   }
   get eventHub() {
     return this.$store.getters.globalEventHub;
   }
   private modifyMode(type: any) {
-    this.displayMode = type
+    this.displayMode = type;
   }
   private created() {
     this.eventHub.$on('SET_TRACE_DETAIL_STATUS', (flag: any) => {
       this.loadingDisplay = flag;
-      if (flag == false) {
-        this.isAlteringDisplayMode = false
+      if (flag === false) {
+        this.isAlteringDisplayMode = false;
       }
-    })
+    });
   }
   private beforeDestroy() {
-    this.eventHub.$off('SET_TRACE_DETAIL_STATUS')
+    this.eventHub.$off('SET_TRACE_DETAIL_STATUS');
   }
   private handleClick(ids: any) {
     const input = document.createElement('input');

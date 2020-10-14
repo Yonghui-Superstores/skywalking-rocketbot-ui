@@ -101,75 +101,66 @@ export default class Heatmap extends Vue {
   }
   private mounted() {
     const chart: any = this.$refs.chart;
-    if (this.type == 'Global Heatmap') {
+    if (this.type === 'Global Heatmap') {
       chart.myChart.on('click', (params: any) => {
-        let data = params.data
+        const data = params.data;
         if (data[2] > 0) {
-          let yIndex = data[1]
-          let min = (yIndex * 100) + ''
-          let max = (Number(min) + 100) + ''
-          let step = this.rocketGlobal.durationRow.step;
-          let [start, end] = this.getTimeRange(step, params);
-          
-          let query: any = {
+          const yIndex = data[1];
+          const min = (yIndex * 100) + '';
+          const max = (Number(min) + 100) + '';
+          const step = this.rocketGlobal.durationRow.step;
+          const [start, end] = this.getTimeRange(step, params);
+          const query: any = {
             min,
             start,
-            end
-          }
+            end,
+          };
           if (max !== '2100') {
-            query.max = max
+            query.max = max;
           }
           this.$router.push({
             path: '/trace',
-            query
+            query,
           });
         }
-      })
+      });
     }
   }
   private formatTimeStr(str: string) {
-    let timeArr = str.split(/\n/)
-    return new Date().getFullYear()+'-'+timeArr[1]+ ' ' + timeArr[0] + ':00'
+    const timeArr = str.split(/\n/);
+    return new Date().getFullYear() + '-' + timeArr[1] + ' ' + timeArr[0] + ':00';
   }
   private getTimeRange(step: any, params: any) {
-    let str = params.name
-
     // 处理4种数据格式
-    /**
-     * 
-     *  
-     *  14:54
-        11-27 ----- MINUTE
-     * 
-        11-27 09 ----- HOUR
-  
-        11-25 ----- DAY
-
-        2019-11 ----- MONTH
-     */
-      let year = new Date().getFullYear()
-      let startDateObj = null, endDateObj = null
-      if (step == 'MINUTE') {
-        let timeArr = str.split(/\n/)
-        startDateObj = moment(year + '-' + timeArr[1]+ ' ' + timeArr[0] + ':00')
-        endDateObj = startDateObj.add(59, 'second')
-      }  else if (step == 'HOUR') {
-        let timeArr = str.split(/\s/)
-        startDateObj = moment(year + '-' + timeArr[0] + ' ' + timeArr[1]+':00:00')
-        endDateObj = startDateObj.add(1, 'hour').subtract(1, 'second')
-      } else if (step == 'DAY') {
-        startDateObj = moment(year + '-' + str + ' ' + '00:00:00')
-        endDateObj = startDateObj.add(1, 'day').subtract(1, 'second')
-      } else if (step = 'MONTH') {
-        startDateObj = moment(str + '-01' + ' ' + '00:00:00')
-        endDateObj = startDateObj.add(1, 'month').subtract(1, 'second')
-      }
-      return [this.dateToString(startDateObj), this.dateToString(endDateObj)]
-
+    // 14:54
+    // 11-27 ----- MINUTE
+    // 11-27 09 ----- HOUR
+    // 11-25 ----- DAY
+    // 2019-11 ----- MONTH
+    const str = params.name;
+    const year = new Date().getFullYear();
+    let startDateObj = null;
+    let endDateObj = null;
+    if (step === 'MINUTE') {
+      const timeArr = str.split(/\n/);
+      startDateObj = moment(year + '-' + timeArr[1] + ' ' + timeArr[0] + ':00');
+      endDateObj = startDateObj.add(59, 'second');
+    } else if (step === 'HOUR') {
+      const timeArr = str.split(/\s/);
+      startDateObj = moment(year + '-' + timeArr[0] + ' ' + timeArr[1] + ':00:00');
+      endDateObj = startDateObj.add(1, 'hour').subtract(1, 'second');
+    } else if (step === 'DAY') {
+      startDateObj = moment(year + '-' + str + ' ' + '00:00:00');
+      endDateObj = startDateObj.add(1, 'day').subtract(1, 'second');
+    } else if (step === 'MONTH') {
+      startDateObj = moment(str + '-01' + ' ' + '00:00:00');
+      endDateObj = startDateObj.add(1, 'month').subtract(1, 'second');
+    }
+    return [this.dateToString(startDateObj), this.dateToString(endDateObj)];
   }
-  //兼容Safari时间格式为YYYY/MM/DD HH:mm:ss,之前为YYYY-MM-DD HH:mm:ss
+  // 兼容Safari时间格式为YYYY/MM/DD HH:mm:ss,之前为YYYY-MM-DD HH:mm:ss
   private dateToString(obj: any) {
-    return obj.format('YYYY/MM/DD HH:mm:ss')
+    return obj.format('YYYY/MM/DD HH:mm:ss');
   }
 }
 </script>

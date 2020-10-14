@@ -40,5 +40,5 @@ export default {
   ChartTrace,
   ChartSankey,
   ChartEdit,
-  ChartScatter
+  ChartScatter,
 };

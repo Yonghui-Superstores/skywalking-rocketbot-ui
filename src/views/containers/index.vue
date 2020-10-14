@@ -35,11 +35,11 @@ import RkFooter from '@/components/rk-footer.vue';
 })
 export default class RouterIndex extends Vue {
   private isRouterAlive: boolean = true;
-   public reloadFooter(timeArray: Date[]): void {
+  private isDisplayFooter: boolean = false;
+  public reloadFooter(timeArray: Date[]): void {
      const footer: any = this.$refs.footer;
      footer.time = timeArray;
   }
-  private isDisplayFooter: boolean = false
   // @Watch('$route.fullPath')
   // public routeChange (val: any){
   //   console.log('routerpath', val)

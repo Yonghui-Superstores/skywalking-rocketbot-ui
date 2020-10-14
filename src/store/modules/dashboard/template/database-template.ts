@@ -17,27 +17,27 @@
 
 export default [
   {
-    o: "Database",
-    d: "databaseResponseTime",
-    c: "ChartNum",
-    t: "Database Avg ResponseTime",
+    o: 'Database',
+    d: 'databaseResponseTime',
+    c: 'ChartNum',
+    t: 'Database Avg ResponseTime',
     w: 4,
-    h: 80
+    h: 80,
   }, {
-    o: "Database",
-    d: "databaseThroughput",
-    c: "ChartNum",
-    t: "Database Avg Throughput",
+    o: 'Database',
+    d: 'databaseThroughput',
+    c: 'ChartNum',
+    t: 'Database Avg Throughput',
     w: 4,
-    h: 80
+    h: 80,
   }, {
-    o: "Database",
-    d: "databaseSLA",
-    c: "ChartNum",
-    t: "Database Avg SLA",
+    o: 'Database',
+    d: 'databaseSLA',
+    c: 'ChartNum',
+    t: 'Database Avg SLA',
     w: 4,
-    h: 80
-  },  
+    h: 80,
+  },
   // {
   //   o: 'Global',
   //   d: 'globalBrief',

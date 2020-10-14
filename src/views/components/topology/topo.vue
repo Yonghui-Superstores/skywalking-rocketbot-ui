@@ -26,7 +26,7 @@
   </div>
 </template>
 <script lang="js">
-import Loading from '@/components/loading.vue'
+import Loading from '@/components/loading.vue';
 
 import * as d3 from 'd3';
 import d3tip from 'd3-tip';

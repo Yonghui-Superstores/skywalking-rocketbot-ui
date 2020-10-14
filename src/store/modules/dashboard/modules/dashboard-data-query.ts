@@ -20,7 +20,7 @@ import axios, { AxiosPromise, AxiosResponse } from 'axios';
 import { cancelToken } from '@/utils/cancelToken';
 import { State } from './dashboard-data';
 import fragmentAll from '@/store/modules/dashboard/fragments';
-import getProjectIdFromCookie from '@/utils/cookie.js'
+import getProjectIdFromCookie from '@/utils/cookie.js';
 
 // getters
 const getters = {
@@ -45,8 +45,8 @@ const getters = {
 // actions
 const actions: ActionTree<State, any> = {
   GET_QUERY(context: { commit: Commit, dispatch: Dispatch, getters: any }, variablesData: any): AxiosPromise<void> {
-    let projectId = getProjectIdFromCookie()
-    variablesData.externalProjectId = projectId
+    const projectId = getProjectIdFromCookie();
+    variablesData.externalProjectId = projectId;
     return axios.post('/graphql', {
       query: context.getters.Graphql,
       variables: variablesData,

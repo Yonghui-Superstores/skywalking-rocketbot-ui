@@ -39,7 +39,7 @@ export default [
     w: 6,
     h: 350,
     // h: '25%',
-  },  
+  },
   // {
   //   d: 'globalBrief',
   //   c: 'ChartBrief',

@@ -54,12 +54,12 @@ import ToolBarSelect from './tool-bar-select.vue';
 import ToolBarEndpointSelect from './tool-bar-select-endpoint.vue';
 import { State, Action, Mutation } from 'vuex-class';
 
-var map = {
-  'Service': 1,
-  'Global': 0,
-  'Endpoint': 2,
-  'Instance': 3
-}
+const map = {
+  Service: 1,
+  Global: 0,
+  Endpoint: 2,
+  Instance: 3,
+};
 
 @Component({components: {ToolBarSelect, ToolBarEndpointSelect}})
 export default class ToolBar extends Vue {
@@ -83,19 +83,19 @@ export default class ToolBar extends Vue {
     return current[current.length - 1].k;
   }
   get currentCompIndex() {
-    return this.compCount
+    return this.compCount;
   }
-  get isDisableService(){
-    return [map.Global].includes(this.currentCompIndex)
+  get isDisableService() {
+    return [map.Global].includes(this.currentCompIndex);
   }
-  get isDisableEndpoint(){
+  get isDisableEndpoint() {
     // return [map.Global, map.Service].includes(this.currentCompIndex)
-    return [map.Global, map.Service, map.Endpoint].includes(this.currentCompIndex)
+    return [map.Global, map.Service, map.Endpoint].includes(this.currentCompIndex);
   }
-  get isDisableInstance(){
+  get isDisableInstance() {
     // return [map.Global, map.Service, map.Endpoint].includes(this.currentCompIndex)
-    return [map.Global, map.Service].includes(this.currentCompIndex)
-  }    
+    return [map.Global, map.Service].includes(this.currentCompIndex);
+  }
   private handleOption() {
     return this.MIXHANDLE_GET_OPTION({compType: this.compType, duration: this.durationTime});
   }
@@ -110,8 +110,6 @@ export default class ToolBar extends Vue {
   }
   private selectInstance(i: any) {
     this.SELECT_INSTANCE({instance: i, duration: this.durationTime});
-  }
-  private mounted (){
   }
 }
 </script>

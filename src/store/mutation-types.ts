@@ -40,7 +40,7 @@ export const SET_LOCK = 'SET_LOCK';
 export const SET_EDIT = 'SET_EDIT';
 export const SET_UTC = 'SET_UTC';
 export const SET_REAL_TIME = 'SET_REAL_TIME';
-export const Trace_Date_SHOW = 'Trace_Date_SHOW';
+export const TRACE_DATE_SHOW = 'TRACE_DATE_SHOW';
 export const STOP_REAL_TIME = 'STOP_REAL_TIME';
 
 // dashboard

@@ -51,7 +51,7 @@ import Loading from '@/components/loading.vue';
     ToolNav,
     DashboardItem,
     DashboardComp,
-    Loading
+    Loading,
   },
 })
 export default class Dashboard extends Vue {
@@ -78,8 +78,8 @@ export default class Dashboard extends Vue {
     return this.rocketComps.tree[this.rocketComps.group].type;
   }
   private handleRefresh(notDisplayLoading: boolean) {
-    if (notDisplayLoading != false) {
-      this.loading = true
+    if (notDisplayLoading !== false) {
+      this.loading = true;
     }
     this.GET_QUERY({
       serviceId: this.stateDashboardOption.currentService.key || '',
@@ -88,7 +88,7 @@ export default class Dashboard extends Vue {
       instanceId: this.stateDashboardOption.currentInstance.key || '',
       databaseId: this.stateDashboardOption.currentDatabase.key || '',
       duration: this.durationTime,
-    }).then(()=>{
+    }).then(() => {
       this.loading = false;
     });
   }

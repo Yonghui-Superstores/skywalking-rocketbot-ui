@@ -22,196 +22,174 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import { Action, Getter, State, Mutation } from 'vuex-class';
 import Axios, { AxiosResponse } from 'axios';
-import getProjectIdFromCookie from '@/utils/cookie.js'
+import getProjectIdFromCookie from '@/utils/cookie.js';
 
 @Component
 export default class Request extends Vue {
-	@State('rocketbot') private rocketGlobal: any;
-	@State('rocketOption') private stateDashboardOption!: any;
+    @State('rocketbot') private rocketGlobal: any;
+    @State('rocketOption') private stateDashboardOption!: any;
     @Prop() private data!: any;
     @Prop() private intervalTime!: any;
     @Getter('realTime') private realTime: any;
 
-    //整合
+    // 整合
     private startTime: any;
     private endTime: any;
 
-    //X轴日期数据集
-    private xAxisData:Array<any> = [];
-    private xAxisStep:number = 1;
-    //请求日期
-    private divide:number = 1;
-    private requestDate:Array<any> = [];
+    // X轴日期数据集
+    private xAxisData: any[] = [];
+    private xAxisStep: number = 1;
+    // 请求日期
+    private divide: number = 1;
+    private requestDate: any[] = [];
     private requestDateStep = 1;
-    private step:number = 1;
-    //返回数据集
-    private successData:Array<any> = [];
-    private failureData:Array<any> = [];
-    //X轴移动跨度
-    private variable:number = 3;
-    //定时器
-    private timing:any;
-    //请求中断
-    private CancelToken:any;
+    private step: number = 1;
+    // 返回数据集
+    private successData: any[] = [];
+    private failureData: any[] = [];
+    // X轴移动跨度
+    private variable: number = 3;
+    // 定时器
+    private timing: any;
+    // 请求中断
+    private CancelToken: any;
     // private source:any;
-    private axiosCancel:Array<any> = [];
+    private axiosCancel: any[] = [];
 
     public resize() {
-      const chart: any = this.$refs.chart;
-	  chart.myChart.resize();
+        const chart: any = this.$refs.chart;
+        chart.myChart.resize();
     }
-	
-	private mounted(): void {
-      
-        this.startTime = parseInt((new Date(this.rocketGlobal.durationRow.start).getTime()/1000).toString())
-		this.endTime = parseInt((new Date(this.rocketGlobal.durationRow.end).getTime()/1000).toString())
-        
-        this.divideTime()
-        this.processDate(this.startTime,this.endTime)
+    private mounted(): void {
+        this.startTime = parseInt((new Date(this.rocketGlobal.durationRow.start).getTime() / 1000).toString(), 0);
+        this.endTime = parseInt((new Date(this.rocketGlobal.durationRow.end).getTime() / 1000).toString(), 0);
+        this.divideTime();
+        this.processDate(this.startTime, this.endTime);
 
-        let index = (this.requestDate.length-1);
-        this.timing = setInterval(()=>{
-            this.fetchData(this.requestDate,index)
-            index--
-            if(index == 0){
-                clearInterval(this.timing)
+        let index = (this.requestDate.length - 1);
+        this.timing = setInterval(() => {
+            this.fetchData(this.requestDate, index);
+            index--;
+            if (index === 0) {
+                clearInterval(this.timing);
             }
-        },500)
-
+        }, 500);
     }
 
     @Watch('rocketGlobal.durationRow', { deep: true })
-	private onoptionChanged(newVal: any, oldVal: any): void {
+    private onoptionChanged(newVal: any, oldVal: any): void {
+        this.axiosCancel.forEach((v: any) => {
+            v.cancel('已终止请求');
+        });
+        this.axiosCancel = [];
 
-        this.axiosCancel.forEach((v:any) =>{
-            v.cancel('已终止请求')
-        })
-        this.axiosCancel = []
-
-        clearInterval(this.timing)
-        if(!this.realTime){
-            this.successData = []
-            this.failureData = []
-		    this.resize()
+        clearInterval(this.timing);
+        if (!this.realTime) {
+            this.successData = [];
+            this.failureData = [];
+            this.resize();
         }
 
-		this.startTime = parseInt((new Date(newVal.start).getTime()/1000).toString())
-        this.endTime = parseInt((new Date(newVal.end).getTime()/1000).toString())
-        
-        this.divideTime()
-        this.processDate(this.startTime,this.endTime)
+        this.startTime = parseInt((new Date(newVal.start).getTime() / 1000).toString(), 0);
+        this.endTime = parseInt((new Date(newVal.end).getTime() / 1000).toString(), 0);
+        this.divideTime();
+        this.processDate(this.startTime, this.endTime);
 
-        let index = (this.requestDate.length-1);
-        this.timing = setInterval(()=>{
-            this.fetchData(this.requestDate,index)
-            index--
-            if(index == 0){
-                clearInterval(this.timing)
+        let index = (this.requestDate.length - 1);
+        this.timing = setInterval(() => {
+            this.fetchData(this.requestDate, index);
+            index--;
+            if (index === 0) {
+                clearInterval(this.timing);
             }
-        },500)
-
+        }, 500);
     }
-
     @Watch('stateDashboardOption.currentService', { deep: true })
-	private currentService(newVal: any, oldVal: any): void {
-
-        this.axiosCancel.forEach((v:any) =>{
-            v.cancel('已终止请求')
-        })
-        this.axiosCancel = []
-
-        clearInterval(this.timing)
-        if(!this.realTime){
-            this.successData = []
-            this.failureData = []
-		    this.resize()
+    private currentService(newVal: any, oldVal: any): void {
+        this.axiosCancel.forEach((v: any) => {
+            v.cancel('已终止请求');
+        });
+        this.axiosCancel = [];
+        clearInterval(this.timing);
+        if (!this.realTime) {
+            this.successData = [];
+            this.failureData = [];
+            this.resize();
         }
-		
-        this.divideTime()
-        this.processDate(this.startTime,this.endTime)
-
-        let index = (this.requestDate.length-1);
-        this.timing = setInterval(()=>{
-            this.fetchData(this.requestDate,index)
-            index--
-            if(index == 0){
-                clearInterval(this.timing)
+        this.divideTime();
+        this.processDate(this.startTime, this.endTime);
+        let index = (this.requestDate.length - 1);
+        this.timing = setInterval(() => {
+            this.fetchData(this.requestDate, index);
+            index--;
+            if (index === 0) {
+                clearInterval(this.timing);
             }
-        },500)
+        }, 500);
     }
 
-    //划分时间计算请求次数，请求跨度
-    private divideTime(){
-        
-        let gapTime = this.endTime-this.startTime
-        this.xAxisStep = gapTime/400
-		this.step = Math.floor(this.xAxisStep)
-        
-		if (gapTime <= 400 ) {
-		  this.divide = 1
-		  this.step = 1
-		} else if (gapTime <= 60 * 15) {
-          this.divide = 1
-		}else if (gapTime <= 60 * 30) {
-		  this.divide = 4
-		  this.step = Math.floor(this.xAxisStep)
-		} else if (gapTime <= 60 * 60) {
-		  this.divide = 4
-		} else if (gapTime <= 60 * 60 *2) {
-		  this.divide = 8
-		} else if (gapTime <= 60 * 60 *4) {
-          this.divide = Math.ceil(gapTime/1800)
-		} else{
-          this.divide = Math.ceil(gapTime/3600)
-		}
-		this.requestDateStep = gapTime/this.divide
-	}
-
-    //计算x轴日期集和请求日期数据
-    private processDate(startTime:any,endTime:any){
-        if(this.divide === 1){
-            this.requestDate = []
-			this.requestDate.push(this.getRequestTimestamp(new Date(startTime* 1000)))
-			this.requestDate.push(this.getRequestTimestamp(new Date(endTime* 1000)))
-
-            this.xAxisData = []
-            if(this.step ==2){
-                for (let i = startTime; i <= endTime; i+= Math.floor(this.xAxisStep)) {
-                    this.xAxisData.push(this.getAxisTime(i))
+    // 划分时间计算请求次数，请求跨度
+    private divideTime() {
+        const gapTime = this.endTime - this.startTime;
+        this.xAxisStep = gapTime / 400;
+        this.step = Math.floor(this.xAxisStep);
+        if (gapTime <= 400 ) {
+            this.divide = 1;
+            this.step = 1;
+        } else if (gapTime <= 60 * 15) {
+            this.divide = 1;
+        } else if (gapTime <= 60 * 30) {
+            this.divide = 4;
+            this.step = Math.floor(this.xAxisStep);
+        } else if (gapTime <= 60 * 60) {
+            this.divide = 4;
+        } else if (gapTime <= 60 * 60 * 2) {
+            this.divide = 8;
+        } else if (gapTime <= 60 * 60 * 4) {
+            this.divide = Math.ceil(gapTime / 1800);
+        } else {
+            this.divide = Math.ceil(gapTime / 3600);
+        }
+        this.requestDateStep = gapTime / this.divide;
+        }
+    // 计算x轴日期集和请求日期数据
+    private processDate(startTime: any, endTime: any) {
+        if (this.divide === 1) {
+            this.requestDate = [];
+            this.requestDate.push(this.getRequestTimestamp(new Date(startTime * 1000)));
+            this.requestDate.push(this.getRequestTimestamp(new Date(endTime * 1000)));
+            this.xAxisData = [];
+            if (this.step === 2) {
+                for (let i = startTime; i <= endTime; i += Math.floor(this.xAxisStep)) {
+                    this.xAxisData.push(this.getAxisTime(i));
                 }
-            }else{
+            } else {
                 for (let i = startTime; i <= endTime; i++) {
-                    this.xAxisData.push(this.getAxisTime(i))
+                    this.xAxisData.push(this.getAxisTime(i));
                 }
             }
-            
-        }else{
-            this.requestDate = []
-			let time = startTime
-			for(let i = 0;i <= this.divide; i++){
-				this.requestDate.push(this.getRequestTimestamp(new Date((time)* 1000)))
-				time += this.requestDateStep
+        } else {
+            this.requestDate = [];
+            let time = startTime;
+            for (let i = 0; i <= this.divide; i++) {
+                this.requestDate.push(this.getRequestTimestamp(new Date((time) * 1000)));
+                time += this.requestDateStep;
             }
-            
-            this.xAxisData = []
-			for(let j = startTime;j <= endTime; j += this.xAxisStep){
-				this.xAxisData.push(this.getAxisTime(j))
+            this.xAxisData = [];
+            for (let j = startTime; j <= endTime; j += this.xAxisStep) {
+                this.xAxisData.push(this.getAxisTime(j));
             }
-            
         }
     }
-
-    //发送请求
-    private fetchData(requestDate:any,index:number){
-        
-        new Promise((resolve,reject) =>{
-            if(index > 0){
+    // 发送请求
+    private fetchData(requestDate: any, index: number) {
+        return new Promise((resolve, reject) => {
+            if (index > 0) {
                 this.CancelToken = Axios.CancelToken;
-                let source = this.CancelToken.source();
-                this.axiosCancel.push(source)
-        
-                let start = requestDate[index-1]
-                let end = requestDate[index]
+                const source = this.CancelToken.source();
+                this.axiosCancel.push(source);
+                const start = requestDate[index - 1];
+                const end = requestDate[index];
                 Axios.post('/graphql', {
                     query: `query ServiceDotsQuery($serviceId:String!,$duration: Duration!,$axisXStep:Int!) {
                             success: getDots(isError: false, serviceId: $serviceId, duration: $duration, axisXStep: $axisXStep) {
@@ -223,120 +201,109 @@ export default class Request extends Vue {
                         }`,
                     variables: {
                         duration: {
-                            start: start,
-                            end: end,
-                            step: "SECOND"
+                            start,
+                            end,
+                            step: 'SECOND',
                         },
                         serviceId: this.stateDashboardOption.currentService.key || '',
-                        axisXStep: this.step
+                        axisXStep: this.step,
                     },
-                
-                },{
-                    cancelToken: source.token
-                }).then(res =>{
+                }, {
+                    cancelToken: source.token,
+                }).then((res: any) => {
                     index--;
-                    let successSnapData = []
-                    let failureSnapData = []
-                    let variable = 2;
-                    if(!this.realTime){
-                        this.successData.push(...res.data.data.success.nodes.map((v:any) =>{
-                            if(index >= 1){
-                                v[0] = (400/this.divide)*index+v[0]
+                    const successSnapData = [];
+                    const failureSnapData = [];
+                    const variable = 2;
+                    if (!this.realTime) {
+                        this.successData.push(...res.data.data.success.nodes.map((v: any) => {
+                            if (index >= 1) {
+                                v[0] = (400 / this.divide) * index + v[0];
                             }
-                            return v
-                        }))
-                        this.failureData.push(...res.data.data.failure.nodes.map((v:any) =>{
-                            if(index >= 1){
-                                v[0] = (400/this.divide)*index+v[0]
+                            return v;
+                        }));
+                        this.failureData.push(...res.data.data.failure.nodes.map((v: any) => {
+                            if (index >= 1) {
+                                v[0] = (400 / this.divide) * index + v[0];
                             }
-                            return v
-                        }))
-                    }else{
-                        successSnapData.push(...res.data.data.success.nodes.map((v:any) =>{
-                            if(index >= 1){
-                                v[0] = (400/this.divide)*index+v[0]
+                            return v;
+                        }));
+                    } else {
+                        successSnapData.push(...res.data.data.success.nodes.map((v: any) => {
+                            if (index >= 1) {
+                                v[0] = (400 / this.divide) * index + v[0];
                             }
-                            return v
-                        }))
-                        failureSnapData.push(...res.data.data.failure.nodes.map((v:any) =>{
-                            if(index >= 1){
-                                v[0] = (400/this.divide)*index+v[0]
+                            return v;
+                        }));
+                        failureSnapData.push(...res.data.data.failure.nodes.map((v: any) => {
+                            if (index >= 1) {
+                                v[0] = (400 / this.divide) * index + v[0];
                             }
-                            return v
-                        }))
-                        this.successData = successSnapData
-                        this.failureData = failureSnapData
-
-
-                        for(let i = 0;i<this.successData.length;i++){
-                            if(this.successData.length>0 && this.successData[0][0]<variable){
-                                this.successData.shift()
+                            return v;
+                        }));
+                        this.successData = successSnapData;
+                        this.failureData = failureSnapData;
+                        for (const each of this.successData) {
+                            if (this.successData.length > 0 && this.successData[0][0] < variable) {
+                                this.successData.shift();
                             }
-                            if(this.failureData.length>0 && this.failureData[0][0]<variable){
-                                this.failureData.shift()
+                            if (this.failureData.length > 0 && this.failureData[0][0] < variable) {
+                                this.failureData.shift();
                             }
                         }
-                        this.successData = successSnapData
-                        this.failureData = failureSnapData
-
+                        this.successData = successSnapData;
+                        this.failureData = failureSnapData;
                     }
-                    resolve(res)
-                })
+                    resolve(res);
+                });
             }
-        }).catch((thrown) =>{
-            console.log(thrown);
-        })
-
+        });
     }
-    private stopTiming(){
-        clearInterval(this.timing)
+    private stopTiming() {
+        clearInterval(this.timing);
     }
-	//删除
-    private getRndInteger(min:any, max:any) {
+    // 删除
+    private getRndInteger(min: any, max: any) {
         return Math.floor(Math.random() * (max - min)) + min;
     }
-
-    //X轴日期格式
-    private getAxisTime(params:any) {
-    let d = new Date((params)*1000)
-    return (d.getHours() < 10 ?"0"+ d.getHours():d.getHours()) + ":" +
-        (d.getMinutes() < 10 ?"0"+ d.getMinutes():d.getMinutes()) + ":" +
-        (d.getSeconds() < 10 ?"0"+ d.getSeconds():d.getSeconds())+ "\n" +
-        ((d.getMonth() + 1) < 10 ?"0"+(d.getMonth() + 1):(d.getMonth() + 1)) + "-" +
-        (d.getDate() < 10 ?"0"+ d.getDate():d.getDate())
+    // X轴日期格式
+    private getAxisTime(params: any) {
+    const d = new Date((params) * 1000);
+    return (d.getHours() < 10 ? '0' + d.getHours() : d.getHours()) + ':' +
+        (d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes()) + ':' +
+        (d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds()) + '\n' +
+        ((d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1)) + '-' +
+        (d.getDate() < 10 ? '0' + d.getDate() : d.getDate());
     }
-
-    //请求日期格式 2020-06-10 101601
-	private getRequestTimestamp(d:any){
-		return d.getFullYear() + "-"+
-			   ((d.getMonth() + 1) < 10 ?"0"+(d.getMonth() + 1):(d.getMonth() + 1)) + "-" +
-			   (d.getDate() < 10 ?"0"+ d.getDate():d.getDate()) + " " +
-			   (d.getHours() < 10 ?"0"+ d.getHours():d.getHours()) +  
-			   (d.getMinutes() < 10 ?"0"+ d.getMinutes():d.getMinutes()) +
-			   (d.getSeconds() < 10 ?"0"+ d.getSeconds():d.getSeconds())
-	}
-	
-	//转化跳转时数据格式 2020-06-10 101601
-	private getTimeRange(params: any){
-		  let year = new Date().getFullYear()
-		  let timeArr = params.split(/\n/)
-		  let timeArr2 = timeArr[0].split(/:/)
-		  return year+"-"+ timeArr[1]+ " " + timeArr2[0] + timeArr2[1] + timeArr2[2]
-	}
-	
+    // 请求日期格式 2020-06-10 101601
+    private getRequestTimestamp(d: any) {
+        return d.getFullYear() + '-' +
+        ((d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1)) + '-' +
+        (d.getDate() < 10 ? '0' + d.getDate() : d.getDate()) + ' ' +
+        (d.getHours() < 10 ? '0' + d.getHours() : d.getHours()) +
+        (d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes()) +
+        (d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds());
+        }
+    // 转化跳转时数据格式 2020-06-10 101601
+    private getTimeRange(params: any) {
+        const year = new Date().getFullYear();
+        const timeArr = params.split(/\n/);
+        const timeArr2 = timeArr[0].split(/:/);
+        return year + '-' + timeArr[1] + ' ' + timeArr2[0] + timeArr2[1] + timeArr2[2];
+        }
   get option() {
     return {
-        animation:false,
+        animation: false,
         legend: {
             top: 0,
             right: 0,
             data: ['Success', 'Error'],
-            itemWidth:10,
-            itemHeight:10,
+            itemWidth: 10,
+            itemHeight: 10,
             textStyle: {
                 color: '#000',
-                fontSize: 10
-            }
+                fontSize: 10,
+            },
         },
         grid: {
             top: 20,
@@ -346,37 +313,34 @@ export default class Request extends Vue {
             containLabel: true,
         },
         toolbox: {
-            show:false
+            show: false,
         },
         tooltip: {
             trigger: 'item',
             axisPointer: {
                 type: 'cross',
-                label:{
-                    backgroundColor:'#3259B8',
-                    formatter:function (params:any) {
-                        if(params.axisDimension ==='y'){
-                            params.value = Math.floor(params.value)
+                label: {
+                    backgroundColor: '#3259B8',
+                    formatter: (params: any) => {
+                        if (params.axisDimension === 'y') {
+                            params.value = Math.floor(params.value);
                         }
-                        return params.value
-                    }
+                        return params.value;
+                    },
                 },
-
             },
-            formatter:(params:any) =>{
+            formatter: (params: any) => {
                 if (params.value.length > 1) {
                     return '时间: ' +
-                        // params.name + '<br/> ' +'响应时间: '+
-                        this.xAxisData[Math.round(params.value[0])] + '<br/> ' +'响应时间: '+
+                        this.xAxisData[Math.round(params.value[0])] + '<br/> ' + '响应时间: ' +
                         params.value[1] + ' ms ';
-
-                    function getTime(value:any) {
-                        let time = new Date(value*1000)
-                        return ((time.getMonth() + 1) < 10 ?"0"+(time.getMonth() + 1):(time.getMonth() + 1)) + "-" +
-                            (time.getDate() < 10 ?"0"+ time.getDate():time.getDate())+' '+
-                            (time.getHours() < 10 ?"0"+ time.getHours():time.getHours()) + ":" +
-                            (time.getMinutes() < 10 ?"0"+ time.getMinutes():time.getMinutes()) + ":" +
-                            (time.getSeconds() < 10 ?"0"+ time.getSeconds():time.getSeconds())
+                    function getTime(value: any) {
+                    const time = new Date(value * 1000);
+                    return ((time.getMonth() + 1) < 10 ? '0' + (time.getMonth() + 1) : (time.getMonth() + 1)) + '-' +
+                            (time.getDate() < 10 ? '0' + time.getDate() : time.getDate()) + ' ' +
+                            (time.getHours() < 10 ? '0' + time.getHours() : time.getHours()) + ':' +
+                            (time.getMinutes() < 10 ? '0' + time.getMinutes() : time.getMinutes()) + ':' +
+                            (time.getSeconds() < 10 ? '0' + time.getSeconds() : time.getSeconds());
                     }
                 } else {
                     return params.seriesName + ' :<br/>' +
@@ -388,13 +352,13 @@ export default class Request extends Vue {
         brush: {
             toolbox: ['rect'],
             xAxisIndex: 'all',
-            throttleType: 'debounce',//开启选中延迟后调用回调延迟
-            throttleDelay: 1000,//选中延迟后调用回调延迟时间
+            throttleType: 'debounce', // 开启选中延迟后调用回调延迟
+            throttleDelay: 1000, // 选中延迟后调用回调延迟时间
         },
         xAxis: [{
             type: 'category',
             scale: true,
-            data:this.xAxisData,
+            data: this.xAxisData,
             nameTextStyle: {
                 color: '#3259B8',
                 fontSize: 14,
@@ -406,26 +370,26 @@ export default class Request extends Vue {
             axisLine: {
                 lineStyle: {
                     color: '#3259B8',
-                }
+                },
             },
             axisLabel: { color: '#9da5b2', fontSize: '11' },
             splitLine: {
                 show: false,
-            }
+            },
         }],
         yAxis: [{
             type: 'value',
             scale: true,
-            minInterval:1,
-            min:0,
+            minInterval: 1,
+            min: 0,
             max: 9000,
             axisLabel: { color: '#9da5b2', fontSize: '11' },
             nameTextStyle: {
                 color: '#3259B8',
-                fontSize: 14
+                fontSize: 14,
             },
-            axisPointer:{
-                show:false
+            axisPointer: {
+                show: false,
             },
             axisTick: {
                 show: false,
@@ -433,16 +397,16 @@ export default class Request extends Vue {
             axisLine: {
                 lineStyle: {
                     color: '#3259B8',
-                }
+                },
             },
             splitLine: {
                 show: false,
-            }
+            },
         }],
         series: [{
             name: 'Success',
             type: 'scatter',
-            color:'#24b7f2',
+            color: '#24b7f2',
             data: this.successData,
             symbolSize: 2,
             large: true,
@@ -453,7 +417,7 @@ export default class Request extends Vue {
         {
             name: 'Error',
             type: 'scatter',
-            color:'#FF6347',
+            color: '#FF6347',
             data: this.failureData,
             symbolSize: 2,
             large: true,
@@ -463,7 +427,5 @@ export default class Request extends Vue {
         }],
     };
   }
-  
- 
 }
 </script>

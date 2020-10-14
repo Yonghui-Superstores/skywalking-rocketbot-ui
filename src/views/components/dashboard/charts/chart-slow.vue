@@ -71,11 +71,10 @@ export default class RkTopSlow extends Vue {
         path: '/trace',
         query: {
           endpoint: i.label,
-          tId: i.traceIds[0]
+          tId: i.traceIds[0],
         },
       });
-      
-    }else if(this.type === 'Global Top Throughput'){
+    } else if (this.type === 'Global Top Throughput') {
       this.$router.push({
         path: '/trace',
         query: {

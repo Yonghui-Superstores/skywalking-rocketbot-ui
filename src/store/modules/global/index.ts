@@ -78,11 +78,10 @@ export interface State {
   lock: boolean;
   utc: string | number;
   eventHub: any;
-  realTime:Boolean;
-  //trace的footer的时间组件的显示隐藏
-  traceDateShow:Boolean;
-  stopRealTime:Boolean;
-  
+  realTime: boolean;
+  // trace的footer的时间组件的显示隐藏
+  traceDateShow: boolean;
+  stopRealTime: boolean;
 }
 
 const initState: State = {
@@ -97,10 +96,9 @@ const initState: State = {
   lock: true,
   utc: window.localStorage.getItem('utc') || -(new Date().getTimezoneOffset() / 60),
   eventHub: new Vue(),
-  realTime:false,
-  traceDateShow:true,
-  stopRealTime:false
-  
+  realTime: false,
+  traceDateShow: true,
+  stopRealTime: false,
 };
 
 // getters
@@ -150,15 +148,15 @@ const getters = {
       step: getter.duration.step,
     };
   },
-  realTime(state: State):Boolean {
-    return state.realTime
+  realTime(state: State): boolean {
+    return state.realTime;
   },
-  traceDateShow(state: State):Boolean {
-    return state.traceDateShow
+  traceDateShow(state: State): boolean {
+    return state.traceDateShow;
   },
-  stopRealTime(state: State):Boolean {
-    return state.stopRealTime
-  }
+  stopRealTime(state: State): boolean {
+    return state.stopRealTime;
+  },
 };
 
 // mutations
@@ -185,7 +183,7 @@ const mutations: MutationTree<State> = {
   [types.SET_REAL_TIME](state: State, status: boolean): void {
     state.realTime = status;
   },
-  [types.Trace_Date_SHOW](state: State, status: boolean): void {
+  [types.TRACE_DATE_SHOW](state: State, status: boolean): void {
     state.traceDateShow = status;
   },
   [types.STOP_REAL_TIME](state: State, status: boolean): void {
@@ -218,15 +216,15 @@ const actions: ActionTree<State, any> = {
   SET_LOCK(context: { commit: Commit }, status: boolean): void {
     context.commit(types.SET_LOCK, status);
   },
-  SET_REAL_TIME(context:{ commit: Commit }, status: boolean): void {
+  SET_REAL_TIME(context: { commit: Commit }, status: boolean): void {
     context.commit(types.SET_REAL_TIME, status);
   },
-  Trace_Date_SHOW(context:{ commit: Commit }, status: boolean): void{
-    context.commit(types.Trace_Date_SHOW, status);
+  TRACE_DATE_SHOW(context: { commit: Commit }, status: boolean): void {
+    context.commit(types.TRACE_DATE_SHOW, status);
   },
-  STOP_REAL_TIME(context:{ commit: Commit }, status: boolean): void{
+  STOP_REAL_TIME(context: { commit: Commit }, status: boolean): void {
     context.commit(types.STOP_REAL_TIME, status);
-  }
+  },
 };
 
 export default {
