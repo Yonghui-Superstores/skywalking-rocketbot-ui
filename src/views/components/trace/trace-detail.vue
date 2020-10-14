@@ -31,6 +31,7 @@
         <svg class="icon vm grey link-hover cp ml-5" @click="handleClick(current.traceIds)">
           <use xlink:href="#review-list"></use>
         </svg>
+        <a class="ml-link" v-if="current.traceIds[0]" @click="jump()">日志跳转</a>
       </div>
 
       <a class="rk-btn mr-5 sm r" :class="{'ghost':displayMode !== 'table'}" @click="modifyMode('table')">
@@ -119,6 +120,42 @@ export default class Header extends Vue {
       }
     });
   }
+  private showLink() {
+    return this.current.traceIds[0] ? true : false;
+  }
+  // 日志跳转
+  private jump() {    
+    if(this.current.traceIds[0]) {
+      const projectId = window.localStorage.getItem('externalProjectId');
+      // var url = 'http://localhost:5601/kzr/s/'+ projectId +
+      var url = this.getUrl() + projectId +
+      '/app/kibana#/discover?_g=(refreshInterval:(pause:!t,value:0),time:(from:now-1d,to:now))' +
+      '&_a=(columns:!(_source),index:\'\',interval:auto,query:(language:kuery,query:\'!\'' +
+      this.current.traceIds[0] + '!\'\'),sort:!(\'@timestamp\',desc))';
+      window.open(url,'_blank');
+    }
+  }
+  private getUrl(){
+    const hostName = document.location.hostname;
+    let url = 'http://public-service.kibana-prod.gw.yonghui.cn/s/';
+    if (hostName.indexOf('devtrace') !== -1 ) {
+      // 开发环境
+      url = 'http://public-service.kibana-dev.gw.yonghui.cn/s/';
+    }
+    if (hostName.indexOf('testtrace') !== -1 ) {
+      // 测试环境
+      url = 'http://public-service.kibana-sit.gw.yonghui.cn/s/';
+    }
+    if (hostName.indexOf('uattrace') !== -1 ) {
+      // 预生产
+      url = 'http://public-service.kibana-uat.gw.yonghui.cn/s/';
+    }
+    if (hostName.indexOf('prdtrace') !== -1 ) {
+      // 生产
+      url = 'http://public-service.kibana-prod.gw.yonghui.cn/s/';
+    }
+    return url;
+  }
   private beforeDestroy() {
     this.eventHub.$off('SET_TRACE_DETAIL_STATUS');
   }
@@ -188,5 +225,8 @@ export default class Header extends Vue {
 .rk-trace-table_svg-icon {
   width: 11px;
   height: 11px;
+}
+.ml-link {
+  margin-left: 30px;
 }
 </style>

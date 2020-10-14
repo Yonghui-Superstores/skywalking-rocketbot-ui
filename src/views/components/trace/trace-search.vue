@@ -199,6 +199,7 @@ export default class TraceTool extends Vue {
     }
     if (project !== undefined) {
       this.project = project.toString().trim();
+      window.localStorage.setItem('externalProjectId', this.project);
     }
     if (traceId !== undefined) {
       this.traceId = traceId.toString().trim();
