@@ -28,7 +28,7 @@
         <loading-icon /> 
       </div>
       <div class="rk-trace-t-wrapper scroll_hide">
-        <table class="rk-trace-t">
+        <table class="rk-trace-t" v-if="this.rocketTrace.traceList.length > 0">
           <tr class="rk-trace-tr cp" v-for="(i, index) in rocketTrace.traceList" @click="selectTrace(i)" :key="index">
             <td class="rk-trace-td" :class="{
                 'rk-trace-success':!i.isError,
@@ -43,6 +43,7 @@
             </td>
           </tr>
         </table>
+        <p v-else class="prompt">没有数据</p>
       </div>
     </div>
 </template>
@@ -70,6 +71,8 @@ export default class Home extends Vue {
   }
   @Watch('rocketTrace.traceList')
   private onTraceListChange() {
+    console.log();
+    
     if (this.rocketTrace.traceList && this.rocketTrace.traceList.length > 0) {
       this.selectTrace(this.rocketTrace.traceList[0]);
     }
@@ -184,5 +187,10 @@ export default class Home extends Vue {
   padding-left: 5px;
   background-color: #40454e;
   color: #eee;
+}
+.prompt {
+  font-size: 18px;
+  color: #a7aebb;
+  text-align: center;
 }
 </style>

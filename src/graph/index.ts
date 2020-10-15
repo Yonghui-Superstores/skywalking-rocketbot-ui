@@ -43,6 +43,7 @@ class Graph {
     .then((response) => {
       const { headers: {invalid, url} } = response;
       if (invalid === 'true') {
+        window.localStorage.setItem('currentUrl', window.location.pathname + window.location.search);
         window.location.href = url;
       }
       return response;

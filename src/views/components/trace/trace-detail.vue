@@ -65,7 +65,7 @@
       </svg>
     </div>
 
-    <div class="rk-trace-detail-loading" v-show="loadingDisplay">
+    <div class="rk-trace-detail-loading" v-show="loadingDisplay && !current">
       <!-- <svg class="icon loading">
         <use xlink:href="#spinner"></use>
       </svg> -->
