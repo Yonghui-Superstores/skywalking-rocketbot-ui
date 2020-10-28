@@ -36,7 +36,12 @@
         <h5 class="mb-15">{{$t('tags')}}.</h5>
         <div class="mb-10 clear"><span class="g-sm-4 grey">{{$t('endpoint')}}:</span><span class="g-sm-8 wba">{{this.currentSpan.label}}</span></div>
         <div class="mb-10 clear"><span class="g-sm-4 grey">{{$t('spanType')}}:</span><span class="g-sm-8 wba">{{this.currentSpan.type}}</span></div>
-        <div class="mb-10 clear"><span class="g-sm-4 grey">{{$t('component')}}:</span><span class="g-sm-8 wba">{{this.currentSpan.component}}</span></div>
+        <div class="mb-10 clear"><span class="g-sm-4 grey">{{$t('component')}}:</span>
+          <span class="g-sm-8 wba">
+            {{this.currentSpan.component}}
+            <a style="color: #448dfe;margin-left:20px" v-if="this.currentSpan.component" @click="jump()">指标信息查看</a>
+          </span>
+        </div>
         <div class="mb-10 clear"><span class="g-sm-4 grey">Peer:</span><span class="g-sm-8 wba">{{this.currentSpan.peer||'No Peer'}}</span></div>
         <div class="mb-10 clear"><span class="g-sm-4 grey">{{$t('error')}}:</span><span class="g-sm-8 wba">{{this.currentSpan.isError}}</span></div>
         <div class="mb-10 clear" v-for="i in this.currentSpan.tags" :key="i.key">
@@ -67,6 +72,7 @@ import LoadingIcon from '@/components/loading-icon.vue';
 import { Vue } from 'vue-property-decorator';
 import * as d3 from 'd3';
 import Trace from './d3-trace';
+import jumpGrafana from './jump_grafana';
 /* eslint-disable */
 /* tslint:disable */
 export default {
@@ -117,7 +123,9 @@ export default {
     // this.computedScale();
   },
   methods: {
-
+    jump() {
+      jumpGrafana(this.currentSpan.component);
+    },
     handleClick(value) {
       const input = document.createElement('input');
       let copyValue = value;

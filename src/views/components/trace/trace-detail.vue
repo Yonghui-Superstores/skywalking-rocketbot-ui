@@ -31,7 +31,7 @@
         <svg class="icon vm grey link-hover cp ml-5" @click="handleClick(current.traceIds)">
           <use xlink:href="#review-list"></use>
         </svg>
-        <a class="ml-link" v-if="current.traceIds[0]" @click="jump()">日志跳转</a>
+        <a class="ml-link" v-if="current.traceIds[0]" @click="jump()">日志信息查看</a>
       </div>
 
       <a class="rk-btn mr-5 sm r" :class="{'ghost':displayMode !== 'table'}" @click="modifyMode('table')">

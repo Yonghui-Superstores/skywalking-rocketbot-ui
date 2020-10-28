@@ -79,6 +79,11 @@ const mutations: MutationTree<State> = {
     state.traceTotal = data;
   },
   [types.SET_TRACE_SPANS](state: State, data: Span[]): void {
+    data.map((span: any) => {
+      if (span.layer === 'Unknown') {
+        span.layer = 'Local';
+      }
+    });
     state.traceSpans = data;
   },
   [types.SET_CURRENT_TRACE](state: State, data: Span): void {
