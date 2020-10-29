@@ -273,18 +273,26 @@ limitations under the License. -->
       if (step === 'MINUTE') {
         return `${year}-${month}-${day} ${hour}${minute}`;
       }
+      const secondTemp = date.getSeconds();
+      let second: string = `${secondTemp}`;
+      if (secondTemp < 10) {
+        second = `0${secondTemp}`;
+      }
+      if (step === 'SECOND') {
+        return `${year}-${month}-${day} ${hour}${minute}${second}`;
+      }
     }
 
     private globalTimeFormat(time: Date[]) {
-      let step = 'MINUTE';
-      const unix = Math.round(time[1].getTime()) - Math.round(time[0].getTime());
-      if (unix <= 60 * 60 * 1000) {
-        step = 'MINUTE';
-      } else if (unix <= 24 * 60 * 60 * 1000) {
-        step = 'HOUR';
-      } else {
-        step = 'DAY';
-      }
+      let step = 'SECOND';
+      // const unix = Math.round(time[1].getTime()) - Math.round(time[0].getTime());
+      // if (unix <= 60 * 60 * 1000) {
+      //   step = 'MINUTE';
+      // } else if (unix <= 24 * 60 * 60 * 1000) {
+      //   step = 'HOUR';
+      // } else {
+      //   step = 'DAY';
+      // }
       return {
         start: this.dateFormat(time[0], step),
         end: this.dateFormat(time[1], step),
