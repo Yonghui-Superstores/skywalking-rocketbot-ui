@@ -87,16 +87,18 @@ limitations under the License. -->
       this.GET_TOPO({ duration: this.durationTime, serviceIds: this.services.map((i) => i.key) });
     }
     private fetchData() {
+      const projectId = window.localStorage.getItem('defaultProjectId');
       return Axios.post('/graphql', {
         query: `
-          query queryServices($duration: Duration!) {
-            services: getAllServices(duration: $duration) {
+          query queryServices($duration: Duration!, $projectId: String!) {
+            services: getAllServices(duration: $duration, projectId: $projectId) {
               key: id
               label: name
             }
           }`,
         variables: {
           duration: this.durationTime,
+          projectId,
         },
       }).then((res: AxiosResponse) => {
         this.servicesMap = res.data.data.services ? res.data.data.services : [];

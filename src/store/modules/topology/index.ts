@@ -311,10 +311,12 @@ const mutations = {
 
 // actions
 const actions: ActionTree<State, any> = {
-  GET_SERVICES(context: { commit: Commit }, params: { duration: Duration; keyword: string }) {
+  GET_SERVICES(context: { commit: Commit }, params: { duration: Duration; keyword: string; projectId: string; }) {
     if (!params.keyword) {
       params.keyword = '';
     }
+    const projectId = window.localStorage.getItem('defaultProjectId');
+    params.projectId = projectId ? projectId : '';
     return graph
       .query('queryServices')
       .params(params)

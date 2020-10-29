@@ -19,6 +19,16 @@ limitations under the License. -->
         <use xlink:href="#spinner"></use>
       </svg>
     </div>
+    <div style="height:35px;padding-top: 5px;">
+      <transition-group name="fade" tag="a" style="margin:10px 30px;">
+        <span class="time-charts-item mr-10" v-for="(i, index) in list" :key="i" :style="`color:${computedScale(index)}`">
+          <svg class="icon vm mr-5 sm">
+            <use xlink:href="#issue-open-m"></use>
+          </svg>
+          <span>{{ i }}</span>
+        </span>
+      </transition-group>
+    </div>
     <TraceContainer :tableData="tableData" :type="HeaderType">
       <div class="trace-tips" v-if="!tableData.length">{{ $t('noData') }}</div>
     </TraceContainer>
@@ -35,7 +45,9 @@ limitations under the License. -->
         </div>
         <div class="mb-10 clear">
           <span class="g-sm-4 grey">{{ $t('component') }}:</span
-          ><span class="g-sm-8 wba">{{ this.currentSpan.component }}</span>
+          ><span class="g-sm-8 wba">{{ this.currentSpan.component }}
+            <a style="color: #448dfe;margin-left:20px" v-if="this.currentSpan.component" @click="jump()">指标信息查看</a>
+          </span>
         </div>
         <div class="mb-10 clear">
           <span class="g-sm-4 grey">Peer:</span><span class="g-sm-8 wba">{{ this.currentSpan.peer || 'No Peer' }}</span>
@@ -91,9 +103,11 @@ limitations under the License. -->
 </style>
 
 <script lang="js">
+  import * as d3 from 'd3';
   import copy from '@/utils/copy';
   import TraceContainer from './trace-chart-table/trace-container';
   import _ from 'lodash';
+  import jumpGrafana from '../trace/jump_grafana.ts';
   /* eslint-disable */
   /* tslint:disable */
   export default {
@@ -136,6 +150,9 @@ limitations under the License. -->
         }
         return arr;
       },
+      jump() {
+        jumpGrafana(this.currentSpan.component);
+      },
       traverseTree(node, spanId, segmentId, data) {
         if (!node || node.isBroken) {
           return;
@@ -149,6 +166,13 @@ limitations under the License. -->
             this.traverseTree(item, spanId, segmentId, data);
           }
         }
+      },
+      computedScale(i) {
+         // Rainbow map
+        const sequentialScale = d3.scaleSequential()
+        .domain([0, this.list.length + 1])
+        .interpolator(d3.interpolateCool);
+        return sequentialScale(i);
       },
       changeTree() {
         if (this.data.length === 0) {

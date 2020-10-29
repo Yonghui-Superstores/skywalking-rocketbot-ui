@@ -41,7 +41,9 @@ limitations under the License. -->
         </div>
         <div class="mb-10 clear">
           <span class="g-sm-4 grey">{{ $t('component') }}:</span
-          ><span class="g-sm-8 wba">{{ this.currentSpan.component }}</span>
+          ><span class="g-sm-8 wba">{{ this.currentSpan.component }}
+            <a style="color: #448dfe;margin-left:20px" v-if="this.currentSpan.component" @click="jump()">指标信息查看</a>
+          </span>
         </div>
         <div class="mb-10 clear">
           <span class="g-sm-4 grey">Peer:</span><span class="g-sm-8 wba">{{ this.currentSpan.peer || 'No Peer' }}</span>
@@ -92,6 +94,7 @@ limitations under the License. -->
   import * as d3 from 'd3';
   import Trace from './d3-trace';
   import _ from 'lodash';
+  import jumpGrafana from './jump_grafana';
   export default {
     props: ['data', 'traceId'],
     data() {
@@ -140,6 +143,9 @@ limitations under the License. -->
       handleSelectSpan(i) {
         this.currentSpan = i.data;
         this.showDetail = true;
+      },
+      jump() {
+        jumpGrafana(this.currentSpan.component);
       },
       traverseTree(node, spanId, segmentId, data) {
         if (!node || node.isBroken) { return; }
