@@ -37,8 +37,8 @@
           <use xlink:href="#clear"></use>
         </svg>
       </div>
-      <div class="rk-dashboard-opt-wrapper scroll_hide">
-        <div :title="i.label" class="rk-dashboard-opt ell" @click="handleSelect(i)" :class="{'active':i.key === current.key}" v-for="i in filterData" :key="i.key">{{i.label}}</div>
+      <div class="rk-dashboard-opt-wrapper scroll_hide" v-tooltip:right="this.label">
+        <div :title="i.label" class="rk-dashboard-opt ell" @mouseover.prevent="tooltip(i)" @click="handleSelect(i)" :class="{'active':i.key === current.key}" v-for="i in filterData" :key="i.key">{{i.label}}</div>
       </div>
     </div>
   </div>
@@ -53,6 +53,7 @@ export default class ToolBarSelect extends Vue {
   @Prop() public title!: string;
   @Prop() public icon!: string;
   @Prop() public disabled: any;
+  public label: string = '';
   public search: string = '';
   public visible: boolean = false;
   get filterData() {
@@ -70,6 +71,9 @@ export default class ToolBarSelect extends Vue {
       return false;
     }
     this.visible = !this.visible;
+  }
+  public tooltip(i: any) {
+    this.label = i.label;
   }
 }
 </script>

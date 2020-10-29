@@ -37,8 +37,8 @@
           <use xlink:href="#clear"></use>
         </svg>
       </div>
-      <div class="rk-dashboard-opt-wrapper scroll_hide">
-        <EndpointOpt @handleSelect="handleSelect" :class="{'active':i.key === current.key}" v-for="i in data" :key="i.key" :data="i"/>
+      <div class="rk-dashboard-opt-wrapper scroll_hide" v-tooltip:right="this.label">
+        <EndpointOpt @tooltip="tooltip" @handleSelect="handleSelect" :class="{'active':i.key === current.key}" v-for="i in data" :key="i.key" :data="i"/>
       </div>
     </div>
   </div>
@@ -56,6 +56,7 @@ export default class ToolBarSelect extends Vue {
   @Prop() public title!: string;
   @Prop() public icon!: string;
   @Prop() public disabled: any;
+  public label: string = '';
   public search: string = '';
   public visible: boolean = false;
   public handleSearch() {
@@ -74,6 +75,9 @@ export default class ToolBarSelect extends Vue {
     }
     this.visible = !this.visible;
     this.SEARCH_ENDPOINTS('');
+  }
+  public tooltip(i: any) {
+    this.label = i.label;
   }
 }
 </script>

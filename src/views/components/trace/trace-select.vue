@@ -33,8 +33,8 @@
           <use xlink:href="#clear"></use>
         </svg>
       </div>
-      <div class="rk-trace-opt-wrapper scroll_hide">
-        <div class="rk-trace-opt ell" @click="handleSelect(i)" :class="{'active':i.key === value.key}" v-for="i in filterData" :key="i.key">{{i.label}}</div>
+      <div class="rk-trace-opt-wrapper scroll_hide" v-tooltip:right="this.label">
+        <div class="rk-trace-opt ell" @mouseover.prevent="tooltip(i)" @click="handleSelect(i)" :class="{'active':i.key === value.key}" v-for="i in filterData" :key="i.key">{{i.label}}</div>
       </div>
     </div>
   </div>
@@ -48,6 +48,7 @@ export default class TraceSelect extends Vue {
   @Prop() public value!: any;
   @Prop() public title!: string;
   @Prop({default: false}) public hasSearch!: boolean;
+  public label: string = '';
   public search: string = '';
   public visible: boolean = false;
   get filterData() {
@@ -56,6 +57,9 @@ export default class TraceSelect extends Vue {
   public handleSelect(i: any) {
     this.$emit('input', i);
     this.visible = false;
+  }
+  public tooltip(i: any) {
+    this.label = i.label;
   }
 }
 </script>

@@ -16,7 +16,7 @@
  */
 
 <template>
-  <div class="rk-dashboard-opt ell" @click="$emit('handleSelect', data)" :title="data.label">{{data.label}}
+  <div class="rk-dashboard-opt ell" @click="$emit('handleSelect', data)" @mouseover.prevent="$emit('tooltip', data)" :title="data.label">{{data.label}}
     <svg style="margin-top: 3px;" class="icon sm r" @click.stop="show = !show">
       <use xlink:href="#code"></use>
     </svg>  
