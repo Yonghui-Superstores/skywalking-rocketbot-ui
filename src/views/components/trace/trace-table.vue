@@ -71,8 +71,6 @@ export default class Home extends Vue {
   }
   @Watch('rocketTrace.traceList')
   private onTraceListChange() {
-    console.log();
-    
     if (this.rocketTrace.traceList && this.rocketTrace.traceList.length > 0) {
       this.selectTrace(this.rocketTrace.traceList[0]);
     }

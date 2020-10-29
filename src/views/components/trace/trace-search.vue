@@ -121,19 +121,23 @@ export default class TraceTool extends Vue {
     let minute: string = `${minuteTemp}`;
     if (minuteTemp < 10) { minute = `0${minuteTemp}`; }
     if (step === 'MINUTE') { return `${year}-${month}-${day} ${hour}${minute}`; }
+    const secondTemp = date.getSeconds();
+    let second: string = `${secondTemp}`;
+    if (secondTemp < 10) { second = `0${secondTemp}`; }
+    if (step === 'SECOND') { return `${year}-${month}-${day} ${hour}${minute}${second}`; }
   }
   private globalTimeFormate = (time: Date[]): any => {
-    let step = 'MINUTE';
-    const unix = Math.round(time[1].getTime()) - Math.round(time[0].getTime());
-    if (unix <= 60 * 60 * 1000) {
-      step = 'MINUTE';
-    } else if (unix <= 24 * 60 * 60 * 1000) {
-      step = 'HOUR';
-    } else if (unix <= 30 * 24 * 60 * 60 * 1000) {
-      step = 'DAY';
-    } else {
-      step = 'MONTH';
-    }
+    let step = 'SECOND';
+    // const unix = Math.round(time[1].getTime()) - Math.round(time[0].getTime());
+    // if (unix <= 60 * 60 * 1000) {
+    //   step = 'MINUTE';
+    // } else if (unix <= 24 * 60 * 60 * 1000) {
+    //   step = 'HOUR';
+    // } else if (unix <= 30 * 24 * 60 * 60 * 1000) {
+    //   step = 'DAY';
+    // } else {
+    //   step = 'MONTH';
+    // }
     return { start: this.dateFormate(time[0], step), end: this.dateFormate(time[1], step), step };
   }
   get eventHub() {

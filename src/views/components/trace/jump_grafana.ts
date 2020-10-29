@@ -2,8 +2,7 @@ const jumpGrafana = (component: any) => {
   const hostName = document.location.hostname;
   const tag = buildTag(component);
 
-  let group = window.localStorage.getItem('group');
-  group = 'operation-itservice-010';
+  const group = window.localStorage.getItem('organizationId');
   let url = 'http://monitor-prod.grafana-admin.gw.yonghui.cn/v1/rewriter/itwork-non-prod/' + group + '/' + tag;
   if (hostName.indexOf('devtrace') !== -1 ||
       hostName.indexOf('testtrace') !== -1 ||

@@ -65,9 +65,9 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   if (to.path === '/' && to.query.externalProjectId) {
     let proId: string = <string>to.query.externalProjectId;
-    let group: string = <string>to.query.group;
+    let organizationId: string = <string>to.query.organizationId;
 
-    window.localStorage.setItem('group', group);
+    window.localStorage.setItem('organizationId', organizationId);
     window.localStorage.setItem('externalProjectId', proId);
   }
   const token = window.localStorage.getItem('skywalking-authority');
