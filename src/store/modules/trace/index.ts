@@ -61,7 +61,7 @@ const initState: State = {
 // getters
 const getters = {
   getQueryDate(state: State): any {
-    return [timeTemp(state.queryDate[0]), timeTemp(state.queryDate[1])];
+    return [new Date(state.queryDate[0]).toISOString(), new Date(state.queryDate[1]).toISOString()];
   },
 };
 
@@ -167,34 +167,6 @@ const actions: ActionTree<State, any> = {
     });
   },
 };
-
-
-function timeTemp(date: Date) {
-  const year = date.getFullYear();
-
-  const monthTemp = date.getMonth() + 1;
-  let month: string = `${monthTemp}`;
-  if (monthTemp < 10) { month = `0${monthTemp}`; }
-
-  const dayTemp = date.getDate();
-  let day: string = `${dayTemp}`;
-  if (dayTemp < 10) { day = `0${dayTemp}`; }
-
-  const hourTemp = date.getHours();
-  let hour: string = `${hourTemp}`;
-  if (hourTemp < 10) { hour = `0${hourTemp}`; }
-
-  const minuteTemp = date.getMinutes();
-  let minute: string = `${minuteTemp}`;
-  if (minuteTemp < 10) { minute = `0${minuteTemp}`; }
-
-  const secondTemp = date.getSeconds();
-  let second: string = `${secondTemp}`;
-  if (secondTemp < 10) { second = `0${secondTemp}`; }
-
-  // 2020-07-01T02:38:08.949Z
-  return `${year}-${month}-${day}T${hour}:${minute}:${second}.000Z`;
-}
 
 export default {
   namespaced: true,

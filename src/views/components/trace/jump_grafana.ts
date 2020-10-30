@@ -1,24 +1,23 @@
 const jumpGrafana = (component: any) => {
   const hostName = document.location.hostname;
   const tag = buildTag(component);
+  const url = 'http://monitor-prod.grafana-admin.gw.yonghui.cn/v1/rewriter/';
+  let env = 'itwork-non-prod/';
 
   const group = window.localStorage.getItem('organizationId');
-  let url = 'http://monitor-prod.grafana-admin.gw.yonghui.cn/v1/rewriter/itwork-non-prod/' + group + '/' + tag;
   if (hostName.indexOf('devtrace') !== -1 ||
       hostName.indexOf('testtrace') !== -1 ||
       hostName.indexOf('uattrace') !== -1) {
     // 开发/测试环境
     // url = 'http://yhmonitor-test.grafana.sitgw.yonghui.cn/';
-    // url = 'http://yhmonitor-test.grafana-admin.sitgw.yonghui.cn/v1/rewriter/itwork-non-prod/' + group + '/' + tag;
-    url = 'http://monitor-prod.grafana-admin.gw.yonghui.cn/v1/rewriter/itwork-non-prod/' + group + '/' + tag;
+    env = 'itwork-non-prod/';
   }
   if (hostName.indexOf('prdtrace') !== -1) {
     // 开发/测试环境
-    // url = 'http://monitor-prod.grafana.gw.yonghui.cn/';
-    url = 'http://monitor-prod.grafana-admin.gw.yonghui.cn/v1/rewriter/itwork-prod/' + group + '/' + tag;
+    env = 'itwork-prod/';
   }
 
-  window.open(url, '_blank');
+  window.open(url + env + group + '/' + tag, '_blank');
   };
 
 function buildTag(component: any) {
