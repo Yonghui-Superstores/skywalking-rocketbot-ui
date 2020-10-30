@@ -43,7 +43,7 @@
             </td>
           </tr>
         </table>
-        <p v-else class="prompt">没有数据</p>
+        <p v-else class="prompt">{{ loading ? '搜索中...' : '没有数据'}}</p>
       </div>
     </div>
 </template>

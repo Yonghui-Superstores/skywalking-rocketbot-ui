@@ -65,7 +65,7 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator';
-import { Action, Getter, State } from 'vuex-class';
+import { Action, Getter, Mutation, State } from 'vuex-class';
 import { Trace } from '@/types/trace';
 import { DurationTime, Option } from '@/types/global';
 import TraceSelect from './trace-select.vue';
@@ -81,6 +81,7 @@ export default class TraceTool extends Vue {
   @State('rocketOption') private stateDashboardOption!: any;
   @Getter('durationTime') private durationTime: any;
   @Getter('duration') private duration: any;
+  @Mutation('rocketTrace/SET_QUERY_DATE') private SET_QUERY_DATE: any;
   @Action('SET_DURATION') private SET_DURATION: any;
   @Action('rocketTrace/GET_SERVICES') private GET_SERVICES: any;
   @Action('rocketTrace/GET_INSTANCES') private GET_INSTANCES: any;
@@ -158,6 +159,7 @@ export default class TraceTool extends Vue {
     this.traceState = i;
   }
   private getTraceList() {
+    this.SET_QUERY_DATE(this.time);
     this.GET_SERVICES({duration: this.durationTime});
     const temp: any = {
         queryDuration: this.globalTimeFormate([

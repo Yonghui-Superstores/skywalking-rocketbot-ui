@@ -73,6 +73,7 @@ export const SET_CURRENT_TRACE = 'SET_CURRENT_TRACE';
 export const SET_TRACE_FORM = 'SET_TRACE_FORM';
 export const SET_TRACE_FORM_ITEM = 'SET_TRACE_FORM_ITEM';
 export const SET_DEFAULT_EMPTY_TRACE = 'SET_DEFAULT_EMPTY_TRACE';
+export const SET_QUERY_DATE = 'SET_QUERY_DATE';
 
 // topo
 export const SET_TOPO = 'SET_TOPO';

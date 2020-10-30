@@ -82,10 +82,11 @@ import TraceDetailChartTable from './trace-detail-chart-table.vue';
 import LoadingIcon from '@/components/loading-icon.vue';
 
 import { Trace, Span } from '@/types/trace';
-import { Action, State } from 'vuex-class';
+import { Action, State ,Getter } from 'vuex-class';
 
 @Component({ components: { TraceDetailChartList, TraceDetailChartTree, TraceDetailChartTable, LoadingIcon } })
 export default class Header extends Vue {
+  @Getter('rocketTrace/getQueryDate') private getQueryDate: any;
   @State('rocketbot') private rocketbot: any;
   @Action('rocketTrace/GET_TRACE_SPANS') private GET_TRACE_SPANS: any;
   @Prop() private spans!: Span[];
@@ -127,9 +128,9 @@ export default class Header extends Vue {
   private jump() {    
     if(this.current.traceIds[0]) {
       const projectId = window.localStorage.getItem('externalProjectId');
-      // var url = 'http://localhost:5601/kzr/s/'+ projectId +
       var url = this.getUrl() + projectId +
-      '/app/kibana#/discover?_g=(refreshInterval:(pause:!t,value:0),time:(from:now-1d,to:now))' +
+      '/app/kibana#/discover?_g=(refreshInterval:(pause:!t,value:0),time:(from:\'' +
+      this.getQueryDate[0] + '\',to:\'' + this.getQueryDate[1] + '\'))' +
       '&_a=(columns:!(_source),index:\'\',interval:auto,query:(language:kuery,query:\'!\'' +
       this.current.traceIds[0] + '!\'\'),sort:!(\'@timestamp\',desc))';
       window.open(url,'_blank');
@@ -137,24 +138,28 @@ export default class Header extends Vue {
   }
   private getUrl(){
     const hostName = document.location.hostname;
-    let url = 'http://public-service.kibana-prod.gw.yonghui.cn/s/';
+    let env = 'prod';
     if (hostName.indexOf('devtrace') !== -1 ) {
       // 开发环境
-      url = 'http://public-service.kibana-dev.gw.yonghui.cn/s/';
+      // env = 'http://public-service.kibana-dev.gw.yonghui.cn/s/';
+      env = 'dev';
     }
     if (hostName.indexOf('testtrace') !== -1 ) {
       // 测试环境
-      url = 'http://public-service.kibana-sit.gw.yonghui.cn/s/';
+      // env = 'http://public-service.kibana-sit.gw.yonghui.cn/s/';
+      env = 'sit';
     }
     if (hostName.indexOf('uattrace') !== -1 ) {
       // 预生产
-      url = 'http://public-service.kibana-uat.gw.yonghui.cn/s/';
+      // env = 'http://public-service.kibana-uat.gw.yonghui.cn/s/';
+      env = 'uat';
     }
     if (hostName.indexOf('prdtrace') !== -1 ) {
       // 生产
-      url = 'http://public-service.kibana-prod.gw.yonghui.cn/s/';
+      // env = 'http://public-service.kibana-prod.gw.yonghui.cn/s/';
+      env = 'prod';
     }
-    return url;
+    return 'http://public-service.kibana-' + env + '.gw.yonghui.cn/s/';
   }
   private beforeDestroy() {
     this.eventHub.$off('SET_TRACE_DETAIL_STATUS');
