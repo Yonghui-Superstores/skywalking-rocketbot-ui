@@ -73,7 +73,9 @@ router.beforeEach((to, from, next) => {
   let projectIds: any[] = [];
   if (to.path === '/' && to.query.projectId) {
     const defaultProjectId: string = to.query.projectId as string;
+    const organizationId: string = to.query.organizationId as string;
     window.localStorage.setItem('defaultProjectId', defaultProjectId);
+    window.localStorage.setItem('organizationId', organizationId);
   }
   Axios.get('/user/projects').then( (res) => {
     const { headers: {invalid, url} } = res;

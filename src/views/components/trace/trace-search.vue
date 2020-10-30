@@ -284,7 +284,7 @@ limitations under the License. -->
     }
 
     private globalTimeFormat(time: Date[]) {
-      let step = 'SECOND';
+      const step = 'SECOND';
       // const unix = Math.round(time[1].getTime()) - Math.round(time[0].getTime());
       // if (unix <= 60 * 60 * 1000) {
       //   step = 'MINUTE';
