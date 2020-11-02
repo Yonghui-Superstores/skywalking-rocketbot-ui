@@ -65,7 +65,7 @@ const initState: State = {
 // getters
 const getters = {
   getQueryDate(state: State): any {
-    return [timeTemp(state.queryDate[0]), timeTemp(state.queryDate[1])];
+    return [timeTemp(state.queryDate[0], -30), timeTemp(state.queryDate[1], 30)];
   },
 };
 
@@ -209,14 +209,14 @@ const actions: ActionTree<State, any> = {
   },
 };
 
-function timeTemp(date: Date) {
+function timeTemp(date: Date, step: any) {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
   const hour = date.getHours();
   const minute = date.getMinutes();
   const second = date.getSeconds();
-  return new Date(year, month - 1, day, hour, minute, second).toISOString();
+  return new Date(year, month - 1, day, hour, minute + step, second).toISOString();
 }
 
 export default {
