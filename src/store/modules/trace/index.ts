@@ -35,6 +35,7 @@ export interface State {
   traceTotal: number;
   traceSpans: Span[];
   currentTrace: Trace;
+  queryDate: Date[];
 }
 
 const initState: State = {
@@ -58,13 +59,21 @@ const initState: State = {
     start: '',
     traceIds: [],
   },
+  queryDate: [],
 };
 
 // getters
-const getters = {};
+const getters = {
+  getQueryDate(state: State): any {
+    return [timeTemp(state.queryDate[0]), timeTemp(state.queryDate[1])];
+  },
+};
 
 // mutations
 const mutations: MutationTree<State> = {
+  [types.SET_QUERY_DATE](state: State, data: []): void {
+    state.queryDate = data;
+  },
   [types.SET_PROJECTS](state: State, data: Option[]): void {
     state.projects = [{ label: 'All', key: '' }].concat(data);
     // state.project = data[0];
@@ -199,6 +208,16 @@ const actions: ActionTree<State, any> = {
       });
   },
 };
+
+function timeTemp(date: Date) {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  const second = date.getSeconds();
+  return new Date(year, month - 1, day, hour, minute, second).toISOString();
+}
 
 export default {
   namespaced: true,

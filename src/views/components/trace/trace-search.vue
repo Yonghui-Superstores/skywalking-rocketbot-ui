@@ -151,6 +151,7 @@ limitations under the License. -->
     @Action('rocketTrace/GET_INSTANCES') private GET_INSTANCES: any;
     @Action('rocketTrace/GET_TRACELIST') private GET_TRACELIST: any;
     @Action('rocketTrace/SET_TRACE_FORM') private SET_TRACE_FORM: any;
+    @Mutation('rocketTrace/SET_QUERY_DATE') private SET_QUERY_DATE: any;
     @Mutation('rocketTrace/SET_TRACE_FORM_ITEM')
     private SET_TRACE_FORM_ITEM: any;
     private start: any; // 首页heatmap传递过来的参数
@@ -333,6 +334,7 @@ limitations under the License. -->
     }
 
     private getTraceList() {
+      this.SET_QUERY_DATE(this.time);
       const temp: any = {
         queryDuration: this.globalTimeFormat([
           new Date(
