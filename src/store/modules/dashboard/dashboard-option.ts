@@ -230,9 +230,9 @@ const actions: ActionTree<State, any> = {
       return;
     }
     context.commit('SET_CURRENT_PROJECT', params.project);
-    context.dispatch('GET_SERVICE_SERVICES', { duration: params.duration, keyword: '' });
-    context.dispatch('GET_SERVICE_ENDPOINTS', {});
-    context.dispatch('GET_SERVICE_INSTANCES', { duration: params.duration });
+    context.dispatch('GET_SERVICE_SERVICES', { duration: params.duration, keyword: '' })
+    .then(() => context.dispatch('GET_SERVICE_ENDPOINTS', {}))
+    .then(() => context.dispatch('GET_SERVICE_INSTANCES', { duration: params.duration }));
   },
   SELECT_SERVICE(context: { commit: Commit; dispatch: Dispatch }, params: any) {
     if (!params.service.key) {
