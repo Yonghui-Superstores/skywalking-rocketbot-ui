@@ -131,23 +131,27 @@ limitations under the License. -->
     private getUrl() {
       const hostName = document.location.hostname;
       let env = 'dev';
-      if (hostName.indexOf('devtrace') !== -1 || hostName.indexOf('10.251.112.3') !== -1) {
+      if (this.decide(hostName, 'devtrace', 'devtrace')) {
         // 开发环境
         env = 'dev';
       }
-      if (hostName.indexOf('testtrace') !== -1 || hostName.indexOf('10.251.112.12') !== -1) {
+      if (this.decide(hostName, 'testtrace', '10.251.112.12')) {
         // 测试环境
         env = 'sit';
       }
-      if (hostName.indexOf('uattrace') !== -1 || hostName.indexOf('10.251.66.19') !== -1) {
+      if (this.decide(hostName, 'uattrace', '10.251.66.19')) {
         // 预生产
         env = 'uat';
       }
-      if (hostName.indexOf('prdtrace') !== -1 || hostName.indexOf('10.251.70.40') !== -1) {
+      if (this.decide(hostName, 'prdtrace', '10.251.70.40')) {
         // 生产
         env = 'prod';
       }
       return 'http://public-service.kibana-' + env + '.gw.yonghui.cn/s/';
+    }
+
+    private decide(hostName: string, oldAddress: string, newAddress: string) {
+      return hostName.indexOf('oldAddress') !== -1 || hostName.indexOf(newAddress) !== -1
     }
   }
 </script>
