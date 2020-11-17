@@ -71,8 +71,8 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   let projectIds: any[] = [];
-  if (to.path === '/' && to.query.projectId) {
-    const defaultProjectId: string = to.query.projectId as string;
+  if (to.path === '/' && to.query.externalProjectId) {
+    const defaultProjectId: string = to.query.externalProjectId as string;
     const organizationId: string = to.query.organizationId as string;
     window.localStorage.setItem('defaultProjectId', defaultProjectId);
     window.localStorage.setItem('organizationId', organizationId);
