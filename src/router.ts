@@ -64,11 +64,15 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.path === '/' && to.query.externalProjectId) {
-    let proId: string = <string>to.query.externalProjectId;
-    let organizationId: string = <string>to.query.organizationId;
+    let externalProjectId: string = <string>to.query.externalProjectId;
+    let organizationCode: string = <string>to.query.organizationCode;
+    let projectId: string = <string>to.query.projectId;
+    let token: string = <string>to.query.token;
 
-    window.localStorage.setItem('organizationId', organizationId);
-    window.localStorage.setItem('externalProjectId', proId);
+    window.localStorage.setItem('organizationCode', organizationCode);
+    window.localStorage.setItem('externalProjectId', externalProjectId);
+    window.localStorage.setItem('projectId', projectId);
+    window.localStorage.setItem('itwork_token', token);
   }
   const token = window.localStorage.getItem('skywalking-authority');
   if (window.axiosCancel.length !== 0) {

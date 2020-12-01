@@ -4,7 +4,7 @@ const jumpGrafana = (component: any) => {
   const url = 'http://monitor-prod.grafana-admin.gw.yonghui.cn/v1/rewriter/';
   let env = 'itwork-non-prod/';
 
-  const group = window.localStorage.getItem('organizationId');
+  const group = window.localStorage.getItem('organizationCode');
   if (hostName.indexOf('devtrace') !== -1 ||
       hostName.indexOf('testtrace') !== -1 ||
       hostName.indexOf('uattrace') !== -1) {
