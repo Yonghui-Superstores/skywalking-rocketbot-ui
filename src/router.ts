@@ -73,9 +73,14 @@ router.beforeEach((to, from, next) => {
   let projectIds: any[] = [];
   if (to.path === '/' && to.query.externalProjectId) {
     const defaultProjectId: string = to.query.externalProjectId as string;
-    const organizationId: string = to.query.organizationId as string;
+    const organizationCode: string = to.query.organizationCode as string;
+    const projectId: string = to.query.projectId as string;
+    const itworkToken: string = to.query.token as string;
+
     window.localStorage.setItem('defaultProjectId', defaultProjectId);
-    window.localStorage.setItem('organizationId', organizationId);
+    window.localStorage.setItem('organizationCode', organizationCode);
+    window.localStorage.setItem('projectId', projectId);
+    window.localStorage.setItem('itwork_token', itworkToken);
   }
   Axios.get('/user/projects').then( (res) => {
     const { headers: {invalid, url} } = res;
