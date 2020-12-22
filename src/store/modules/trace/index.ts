@@ -69,19 +69,27 @@ const getters = {
   },
 };
 
+const filter = (data: any) => {
+  const map = new Map();
+  return data.filter((item: any) => !map.has(item.key) && map.set(item.key, 1));
+};
+
 // mutations
 const mutations: MutationTree<State> = {
   [types.SET_QUERY_DATE](state: State, data: []): void {
     state.queryDate = data;
   },
   [types.SET_PROJECTS](state: State, data: Option[]): void {
+    data = filter(data);
     state.projects = [{ label: 'All', key: '' }].concat(data);
     // state.project = data[0];
   },
   [types.SET_SERVICES](state: State, data: Option[]): void {
+    data = filter(data);
     state.services = [{ label: 'All', key: '' }].concat(data);
   },
   [types.SET_INSTANCES](state: State, data: Option[]): void {
+    data = filter(data);
     state.instances = [{ label: 'All', key: '' }].concat(data);
   },
   [types.SET_TRACE_FORM](state: State, data: any): void {

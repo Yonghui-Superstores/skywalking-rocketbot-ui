@@ -151,7 +151,7 @@ limitations under the License. -->
     }
 
     private decide(hostName: string, oldAddress: string, newAddress: string) {
-      return hostName.indexOf('oldAddress') !== -1 || hostName.indexOf(newAddress) !== -1
+      return hostName.indexOf('oldAddress') !== -1 || hostName.indexOf(newAddress) !== -1;
     }
   }
 </script>

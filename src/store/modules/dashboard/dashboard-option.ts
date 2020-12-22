@@ -52,9 +52,15 @@ const initState: State = {
 // getters
 const getters = {};
 
+const filter = (data: any) => {
+  const map = new Map();
+  return data.filter((item: any) => !map.has(item.key) && map.set(item.key, 1));
+};
+
 // mutations
 const mutations: MutationTree<State> = {
   [types.SET_PROJECTS](state: State, data: any) {
+    data = filter(data);
     state.projects = data;
     const defaultProjectId = window.localStorage.getItem('defaultProjectId');
     let index = 0;
@@ -71,6 +77,7 @@ const mutations: MutationTree<State> = {
   },
 
   [types.SET_SERVICES](state: State, data: any) {
+    data = filter(data);
     state.services = data;
     state.currentService = data[0] || {};
   },
@@ -84,6 +91,7 @@ const mutations: MutationTree<State> = {
   },
 
   [types.SET_ENDPOINTS](state: State, data: any) {
+    data = filter(data);
     state.endpoints = data;
     if (!data.length) {
       state.currentEndpoint = {};
@@ -98,6 +106,7 @@ const mutations: MutationTree<State> = {
     state.updateDashboard = endpoint;
   },
   [types.SET_INSTANCES](state: State, data: any) {
+    data = filter(data);
     state.instances = data;
     if (!data.length) {
       state.currentInstance = {};
@@ -112,6 +121,7 @@ const mutations: MutationTree<State> = {
     state.updateDashboard = instance;
   },
   [types.SET_DATABASES](state: State, data: any) {
+    data = filter(data);
     state.databases = data;
     if (!data.length) {
       return;

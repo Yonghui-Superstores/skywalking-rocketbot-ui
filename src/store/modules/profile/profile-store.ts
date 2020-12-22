@@ -75,9 +75,15 @@ const getters = {
   },
 };
 
+const filter = (data: any) => {
+  const map = new Map();
+  return data.filter((item: any) => !map.has(item.key) && map.set(item.key, 1));
+};
+
 // mutations
 const mutations = {
   [types.SET_PROJECTS](state: State, data: any[]) {
+    data = filter(data);
     const defaultProjectId = window.localStorage.getItem('defaultProjectId');
     let index = 0;
     if (defaultProjectId !== null) {
@@ -88,6 +94,7 @@ const mutations = {
     state.headerSource.currentProject = state.headerSource.projectSource[index];
   },
   [types.SET_SERVICES](state: State, data: any[]) {
+    data = filter(data);
     state.headerSource.serviceSource = [{ key: 'all', label: 'All' }, ...data];
     state.headerSource.currentService = state.headerSource.serviceSource[0];
     state.taskFieldSource.serviceSource = data;
