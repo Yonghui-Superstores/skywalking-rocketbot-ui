@@ -59,7 +59,7 @@ limitations under the License. -->
     </div>
     <TraceDetailChartList
       v-if="displayMode == 'list' && current.endpointNames"
-      :data="spans"
+      :traceData="spans"
       :traceId="current.traceIds[0]"
     />
     <TraceDetailChartTree
@@ -83,77 +83,83 @@ limitations under the License. -->
 </template>
 
 <script lang="ts">
-  import { Vue, Component, Prop } from 'vue-property-decorator';
-  import TraceDetailChartList from './trace-detail-chart-list.vue';
-  import TraceDetailChartTree from './trace-detail-chart-tree.vue';
-  import { TraceDetailChartTable } from '../common';
-  import { Trace, Span } from '@/types/trace';
-  import { Action, Getter, State } from 'vuex-class';
-  import copy from '@/utils/copy';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import TraceDetailChartList from './trace-detail-chart-list.vue';
+import TraceDetailChartTree from './trace-detail-chart-tree.vue';
+import { TraceDetailChartTable } from '../common';
+import { Trace, Span } from '@/types/trace';
+import { Action, Getter, State } from 'vuex-class';
+import copy from '@/utils/copy';
 
-  @Component({
-    components: {
-      TraceDetailChartList,
-      TraceDetailChartTree,
-      TraceDetailChartTable,
-    },
-  })
-  export default class TraceDetail extends Vue {
-    @State('rocketbot') private rocketbot: any;
-    @Action('rocketTrace/GET_TRACE_SPANS') private GET_TRACE_SPANS: any;
-    @Getter('rocketTrace/getQueryDate') private getQueryDate: any;
-    @Prop() private spans!: Span[];
-    @Prop() private current!: Trace;
-    private mode: boolean = true;
-    private displayMode: string = 'list';
-    private handleClick(ids: any) {
-      let copyValue = null;
-      if (ids.length === 1) {
-        copyValue = ids[0];
-      } else {
-        copyValue = ids.join(',');
-      }
-      copy(copyValue);
+@Component({
+  components: {
+    TraceDetailChartList,
+    TraceDetailChartTree,
+    TraceDetailChartTable,
+  },
+})
+export default class TraceDetail extends Vue {
+  @State('rocketbot') private rocketbot: any;
+  @Action('rocketTrace/GET_TRACE_SPANS') private GET_TRACE_SPANS: any;
+  @Getter('rocketTrace/getQueryDate') private getQueryDate: any;
+  @Prop() private spans!: Span[];
+  @Prop() private current!: Trace;
+  private mode: boolean = true;
+  private displayMode: string = 'list';
+  private handleClick(ids: any) {
+    let copyValue = null;
+    if (ids.length === 1) {
+      copyValue = ids[0];
+    } else {
+      copyValue = ids.join(',');
     }
-    // 日志跳转
-    private jump() {
-      if (this.current.traceIds[0]) {
-        const date = this.getQueryDate;
-        const projectId = window.localStorage.getItem('externalProjectId');
-        // var url = 'http://localhost:5601/kzr/s/'+ projectId +
-        const url = this.getUrl() + projectId +
-        '/app/kibana#/discover?_g=(refreshInterval:(pause:!t,value:0),time:(from:\'' + date[0] + '\',to:\'' + date[1] + '\'))' +
-        '&_a=(columns:!(_source),index:\'\',interval:auto,query:(language:kuery,query:\'!\'' +
-        this.current.traceIds[0] + '!\'\'),sort:!(\'@timestamp\',desc))';
-        window.open(url, '_blank');
-      }
-    }
-    private getUrl() {
-      const hostName = document.location.hostname;
-      let env = 'dev';
-      if (this.decide(hostName, 'devtrace', 'devtrace')) {
-        // 开发环境
-        env = 'dev';
-      }
-      if (this.decide(hostName, 'testtrace', '10.251.112.12')) {
-        // 测试环境
-        env = 'sit';
-      }
-      if (this.decide(hostName, 'uattrace', '10.251.66.19')) {
-        // 预生产
-        env = 'uat';
-      }
-      if (this.decide(hostName, 'prdtrace', '10.251.70.40')) {
-        // 生产
-        env = 'prod';
-      }
-      return 'http://public-service.kibana-' + env + '.gw.yonghui.cn/s/';
-    }
+    copy(copyValue);
+  }
+  // 日志跳转
+  private jump() {
+    if (this.current.traceIds[0]) {
+      const date = this.getQueryDate;
+      // var url = 'http://localhost:5601/kzr/s/'+ projectId +
+      // const url = this.getUrl() + projectId +
+      // '?_g=(refreshInterval:(pause:!t,value:0),time:(from:\'' + date[0] + '\',to:\'' + date[1] + '\'))' +
+      // '&_a=(columns:!(_source),index:\'\',interval:auto,query:(language:kuery,query:\'!\'' +
+      // this.current.traceIds[0] + '!\'\'),sort:!(\'@timestamp\',desc))';
+      const token = window.localStorage.getItem('itwork_token');
 
-    private decide(hostName: string, oldAddress: string, newAddress: string) {
-      return hostName.indexOf('oldAddress') !== -1 || hostName.indexOf(newAddress) !== -1;
+      const param = `?_g=(refreshInterval:(pause:!t,value:0),time:(from:\'${date[0]}\',to:\'${date[1]}\'))&_a=(columns:!(_source),index:\'\',interval:auto,query:(language:kuery,query:\'!\'${this.current.traceIds[0]}!\'\'),sort:!(\'@timestamp\',desc))&token=${token}`;
+      window.open(this.getUrl() + param, '_blank');
     }
   }
+  private getUrl() {
+    const hostName = document.location.hostname;
+    let env = 'dev';
+    if (hostName.indexOf('local') !== -1) {
+      // 开发环境
+      env = 'dev';
+    }
+    if (hostName.indexOf('swdev') !== -1) {
+      // 开发环境
+      env = 'dev';
+    }
+    if (hostName.indexOf('swtest') !== -1) {
+      // 开发环境
+      env = 'sit';
+    }
+    if (hostName.indexOf('swuat') !== -1 || hostName.indexOf('10.251.66.19') !== -1) {
+      // 预生产
+      env = 'uat';
+    }
+    if (hostName.indexOf('swprod') !== -1 || hostName.indexOf('10.251.70.40') !== -1) {
+      // 预生产
+      env = 'prod';
+    }
+    const projectId = window.localStorage.getItem('projectId');
+
+    // return 'http://public-service.kibana-' + env + '.gw.yonghui.cn/s/';
+    // http://api.itwork.yonghui.cn/monitor/v1/kibana/login/dev/43/all?
+    return `http://api.itwork.yonghui.cn/monitor/v1/kibana/login/${env}/${projectId}/all`;
+  }
+}
 </script>
 
 <style lang="scss" scoped>

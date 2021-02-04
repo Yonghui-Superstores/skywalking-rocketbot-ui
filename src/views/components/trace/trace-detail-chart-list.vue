@@ -96,7 +96,7 @@ limitations under the License. -->
   import _ from 'lodash';
   import jumpGrafana from './jump_grafana';
   export default {
-    props: ['data', 'traceId'],
+    props: ['traceData', 'traceId'],
     data() {
       return {
         segmentId: [],
@@ -105,16 +105,18 @@ limitations under the License. -->
         currentSpan: [],
         loading: true,
         fixSpansSize: 0,
+        data: [],
       };
     },
     watch: {
-      data() {
-        if (!this.data.length) { return; }
-        this.data.forEach((element) => {
+      traceData() { 
+        if (!this.traceData.length) { return; }
+        this.traceData.forEach((element) => {
           if (element.layer === 'Unknown' && element.type === 'Local') {
               element.layer = element.type;
           }
         });
+        this.data = this.traceData.filter((item) => item.layer !== 'Database');
         this.loading = true;
         this.changeTree();
         this.tree.init({label: 'TRACE_ROOT', children: this.segmentId}, this.data, this.fixSpansSize);
