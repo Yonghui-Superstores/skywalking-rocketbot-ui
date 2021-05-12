@@ -21,9 +21,9 @@ limitations under the License. -->
         search = '';
       }
     "
-    :class="{ active: visible, cp: selectable, cd: !selectable }"
+    :class="{ active: visible, cp: selectable, cd: !selectable, 'disable-select-service': disabled }"
   >
-    <div class="rk-dashboard-bar-i flex-h" @click="selectable && (visible = !visible)">
+    <div class="rk-dashboard-bar-i flex-h" @click="clickEvent">
       <svg class="icon lg mr-15">
         <use :xlink:href="`#${icon}`"></use>
       </svg>
@@ -44,8 +44,7 @@ limitations under the License. -->
           <use xlink:href="#clear"></use>
         </svg>
       </div>
-      <div class="rk-dashboard-opt-wrapper scroll_hide"
-           v-tooltip:right="this.label">
+      <div class="rk-dashboard-opt-wrapper scroll_hide" v-tooltip:right="this.label">
         <div
           class="rk-dashboard-opt ell"
           @click="handleSelect(i)"
@@ -62,96 +61,113 @@ limitations under the License. -->
 </template>
 
 <script lang="ts">
-  import { Vue, Component, Prop } from 'vue-property-decorator';
-  @Component
-  export default class ToolBarSelect extends Vue {
-    @Prop() public data!: any;
-    @Prop() public current!: any;
-    @Prop() public title!: string;
-    @Prop() public icon!: string;
-    @Prop({ type: Boolean, default: true }) public selectable!: boolean;
-    public label: string = '';
-    public search: string = '';
-    public visible: boolean = false;
-    get filterData() {
-      return this.data.filter((i: any) => i.label.toUpperCase().indexOf(this.search.toUpperCase()) !== -1);
+import { Vue, Component, Prop } from 'vue-property-decorator';
+@Component
+export default class ToolBarSelect extends Vue {
+  @Prop() public data!: any;
+  @Prop() public current!: any;
+  @Prop() public title!: string;
+  @Prop() public icon!: string;
+  @Prop() public disabled!:boolean;
+  @Prop({ type: Boolean, default: true }) public selectable!: boolean;
+  public label: string = '';
+  public search: string = '';
+  public visible: boolean = false;
+  get filterData() {
+    return this.data.filter((i: any) => i.label.toUpperCase().indexOf(this.search.toUpperCase()) !== -1);
+  }
+  public handleOpen() {
+    if (true) {
+      return false;
     }
-    public handleOpen() {
-      this.visible = true;
+    this.visible = true;
+  }
+  public handleSelect(i: any) {
+    this.$emit('onChoose', i);
+    this.visible = false;
+  }
+  public tooltip(i: any) {
+    this.label = i.label;
+  }
+  public clickEvent() {
+    if (this.disabled) {
+      return false;
     }
-    public handleSelect(i: any) {
-      this.$emit('onChoose', i);
-      this.visible = false;
-    }
-    public tooltip(i: any) {
-      this.label = i.label;
+    if (this.selectable) {
+      this.visible = !this.visible;
     }
   }
+}
 </script>
 
 <style lang="scss" scoped>
-  .rk-dashboard-bar-select {
-    position: relative;
-    z-index: 1;
-    height: 52px;
-    justify-content: space-between;
-    .sm {
-      line-height: 12px;
-    }
-    .icon {
-      flex-shrink: 0;
-    }
+.rk-dashboard-bar-select {
+  position: relative;
+  z-index: 1;
+  height: 52px;
+  justify-content: space-between;
+  .sm {
+    line-height: 12px;
   }
-  .rk-dashboard-bar-i-text {
-    max-width: 200px;
+  .icon {
+    flex-shrink: 0;
   }
-  .rk-dashboard-bar-i {
-    height: 100%;
-    padding: 0 15px;
-    border-right: 2px solid #252a2f;
-    &.active,
-    &:hover {
-      background-color: #40454e;
-    }
+}
+.rk-dashboard-bar-i-text {
+  max-width: 200px;
+}
+.rk-dashboard-bar-i {
+  height: 100%;
+  padding: 0 15px;
+  border-right: 2px solid #252a2f;
+  &.active,
+  &:hover {
+    background-color: #40454e;
   }
-  .rk-dashboard-sel {
+}
+.rk-dashboard-sel {
+  position: absolute;
+  top: 50px;
+  left: -1px;
+  box-shadow: 0 1px 6px rgba(99, 99, 99, 0.2);
+  background-color: #252a2f;
+  width: 100%;
+  border-radius: 0 0 3px 3px;
+  .close {
     position: absolute;
-    top: 50px;
-    left: -1px;
-    box-shadow: 0 1px 6px rgba(99, 99, 99, 0.2);
-    background-color: #252a2f;
-    width: 100%;
-    border-radius: 0 0 3px 3px;
-    .close {
-      position: absolute;
-      right: 10px;
-      top: 12px;
-      opacity: 0.6;
-      &:hover {
-        opacity: 1;
-      }
-    }
-  }
-  .rk-dashboard-opt {
-    padding: 7px 15px;
-    &.active,
+    right: 10px;
+    top: 12px;
+    opacity: 0.6;
     &:hover {
-      background-color: #40454e;
+      opacity: 1;
     }
   }
-  .rk-dashboard-sel-search {
-    width: calc(100% - 4px);
-    border: 0;
-    background-color: #333840;
-    color: #eee;
-    outline: 0;
-    padding: 7px 25px 7px 10px;
-    margin: 2px;
-    border-radius: 3px;
+}
+.rk-dashboard-opt {
+  padding: 7px 15px;
+  &.active,
+  &:hover {
+    background-color: #40454e;
   }
-  .rk-dashboard-opt-wrapper {
-    overflow: auto;
-    max-height: 200px;
-    padding-bottom: 2px;
-  }
+}
+.rk-dashboard-sel-search {
+  width: calc(100% - 4px);
+  border: 0;
+  background-color: #333840;
+  color: #eee;
+  outline: 0;
+  padding: 7px 25px 7px 10px;
+  margin: 2px;
+  border-radius: 3px;
+}
+.rk-dashboard-opt-wrapper {
+  overflow: auto;
+  max-height: 200px;
+  padding-bottom: 2px;
+}
+.disable-select-service {
+  cursor: not-allowed;
+  color: gray;
+  // color: #a7aebb;
+}
 </style>

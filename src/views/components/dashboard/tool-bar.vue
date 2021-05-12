@@ -41,27 +41,30 @@ limitations under the License. -->
       />
       <ToolBarSelect
         v-if="compType === dashboardType.SERVICE"
+        :disabled="isDisableService"
         @onChoose="selectService"
         :title="this.$t('currentService')"
         :current="stateDashboard.currentService"
         :data="stateDashboard.services"
         icon="package"
       />
-      <ToolBarEndpointSelect
-        v-if="compType === dashboardType.SERVICE"
-        @onChoose="selectEndpoint"
-        :title="this.$t('currentEndpoint')"
-        :current="stateDashboard.currentEndpoint"
-        :data="stateDashboard.endpoints"
-        icon="code"
-      />
       <ToolBarSelect
         v-if="compType === dashboardType.SERVICE"
+        :disabled="isDisableInstance"
         @onChoose="selectInstance"
         :title="this.$t('currentInstance')"
         :current="stateDashboard.currentInstance"
         :data="stateDashboard.instances"
         icon="disk"
+      />
+      <ToolBarEndpointSelect
+        v-if="compType === dashboardType.SERVICE"
+        :disabled="isDisableEndpoint"
+        @onChoose="selectEndpoint"
+        :title="this.$t('currentEndpoint')"
+        :current="stateDashboard.currentEndpoint"
+        :data="stateDashboard.endpoints"
+        icon="code"
       />
     </div>
     <div class="rk-dashboard-bar flex-h" v-else>
@@ -77,81 +80,104 @@ limitations under the License. -->
 </template>
 
 <script lang="ts">
-  import { Vue, Component, Prop } from 'vue-property-decorator';
-  import ToolBarSelect from './tool-bar-select.vue';
-  import ToolBarEndpointSelect from './tool-bar-endpoint-select.vue';
-  import ToolBarBtns from './tool-bar-btns.vue';
-  import { State, Action, Mutation } from 'vuex-class';
-  import { DASHBOARDTYPE } from './constant';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import ToolBarSelect from './tool-bar-select.vue';
+import ToolBarEndpointSelect from './tool-bar-endpoint-select.vue';
+import ToolBarBtns from './tool-bar-btns.vue';
+import { State, Action, Mutation } from 'vuex-class';
+import { DASHBOARDTYPE } from './constant';
 
-  @Component({ components: { ToolBarSelect, ToolBarEndpointSelect, ToolBarBtns } })
-  export default class ToolBar extends Vue {
-    @Prop() private compType!: any;
-    @Prop() private stateDashboard!: any;
-    @Prop() private rocketGlobal!: any;
-    @Prop() private rocketComps!: any;
-    @Prop() private durationTime!: any;
-    @State('rocketOption') private rocketOption: any;
-    @Mutation('ADD_COMP') private ADD_COMP: any;
-    @Mutation('SET_CURRENT_SERVICE_FILTER') private SET_CURRENT_SERVICE_FILTER: any;
-    @Mutation('UPDATE_DASHBOARD') private UPDATE_DASHBOARD: any;
-    @Action('SELECT_PROJECT') private SELECT_PROJECT: any;
-    @Action('SELECT_SERVICE') private SELECT_SERVICE: any;
-    @Action('SELECT_DATABASE') private SELECT_DATABASE: any;
-    @Action('SELECT_ENDPOINT') private SELECT_ENDPOINT: any;
-    @Action('SELECT_INSTANCE') private SELECT_INSTANCE: any;
-    @Action('MIXHANDLE_GET_OPTION') private MIXHANDLE_GET_OPTION: any;
-    private dashboardType = DASHBOARDTYPE;
-    get lastKey() {
-      const current = this.rocketComps.tree[this.rocketComps.group].children[this.rocketComps.current].children;
-      if (!current.length) {
-        return 0;
-      }
-      return current[current.length - 1].k;
+const map = {
+  Service: 1,
+  Global: 0,
+  Endpoint: 2,
+  Instance: 3,
+};
+
+@Component({ components: { ToolBarSelect, ToolBarEndpointSelect, ToolBarBtns } })
+export default class ToolBar extends Vue {
+  @Prop() private compType!: any;
+  @Prop() private stateDashboard!: any;
+  @Prop() private rocketGlobal!: any;
+  @Prop() private rocketComps!: any;
+  @Prop() private durationTime!: any;
+  @State('rocketOption') private rocketOption: any;
+  @Mutation('ADD_COMP') private ADD_COMP: any;
+  @Mutation('SET_CURRENT_SERVICE_FILTER') private SET_CURRENT_SERVICE_FILTER: any;
+  @Mutation('UPDATE_DASHBOARD') private UPDATE_DASHBOARD: any;
+  @Action('SELECT_PROJECT') private SELECT_PROJECT: any;
+  @Action('SELECT_SERVICE') private SELECT_SERVICE: any;
+  @Action('SELECT_DATABASE') private SELECT_DATABASE: any;
+  @Action('SELECT_ENDPOINT') private SELECT_ENDPOINT: any;
+  @Action('SELECT_INSTANCE') private SELECT_INSTANCE: any;
+  @Action('MIXHANDLE_GET_OPTION') private MIXHANDLE_GET_OPTION: any;
+  private dashboardType = DASHBOARDTYPE;
+  get lastKey() {
+    const current = this.rocketComps.tree[this.rocketComps.group].children[this.rocketComps.current].children;
+    if (!current.length) {
+      return 0;
     }
-    private selectProject(i: any) {
-      this.SELECT_PROJECT({ project: i, duration: this.durationTime });
-    }
-    private selectService(i: any) {
-      this.SELECT_SERVICE({ service: i, duration: this.durationTime });
-    }
-    private selectEndpoint(i: any) {
-      this.SELECT_ENDPOINT({ endpoint: i, duration: this.durationTime });
-    }
-    private selectInstance(i: any) {
-      this.SELECT_INSTANCE({ instance: i, duration: this.durationTime });
-    }
-    private searchServices(value: string) {
-      this.SET_CURRENT_SERVICE_FILTER(value);
-      this.MIXHANDLE_GET_OPTION({
-        compType: this.dashboardType.SERVICE,
-        duration: this.durationTime,
-        keywordServiceName: value,
-      }).then(() => {
-        this.UPDATE_DASHBOARD();
-      });
-    }
+    return current[current.length - 1].k;
   }
+
+  get currentCompIndex() {
+    return this.rocketComps.current;
+  }
+
+  get isDisableService() {
+    return [map.Global].includes(this.currentCompIndex);
+  }
+  get isDisableEndpoint() {
+    // return [map.Global, map.Service].includes(this.currentCompIndex)
+    return [map.Global, map.Service, map.Endpoint].includes(this.currentCompIndex);
+  }
+  get isDisableInstance() {
+    // return [map.Global, map.Service, map.Endpoint].includes(this.currentCompIndex)
+    return [map.Global, map.Service].includes(this.currentCompIndex);
+  }
+  private selectProject(i: any) {
+    this.SELECT_PROJECT({ project: i, duration: this.durationTime });
+  }
+  private selectService(i: any) {
+    this.SELECT_SERVICE({ service: i, duration: this.durationTime });
+  }
+  private selectEndpoint(i: any) {
+    this.SELECT_ENDPOINT({ endpoint: i, duration: this.durationTime });
+  }
+  private selectInstance(i: any) {
+    this.SELECT_INSTANCE({ instance: i, duration: this.durationTime });
+  }
+  private searchServices(value: string) {
+    this.SET_CURRENT_SERVICE_FILTER(value);
+    this.MIXHANDLE_GET_OPTION({
+      compType: this.dashboardType.SERVICE,
+      duration: this.durationTime,
+      keywordServiceName: value,
+    }).then(() => {
+      this.UPDATE_DASHBOARD();
+    });
+  }
+}
 </script>
 
 <style lang="scss" scoped>
-  .rk-dashboard-bar {
-    flex-shrink: 0;
-    color: #efefef;
-    background-color: #333840;
-    .service-search {
-      padding: 0 5px;
-      border-right: 2px solid #252a2f;
-      input {
-        border-style: unset;
-        outline: 0;
-        padding: 2px 5px;
-        border-radius: 2px;
-        width: 120px;
-      }
-      div {
-        padding: 0 2px;
-      }
+.rk-dashboard-bar {
+  flex-shrink: 0;
+  color: #efefef;
+  background-color: #333840;
+  .service-search {
+    padding: 0 5px;
+    border-right: 2px solid #252a2f;
+    input {
+      border-style: unset;
+      outline: 0;
+      padding: 2px 5px;
+      border-radius: 2px;
+      width: 120px;
+    }
+    div {
+      padding: 0 2px;
     }
   }
+}
 </style>

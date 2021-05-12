@@ -21,7 +21,7 @@ limitations under the License. -->
         visible = false;
       }
     "
-    :class="{ active: visible }"
+    :class="{ active: visible, 'disable-select-service': disabled }"
   >
     <div class="rk-dashboard-bar-i flex-h" @click="visible = !visible">
       <svg class="icon lg mr-15">
@@ -69,6 +69,7 @@ limitations under the License. -->
     @Prop() public current!: any;
     @Prop() public title!: string;
     @Prop() public icon!: string;
+    @Prop() public disabled!:boolean;
     public label: string = '';
     public search: string = '';
     public visible: boolean = false;
@@ -153,5 +154,10 @@ limitations under the License. -->
     overflow: auto;
     max-height: 200px;
     padding-bottom: 2px;
+  }
+  .disable-select-service {
+    cursor: not-allowed;
+    color: gray;
+    // color: #a7aebb;
   }
 </style>
