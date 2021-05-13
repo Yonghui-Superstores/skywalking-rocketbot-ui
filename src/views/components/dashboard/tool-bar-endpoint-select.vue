@@ -23,7 +23,7 @@ limitations under the License. -->
     "
     :class="{ active: visible, 'disable-select-service': disabled }"
   >
-    <div class="rk-dashboard-bar-i flex-h" @click="visible = !visible">
+    <div class="rk-dashboard-bar-i flex-h" @click="clickEvent">
       <svg class="icon lg mr-15">
         <use :xlink:href="`#${icon}`"></use>
       </svg>
@@ -86,6 +86,12 @@ limitations under the License. -->
     }
     public tooltip(i: any) {
       this.label = i.label;
+    }
+    public clickEvent(){
+      if(this.disabled){
+        return false;
+      }
+      this.visible = !this.visible;
     }
   }
 </script>
