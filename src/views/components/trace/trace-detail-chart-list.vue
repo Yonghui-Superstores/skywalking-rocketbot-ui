@@ -109,7 +109,7 @@ limitations under the License. -->
       };
     },
     watch: {
-      traceData() { 
+      traceData() {
         if (!this.traceData.length) { return; }
         this.traceData.forEach((element) => {
           if (element.layer === 'Unknown' && element.type === 'Local') {

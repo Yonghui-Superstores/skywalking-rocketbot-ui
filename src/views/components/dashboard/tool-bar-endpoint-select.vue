@@ -69,7 +69,7 @@ limitations under the License. -->
     @Prop() public current!: any;
     @Prop() public title!: string;
     @Prop() public icon!: string;
-    @Prop() public disabled!:boolean;
+    @Prop() public disabled!: boolean;
     public label: string = '';
     public search: string = '';
     public visible: boolean = false;

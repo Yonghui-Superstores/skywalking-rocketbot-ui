@@ -68,7 +68,7 @@ export default class ToolBarSelect extends Vue {
   @Prop() public current!: any;
   @Prop() public title!: string;
   @Prop() public icon!: string;
-  @Prop() public disabled!:boolean;
+  @Prop() public disabled!: boolean;
   @Prop({ type: Boolean, default: true }) public selectable!: boolean;
   public label: string = '';
   public search: string = '';
