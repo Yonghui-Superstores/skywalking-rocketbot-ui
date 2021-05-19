@@ -125,13 +125,22 @@ export default class ToolBar extends Vue {
   }
 
   get isDisableService() {
+    if (this.rocketComps.group === 2) {
+      return false;
+    }
     return [map.Global].includes(this.currentCompIndex);
   }
   get isDisableEndpoint() {
     // return [map.Global, map.Service].includes(this.currentCompIndex)
+    if (this.rocketComps.group === 2) {
+      return false;
+    }
     return [map.Global, map.Service, map.Endpoint].includes(this.currentCompIndex);
   }
   get isDisableInstance() {
+    if (this.rocketComps.group === 2) {
+      return false;
+    }
     // return [map.Global, map.Service, map.Endpoint].includes(this.currentCompIndex)
     return [map.Global, map.Service].includes(this.currentCompIndex);
   }
